@@ -1,0 +1,14 @@
+gutenberg_translate/
+    .gitignore
+    env/
+    server.py
+    seed.py
+    model.py
+    seed_data/
+    templates/
+        base.html
+        homepage.html
+        profile.html
+        explore_books.html
+        book_description.html
+        translation_page.html

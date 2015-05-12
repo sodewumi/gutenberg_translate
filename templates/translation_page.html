@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<p>translation page</p>
+    <h1>Translation Page</h1>
+
+    {% for chapters in book %}
+        <h1>New Chapter</h1>
+        {% for paragrah in chapters %}
+            <p>{{ paragrah }}</p>
+        {% endfor %}
+    {% endfor %}
+
 {% endblock %}

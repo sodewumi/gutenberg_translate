@@ -10,7 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(15), nullable=False)
     username = db.Column(db.String(15), nullable=False, unique=True)
-    translations = db.relationship("Translation", backref="users")
+    translations = db.relationship("Translation", backref="user")
 
 
 class Book(db.Model):
@@ -25,7 +25,7 @@ class Book(db.Model):
     cover = db.Column(db.String())
     genre_name = db.Column(db.String(10))
     chapters = db.relationship("Chapter", backref="books")
-    genres = db.relationship("Genre", uselist=False, backref="books")
+    genres = db.relationship("Genre", uselist=False, backref="book")
 
 
 class Genre(db.Model):
@@ -42,7 +42,7 @@ class Chapter(db.Model):
     chapter_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     chapter_number =db.Column(db.Integer)
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
-    paragraphs = db.relationship("Paragraph", backref="chapters")
+    paragraphs = db.relationship("Paragraph", backref="chapter")
 
 
 class Paragraph(db.Model):
@@ -52,7 +52,7 @@ class Paragraph(db.Model):
     paragraph_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     untranslated_paragraph = db.Column(db.String())
     chapter_id = db.Column(db.Integer, db.ForeignKey("chapters.chapter_id"))
-    translations = db.relationship("Translation", backref="paragraphs")
+    translations = db.relationship("Translation", backref="paragraph")
 
 
 class Translation(db.Model):
@@ -69,10 +69,11 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///auto.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
+    db.create_all()
 
 
 if __name__ == "__main__":

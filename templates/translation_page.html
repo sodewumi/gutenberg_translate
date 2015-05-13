@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Translation Page</h1>
     <div id="user_controls">
-        <form>
+        <form action="/translate" method="POST">
             <label>Chapter:
                 <select name="chapter_selection">
                     {% for chapter_number in range(number_of_chapters) %}
@@ -17,12 +17,22 @@
     </div>
 
     <div id="untranslated">
-        {% for chapters in book %}
-            <h1>New Chapter</h1>
-            {% for paragrah in chapters %}
-                <p>{{ paragrah }}</p>
+
+        {% if a_chapter %}
+            <h1>Chapter {{ chapter_number }}</h1>
+
+            {% for paragraph in a_chapter %}
+                <p>{{ paragraph }}</p>
             {% endfor %}
-        {% endfor %}
+
+        {% else %}
+            {% for chapters in book %}
+                <h1>New Chapter</h1>
+                {% for paragrah in chapters %}
+                    <p>{{ paragrah }}</p>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
     </div>
 
     <div id="translated">

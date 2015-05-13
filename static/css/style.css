@@ -1,0 +1,16 @@
+h1 {
+    text-align: center
+}
+
+#translated,
+#untranslated {
+    width: 50%
+}
+
+#translated{
+    float: right;
+}
+
+#untranslated{
+    float: left;
+}

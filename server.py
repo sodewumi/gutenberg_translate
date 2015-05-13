@@ -27,10 +27,20 @@ def display_book_description():
 
     return render_template("book_description.html")
 
-@app.route("/translate")
+@app.route("/translate", methods=["GET"])
 def display_translation_page():
-    """Return a translation page."""
-    return render_template("translation_page.html", book = open_file())
+    """Displays the first chapter of the book. Value currently starts at to zero"""
+    book = open_file()
+    number_of_chapters = len(book)
+    
+
+    return render_template("translation_page.html",
+        book = book, number_of_chapters =number_of_chapters)
+
+@app.route("/translate", methods=["POST"])
+def display_chosen_chapter():
+    """Displays the chapter the user wants to translate"""
+    pass
 
 def open_file():
     """
@@ -38,23 +48,28 @@ def open_file():
          list of chapters and sublist of paragrpahs"""
 
     book_string = open("./books/pride_and_prejudice.txt").read()
+    # doesn't get rid of text produced by anonymous volunteers
     head_deliminator = "*** START OF THIS PROJECT GUTENBERG EBOOK PRIDE AND PREJUDICE ***"
     head_deliminator_idx = book_string.index(head_deliminator)
     tail_deliminator_idx = book_string.index("*** END OF THIS PROJECT GUTENBERG")
 
     book_string = book_string[head_deliminator_idx + len(head_deliminator) : tail_deliminator_idx]
-
+    book = {}
     book_chapters = book_string.split("Chapter")
 
     for i in range(len(book_chapters)):
         book_chapters[i] = book_chapters[i].split('\n\n')
+
+    for c, chapters in enumerate(book_chapters):
+        book.setdefault(c, chapters)
 
     return book_chapters
 
 def book_database():
     """ Pushs newly created books into a database"""
     book = open_file()
-    for c, chapters in enumerate(book):
+    # haven't reseeded database to make sure chapters start at 1 and not 0)
+    for c, chapters in enumerate(book, 1):
         db.session.add(Chapter(chapter_number=c, book_id=1))
         for paragrpahs in chapters:
             db.session.add(Paragraph(untranslated_paragraph=paragrpahs))

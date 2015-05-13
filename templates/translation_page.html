@@ -2,12 +2,32 @@
 
 {% block body %}
     <h1>Translation Page</h1>
+    <div id="user_controls">
+        <form>
+            <label>Chapter:
+                <select name="chapter_selection">
+                    {% for chapter_number in range(number_of_chapters) %}
+                    <option value="{{ chapter_number|string() }}">Chapter {{ chapter_number }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit">
+        </form>
 
-    {% for chapters in book %}
-        <h1>New Chapter</h1>
-        {% for paragrah in chapters %}
-            <p>{{ paragrah }}</p>
+    </div>
+
+    <div id="untranslated">
+        {% for chapters in book %}
+            <h1>New Chapter</h1>
+            {% for paragrah in chapters %}
+                <p>{{ paragrah }}</p>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
+    </div>
+
+    <div id="translated">
+        <p>Hello</p>
+    </div>
+
 
 {% endblock %}

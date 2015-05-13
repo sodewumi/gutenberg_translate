@@ -34,7 +34,8 @@ def display_translation_page():
     number_of_chapters = len(book_chapters)
     
     return render_template("translation_page.html",
-        book = book_chapters, number_of_chapters = number_of_chapters, a_chapter = None, chapter_number=None)
+        book = book_chapters, number_of_chapters = number_of_chapters, 
+        a_chapter = None, chapter_number=None)
 
 @app.route("/translate", methods=["POST"])
 def display_chosen_chapter():
@@ -46,10 +47,9 @@ def display_chosen_chapter():
 
     display_chapter = book_chapters[int(chapter_chosen)]
 
-    # return redirect("/translate")
     return render_template("translation_page.html",
         book = book_chapters, number_of_chapters = number_of_chapters, 
-        a_chapter = display_chapter, chapter_number = chapter_chosen)
+        a_chapter = display_chapter, chapter_chosen = chapter_chosen)
 
 
 def open_file():

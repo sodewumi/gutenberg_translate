@@ -33,6 +33,10 @@ def display_translation_page():
     return render_template("translation_page.html", book = open_file())
 
 def open_file():
+    """
+        Opens a file from my computer and converts it to a
+         list of chapters and sublist of paragrpahs"""
+
     book_string = open("./books/pride_and_prejudice.txt").read()
     head_deliminator = "*** START OF THIS PROJECT GUTENBERG EBOOK PRIDE AND PREJUDICE ***"
     head_deliminator_idx = book_string.index(head_deliminator)
@@ -47,9 +51,18 @@ def open_file():
 
     return book_chapters
 
+def book_database():
+    """ Pushs newly created books into a database"""
+    book = open_file()
+    for c, chapters in enumerate(book):
+        db.session.add(Chapter(chapter_number=c, book_id=1))
+        for paragrpahs in chapters:
+            db.session.add(Paragraph(untranslated_paragraph=paragrpahs))
 
-
+    db.session.commit()
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+    connect_to_db(app)
+    # book_database()

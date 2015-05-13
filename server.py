@@ -29,27 +29,25 @@ def display_book_description():
 
 @app.route("/translate", methods=["GET"])
 def display_translation_page():
-    """Displays the first chapter of the book. Value currently starts at to zero"""
+    """
+        Displays the a chapter of the book. 
+        When page first loads, chapter starts at 0.
+    """
+
     book_chapters = open_file()
     number_of_chapters = len(book_chapters)
     
-    return render_template("translation_page.html",
-        book = book_chapters, number_of_chapters = number_of_chapters, 
-        a_chapter = None, chapter_number=None)
+    chapter_chosen = request.args.get("chapter_selection")
 
-@app.route("/translate", methods=["POST"])
-def display_chosen_chapter():
-    """Displays the chapter the user wants to translate"""
-
-    chapter_chosen = request.form["chapter_selection"]
-    book_chapters = open_file()
-    number_of_chapters = len(book_chapters)
-
-    display_chapter = book_chapters[int(chapter_chosen)]
+    # checks if the form has been submitted
+    if chapter_chosen:
+        display_chapter = book_chapters[int(chapter_chosen)]
+    else:
+        display_chapter = book_chapters[0]
 
     return render_template("translation_page.html",
-        book = book_chapters, number_of_chapters = number_of_chapters, 
-        a_chapter = display_chapter, chapter_chosen = chapter_chosen)
+        number_of_chapters = number_of_chapters, 
+        display_chapter = display_chapter, chapter_chosen=chapter_chosen)
 
 
 def open_file():

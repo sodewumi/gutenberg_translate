@@ -1,16 +1,19 @@
-h1 {
+h1,
+h2 {
     text-align: center
 }
 
 #translated,
 #untranslated {
-    width: 50%
+    width: 48%
 }
 
 #translated{
     float: right;
+    padding-left: 1%;
 }
 
 #untranslated{
     float: left;
+    padding-right: 1%;
 }

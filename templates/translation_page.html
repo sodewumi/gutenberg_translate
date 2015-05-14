@@ -2,6 +2,8 @@
 
 {% block body %}
     <h1>Translation Page</h1>
+
+
     <div id="user_controls">
         <form action="/translate" method="GET">
             <label>Chapter:
@@ -15,23 +17,37 @@
         </form>
     </div>
 
+
     <div id="untranslated">
-            {% if chapter_chosen %}
-            <h1>Chapter {{ chapter_chosen }}</h1>
-            {% else %}
-            <h1>Chapter 0</h1>
-            {% endif %}
+        {% if chapter_chosen %}
+        <h2>Chapter {{ chapter_chosen }}</h2>
+        {% else %}
+        <h2>Chapter 0</h2>
+        {% endif %}
 
-            {% for paragraph in display_chapter %}
-            <div class="a_chapter_and_bttn">
-                <p>{{ paragraph }}</p> <button class="edit_text">Edit</button> 
-            </div>
-            {% endfor %}
-
+        {% set count = 1 %}
+        {% for paragraph in display_chapter %}
+        <div class="a_chapter_and_bttn p{{ count|string()}}">
+            <p>{{ paragraph }}</p> <button class="edit_text">Edit</button> 
+        </div>
+            {% set count = count + 1 %}
+        {% endfor %}
     </div>
 
+
     <div id="translated">
-        <p>Hello</p>
+        <h2>Translated Text</h2>
+
+        <form action="/save_text" id="translate_textarea">
+            <label>Translate :<br>
+                <textarea cols="40" rows="20" placeholder="Enter text here!" required></textarea>
+            </label><br>
+            <button>Delete</button>
+            <input type="submit">
+
+        </form>
+
+
     </div>
 
 

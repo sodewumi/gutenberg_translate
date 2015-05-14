@@ -49,6 +49,14 @@ def display_translation_page():
         number_of_chapters = number_of_chapters, 
         display_chapter = display_chapter, chapter_chosen=chapter_chosen)
 
+@app.route("/save_text", methods=["GET"])
+def save_translation_text():
+    """
+        Shows the translated text on html
+    """  
+
+    return "Success"
+
 
 def open_file():
     """

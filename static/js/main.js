@@ -1,10 +1,13 @@
 $(document).ready(function(){
     // add logic about what happens if ehit button is already clicked
     var untrans_p_class;
+    var paragraphId;
 
     function display_translated_text(untrans_text) {
-        alert('hey');
+
     }
+
+
 
     // hides and shows edit button
     $(".a_chapter_and_bttn").on("mouseenter", function () {
@@ -18,6 +21,8 @@ $(document).ready(function(){
     $(".edit_text").on("click", function () {
         $("#translate_textarea").show();
         untrans_p_class = $(this).parent().attr("class");
+        untrans_p_class = untrans_p_class.split(" ");
+        paragraphId = untrans_p_class[1];
     });
 
     $("#submit_bttn").on("click", function (evt) {
@@ -27,7 +32,7 @@ $(document).ready(function(){
 
         $.ajax({
             url: "/save_text",
-            data: $('form').serialize(),
+            data: $('form').serialize() + "&p_id=" + paragraphId,
             type: "POST",
             success: function(response) {
                 $("#translate_textarea").hide();

@@ -35,10 +35,10 @@ def display_translation_page():
     """
     number_of_chapters = db.session.query(Chapter).count()
 
-    
     chapter_chosen = request.args.get("chapter_selection")
 
-    # checks if the form has been submitted
+    # checks if the selection form has been submitted
+    # connect to chapter_number
     if chapter_chosen:
         display_chapter = db.session.query(Paragraph).filter_by(chapter_id = chapter_chosen)
     else:
@@ -54,7 +54,10 @@ def save_translation_text():
         Saves the text translation in the database
     """  
     translated_text = request.form['translated_text']
+    paragraph_id = request.form["p_id"]
     
+    print paragraph_id, '***********************'
+    # db.session.query(Translation).filter_by(book_id=1, paragraph_id=)
 
     return jsonify({"status": "OK", "translated_text": translated_text})
 

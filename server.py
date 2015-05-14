@@ -1,4 +1,4 @@
-from flask import flash, Flask, redirect, render_template, request, session
+from flask import flash, Flask, redirect, render_template, request, session, json
 import jinja2
 from model import Book, User, Genre, Chapter, Paragraph, Translation, connect_to_db, db
 
@@ -49,14 +49,14 @@ def display_translation_page():
         number_of_chapters = number_of_chapters, 
         display_chapter = display_chapter, chapter_chosen=chapter_chosen)
 
-@app.route("/save_text", methods=["GET"])
+@app.route("/save_text", methods=["POST"])
 def save_translation_text():
     """
         Shows the translated text on html
     """  
-    translated_text = request.args.get("translated_text")
+    translated_text = request.form['translated_text']
     print translated_text
-    return "sucess"
+    return json.dumps({"status": "OK", "translated_text": translated_text})
 
 
 def open_file():

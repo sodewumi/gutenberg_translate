@@ -20,11 +20,27 @@ $(document).ready(function(){
         untrans_p_class = $(this).parent().attr("class");
     });
 
-    $("#translate_textarea").on("submit", function (evt) {
+    $("#submit_bttn").on("click", function (evt) {
         evt.preventDefault();
-        var translated_text = $("#translated_text").val();
+        var translated_text = $("#text_form_ta").val();
         console.log(translated_text);
-        $("#translate_textarea").load(("/save_text?translated_text="+translated_text));
+
+        $.ajax({
+            url: "/save_text",
+            data: $('form').serialize(),
+            type: "POST",
+            success: function(response) {
+                $("#translate_textarea").hide();
+                $("translated").append("bob");
+                console.log(response["translated_text"]);
+                console.log(response);
+                console.dir(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+        // $("#translate_textarea").load(("/save_text?translated_text="+translated_text));
 
     });
 

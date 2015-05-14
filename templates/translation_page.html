@@ -38,12 +38,12 @@
     <div id="translated">
         <h2>Translated Text</h2>
 
-        <form method="GET" action="/save_text" id="translate_textarea">
+        <form name="text_form" method="POST" action="/save_text" id="translate_textarea">
             <label>Translate :<br>
-                <textarea id="translated_text" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
+                <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
             </label><br>
-            <button>Delete</button>
-            <input type="submit">
+            <!-- <button>Delete</button> -->
+            <input type="button" value="submit" id="submit_bttn">
 
         </form>
 

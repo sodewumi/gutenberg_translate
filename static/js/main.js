@@ -31,10 +31,8 @@ $(document).ready(function(){
             type: "POST",
             success: function(response) {
                 $("#translate_textarea").hide();
-                $("translated").append("bob");
-                console.log(response["translated_text"]);
-                console.log(response);
-                console.dir(response);
+                $("#translated").append(response.translated_text);
+                console.log(response.translated_text);
             },
             error: function(error) {
                 console.log(error);

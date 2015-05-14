@@ -1,6 +1,8 @@
-from flask import flash, Flask, redirect, render_template, request, session, json
+from flask import flash, Flask, redirect, render_template, request, session, jsonify
 import jinja2
 from model import Book, User, Genre, Chapter, Paragraph, Translation, connect_to_db, db
+from gutenberg.acquire import load_etext
+from gutenberg.cleanup import strip_headers
 
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
@@ -52,11 +54,12 @@ def display_translation_page():
 @app.route("/save_text", methods=["POST"])
 def save_translation_text():
     """
-        Shows the translated text on html
+        Saves the text translation in the database
     """  
     translated_text = request.form['translated_text']
-    print translated_text
-    return json.dumps({"status": "OK", "translated_text": translated_text})
+    
+
+    return jsonify({"status": "OK", "translated_text": translated_text})
 
 
 def open_file():
@@ -84,12 +87,15 @@ def open_file():
 
 def book_database():
     """ Pushs newly created books into a database"""
+
     book = open_file()
     # haven't reseeded database to make sure chapters start at 1 and not 0)
     for c, chapters in enumerate(book, 1):
         db.session.add(Chapter(chapter_number=c, book_id=1))
         for paragrpahs in chapters:
-            db.session.add(Paragraph(untranslated_paragraph=paragrpahs))
+            print paragrpahs.__repr__
+            # if paragrpahs.strip() != "":
+            #     db.session.add(Paragraph(untranslated_paragraph=paragrpahs))
 
     db.session.commit()
 

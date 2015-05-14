@@ -54,10 +54,26 @@ def save_translation_text():
         Saves the text translation in the database
     """  
     translated_text = request.form['translated_text']
-    paragraph_id = request.form["p_id"]
+    paragraph_id_input = request.form["p_id"]
     
-    print paragraph_id, '***********************'
-    # db.session.query(Translation).filter_by(book_id=1, paragraph_id=)
+    # user id is 1
+    # language is French
+    find_translated_text_in_db = db.session.query(Translation).filter_by(
+        paragraph_id=paragraph_id_input, language="French")
+
+    if not find_translated_text_in_db:
+        pass
+        print "*******************"
+    else:
+        print "hey", "**************************"
+        new_translation_for_db = Translation(language="French",
+            translated_paragraph=translated_text, paragraph_id=paragraph_id_input,
+            user_id=1)
+        db.session.add(new_translation_for_db)
+        db.session.commit()
+        # INSERT INTO Translation(language, translated_paragraph, paragraph_id, user_id)
+        # VALUES ("French", translated_text, paragraph_id_input, 1)
+
 
     return jsonify({"status": "OK", "translated_text": translated_text})
 

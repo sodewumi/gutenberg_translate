@@ -54,8 +54,9 @@ def save_translation_text():
     """
         Shows the translated text on html
     """  
-
-    return "Success"
+    translated_text = request.args.get("translated_text")
+    print translated_text
+    return "sucess"
 
 
 def open_file():

@@ -1,7 +1,6 @@
 $(document).ready(function(){
     // add logic about what happens if ehit button is already clicked
     var untrans_p_class;
-   
 
     function display_translated_text(untrans_text) {
         alert('hey');
@@ -23,7 +22,9 @@ $(document).ready(function(){
 
     $("#translate_textarea").on("submit", function (evt) {
         evt.preventDefault();
-        $("#translate_textarea").load("/save_text");
+        var translated_text = $("#translated_text").val();
+        console.log(translated_text);
+        $("#translate_textarea").load(("/save_text?translated_text="+translated_text));
 
     });
 

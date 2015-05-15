@@ -1,6 +1,8 @@
 from flask import flash, Flask, redirect, render_template, request, session, jsonify
-import jinja2
 from model import Book, User, Genre, Chapter, Paragraph, Translation, connect_to_db, db
+from flask_debugtoolbar import DebugToolbarExtension
+import jinja2
+
 
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
@@ -58,14 +60,18 @@ def save_translation_text():
     
     # user id is 1
     # language is French
+    #  still need to add this
     find_translated_text_in_db = db.session.query(Translation).filter_by(
-        paragraph_id=paragraph_id_input, language="French")
+        paragraph_id=paragraph_id_input, language="French").first()
+    print find_translated_text_in_db, "db trans text ******************"
 
-    if not find_translated_text_in_db:
-        pass
-        print "*******************"
+    if find_translated_text_in_db:
+        updated_translation = db.session.query(Translation).filter_by(
+            paragraph_id = paragraph_id_input).update({"translated_paragraph":translated_text, "user_id":1})
+        db.session.commit()
+        # UPDATE Translation SET translated_paragraph=translated_text, user_id=1 WHERE paragraph_id = paragraph_id_input
     else:
-        print "hey", "**************************"
+        print "it's saved to the database"
         new_translation_for_db = Translation(language="French",
             translated_paragraph=translated_text, paragraph_id=paragraph_id_input,
             user_id=1)
@@ -115,6 +121,8 @@ def book_database():
 
 if __name__ == "__main__":
     connect_to_db(app)
+    app.debug = True
+    DebugToolbarExtension(app)
     # book_database()
     app.run(debug=True)
 

@@ -7,7 +7,21 @@ $(document).ready(function(){
 
     }
 
+    function placeParagraph(translatedText, textId) {
+        // PLaces the translated text in the #translated div if a user adds or
+        // updates a translation. Doesn't make a db call.
+        translated_list = $(".new_translated");
 
+        console.log(translated_list);
+
+        if (translated_list.length === 0) {
+            $("#translated").append("<p class='new_translated' id='n"+textId+"'>"+translatedText+"</p>");
+            console.log("fist");
+        } else {
+            console.log("hey")
+        }
+
+    }
 
     // hides and shows edit button
     $(".a_chapter_and_bttn").on("mouseenter", function () {
@@ -18,6 +32,7 @@ $(document).ready(function(){
         $(this).find("button").hide();
     });
 
+    // when clicked, gets the paragraph id from the clicked paragraph and shows text area
     $(".edit_text").on("click", function () {
         $("#translate_textarea").show();
         untrans_p_class = $(this).parent().attr("class");
@@ -28,7 +43,6 @@ $(document).ready(function(){
     $("#submit_bttn").on("click", function (evt) {
         evt.preventDefault();
         var translated_text = $("#text_form_ta").val();
-        console.log(translated_text);
 
         $.ajax({
             url: "/save_text",
@@ -36,14 +50,12 @@ $(document).ready(function(){
             type: "POST",
             success: function(response) {
                 $("#translate_textarea").hide();
-                $("#translated").append(response.translated_text);
-                console.log(response.translated_text);
+                placeParagraph(response.translated_text, response.order);
             },
             error: function(error) {
                 console.log(error);
             }
         });
-        // $("#translate_textarea").load(("/save_text?translated_text="+translated_text));
 
     });
 

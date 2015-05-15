@@ -43,12 +43,18 @@ def display_translation_page():
     # connect to chapter_number
     if chapter_chosen:
         display_chapter = db.session.query(Paragraph).filter_by(chapter_id = chapter_chosen)
+        # learns how to access backrefs through sqlalchemy
+        display_translations = Paragraph()
+        display_translations = display_translations.translations.query(paragraph_id = chapter_chosen)
+        # display_translations = db.session.query(Paragraph.translations).filter(Paragraph.chapter_id=chapter_chosen).all()
+        print display_translations, "*************"
     else:
         display_chapter = db.session.query(Paragraph).filter_by(chapter_id = 0)
-
+        display_translations = db.session.query(Translation).filter_by(translation_id=1, language="French")
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
-        display_chapter = display_chapter, chapter_chosen=chapter_chosen)
+        display_chapter = display_chapter, chapter_chosen=chapter_chosen, 
+        display_translations=display_translations)
 
 @app.route("/save_text", methods=["POST"])
 def save_translation_text():
@@ -81,7 +87,7 @@ def save_translation_text():
         # VALUES ("French", translated_text, paragraph_id_input, 1)
 
 
-    return jsonify({"status": "OK", "translated_text": translated_text})
+    return jsonify({"status": "OK", "translated_text": translated_text, "order": paragraph_id_input})
 
 
 def open_file():

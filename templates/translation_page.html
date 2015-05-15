@@ -36,6 +36,13 @@
     <div id="translated">
         <h2>Translated Text</h2>
 
+
+        {% for paragraph in display_translations %}
+        <div class="finished_translations {{ paragraph.paragraph_id }}">
+            <p>{{ paragraph.translated_paragraph }}</p>
+        </div>
+        {% endfor %}
+
         <form name="text_form" method="POST" action="/save_text" id="translate_textarea">
             <label>Translate :<br>
                 <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>

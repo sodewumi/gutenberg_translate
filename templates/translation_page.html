@@ -38,9 +38,12 @@
 
 
         {% for paragraph in display_translations %}
-        <div class="finished_translations {{ paragraph.paragraph_id }}">
-            <p>{{ paragraph.translated_paragraph }}</p>
-        </div>
+
+            {% if paragraph %}
+            <div class="finished_translations {{ paragraph.paragraph_id }}">
+                <p>{{ paragraph.translated_paragraph }}</p>
+            </div>
+            {% endif %}
         {% endfor %}
 
         <form name="text_form" method="POST" action="/save_text" id="translate_textarea">

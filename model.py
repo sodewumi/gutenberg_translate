@@ -24,8 +24,11 @@ class Book(db.Model):
     rating = db.Column(db.Integer)
     cover = db.Column(db.String())
     genre_name = db.Column(db.String(10))
-    chapters = db.relationship("Chapter", backref="books")
+    chapters = db.relationship("Chapter", backref="book")
     genres = db.relationship("Genre", uselist=False, backref="book")
+
+    def __repr__(self):
+        return "<Book: book_id=%d, name=%s>" % (self.book_id, self.name)
 
 
 class Genre(db.Model):
@@ -44,6 +47,10 @@ class Chapter(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
     paragraphs = db.relationship("Paragraph", backref="chapter")
 
+    def __repr__(self):
+        return "<Chapter: chapter_id=%d, chapter_number=%d, book_id=%d>"\
+            % (self.chapter_id, self.chapter_number, self.book_id)
+
 
 class Paragraph(db.Model):
 
@@ -53,6 +60,9 @@ class Paragraph(db.Model):
     untranslated_paragraph = db.Column(db.String())
     chapter_id = db.Column(db.Integer, db.ForeignKey("chapters.chapter_id"))
     translations = db.relationship("Translation", backref="paragraph")
+
+    def __repr__(self):
+        return "<Paragraph: paragraph_id=%d, chapter_id=%d>" %(self.paragraph_id, self.chapter_id)
 
 
 class Translation(db.Model):
@@ -64,6 +74,11 @@ class Translation(db.Model):
     translated_paragraph = db.Column(db.String()) 
     paragraph_id = db.Column(db.Integer, db.ForeignKey("paragraphs.paragraph_id")) #fk
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+
+    def __repr__(self):
+        return """"<Translation: translation_id=%d, language=%s, paragraph_id=%d,
+            user_id=%d""" %(self.translation_id, self.language, self.paragraph_id,\
+                self.user_id)
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""

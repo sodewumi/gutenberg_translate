@@ -38,23 +38,31 @@ def display_translation_page():
     number_of_chapters = db.session.query(Chapter).count()
 
     chapter_chosen = request.args.get("chapter_selection")
-
+    t_paragraphs_in_chapter_list = []
     # checks if the selection form has been submitted
     # connect to chapter_number
     if chapter_chosen:
-        display_chapter = db.session.query(Paragraph).filter_by(chapter_id = chapter_chosen)
-        # learns how to access backrefs through sqlalchemy
-        display_translations = Paragraph()
-        display_translations = display_translations.translations.query(paragraph_id = chapter_chosen)
-        # display_translations = db.session.query(Paragraph.translations).filter(Paragraph.chapter_id=chapter_chosen).all()
-        print display_translations, "*************"
+        paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = chapter_chosen).all()
+
+        print paragraphs_in_chapter_list, "*********"
+
+        for paragraph in paragraphs_in_chapter_list:
+            translated_paragraph = Translation.query.filter_by(
+                user_id=1, 
+                language="French", 
+                paragraph_id=paragraph.paragraph_id).first()
+            # print translated_paragraph, "*********"
+            t_paragraphs_in_chapter_list.append(translated_paragraph)
+
+        
+        # print display_translations, "*************"
     else:
-        display_chapter = db.session.query(Paragraph).filter_by(chapter_id = 0)
-        display_translations = db.session.query(Translation).filter_by(translation_id=1, language="French")
+        paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 0)
+        t_paragraphs_in_chapter_list = db.session.query(Translation).filter_by(translation_id=1, language="French")
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
-        display_chapter = display_chapter, chapter_chosen=chapter_chosen, 
-        display_translations=display_translations)
+        display_chapter = paragraphs_in_chapter_list, chapter_chosen=chapter_chosen, 
+        display_translations=t_paragraphs_in_chapter_list)
 
 @app.route("/save_text", methods=["POST"])
 def save_translation_text():

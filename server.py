@@ -71,7 +71,10 @@ def display_profile():
 @app.route("/explore")
 def display_explore_books():
     """Return a full list of books from project gutenberg."""
-    return render_template("explore_books.html")
+
+    all_book_objs = Book.query.all()
+
+    return render_template("explore_books.html", all_book_objs=all_book_objs)
 
 @app.route("/description")
 def display_book_description():
@@ -143,11 +146,13 @@ def save_translation_text():
     return jsonify({"status": "OK", "translated_text": translated_text, "order": paragraph_id_input})
 
 
-def open_file(fileId):
+def open_file(filename):
     # move to book class
     """
         Opens a file from project gutenberg 
     """
+
+    return load_etext(filename)
 
     book_string = open("./books/pride_and_prejudice.txt").read()
     # doesn't get rid of text produced by anonymous volunteers

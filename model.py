@@ -24,6 +24,7 @@ class Book(db.Model):
     rating = db.Column(db.Integer)
     cover = db.Column(db.String())
     genre_name = db.Column(db.String(10))
+    gutenberg_extraction_num = db.Column(db.Integer)
     chapters = db.relationship("Chapter", backref="book")
     genres = db.relationship("Genre", uselist=False, backref="book")
 
@@ -84,7 +85,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gutenberg_database.db'
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)

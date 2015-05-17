@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<p>explore books</p>
+    <h1>Explore Books</h1>
+
+    <ul id="book_list">
+        {% for book in all_book_objs %}
+        <li id="{{ book.gutenberg_extraction_num }}">
+            <a href="/profile/{{ book.gutenberg_extraction_num }}">
+                <img src="http://placekitten.com/g/96/140">
+            </a>
+            <h2>{{ book.name }}</h2>
+            <h3>{{ book.author }}</h3>
+        </li>
+        <hr>
+        {% endfor %}
+    </ul>
+
+
 {% endblock %}

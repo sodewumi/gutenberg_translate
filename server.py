@@ -66,6 +66,7 @@ def register_user():
 @app.route("/profile")
 def display_profile():
     """Return a user's profile page."""
+    
     return render_template("profile.html")
  
 @app.route("/explore")
@@ -76,11 +77,11 @@ def display_explore_books():
 
     return render_template("explore_books.html", all_book_objs=all_book_objs)
 
-@app.route("/description")
-def display_book_description():
+@app.route("/description/<int:gutenberg_extraction_number>")
+def display_book_description(gutenberg_extraction_number):
     """Return a description of the book."""
-
-    return render_template("book_description.html")
+    book_obj = Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number).one()
+    return render_template("book_description.html", display_book = book_obj)
 
 @app.route("/translate", methods=["GET"])
 def display_translation_page():
@@ -154,7 +155,7 @@ def open_file(filename):
 
     return load_etext(filename)
 
-    book_string = open("./books/pride_and_prejudice.txt").read()
+def split_chapters(file):
     # doesn't get rid of text produced by anonymous volunteers
     head_deliminator = "*** START OF THIS PROJECT GUTENBERG EBOOK PRIDE AND PREJUDICE ***"
     head_deliminator_idx = book_string.index(head_deliminator)

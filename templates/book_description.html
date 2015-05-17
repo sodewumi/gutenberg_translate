@@ -7,8 +7,8 @@
         <img src="http://placekitten.com/g/200/300" alt="kitten">
     </p>
     <div id="basic_book_info">
-        <h2>Book Title</h2>
-        <h3>Author Name</h3>
+        <h2>{{ display_book.name }}</h2>
+        <h3>{{ display_book.author }}</h3>
         <hr>
         <div id="book_rating">
             <h3>Rating</h3>
@@ -16,7 +16,61 @@
                 <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
             </p>
         </div>
-        <button>Add To Translations</button>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal"
+                data-target="#add_book_form">
+            Translate Book
+        </button>
+
+        <div class="modal fade" id="add_book_form" tabindex="-1" role="dialog" 
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h1 class="modal-title text-center">
+                        Translate {{ display_book.name }}
+                    </h1>
+                </div>
+
+                <div class="modal-body">
+                    <form class="form col-md-12 center-block" action="/">
+                        <div class="form-group">Add Collaborators' Usernames (seperate by commas):
+                            <input type="text" class="form-control input-lg" placeholder="Usernames">
+                        </div>
+                        <div class="form-group">
+                            Choose your translation language:<br>
+                            <select>
+                                <option value="arabic">Arabic</option>
+                                <option value="chinese_sim">Chinese (Simplified)</option>
+                                <option value="chinese_trad">Chinese (Traditional)</option>
+                                <option value="french">French</option>
+                                <option value="hindi">Hindi</option>
+                                <option value="japanese">Japanese</option>
+                                <option value="portuguese">Portuguese</option>
+                                <option value="russian">Russian</option>
+                                <option value="spanish">Spanish</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                Translate Book
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
     </div>
 </div>
 

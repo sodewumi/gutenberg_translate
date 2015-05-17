@@ -6,7 +6,7 @@
     <ul id="book_list">
         {% for book in all_book_objs %}
         <li id="{{ book.gutenberg_extraction_num }}">
-            <a href="/profile/{{ book.gutenberg_extraction_num }}">
+            <a href="/description/{{ book.gutenberg_extraction_num }}">
                 <img src="http://placekitten.com/g/96/140">
             </a>
             <h2>{{ book.name }}</h2>

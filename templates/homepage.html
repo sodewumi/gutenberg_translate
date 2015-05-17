@@ -1,5 +1,36 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<p>homepage</p>
+    <h1>Sign Up</h1>
+
+    <h2>Sign In</h2>
+    <form id="login_form" action="\login" method="POST">
+        <label>Username
+            <input type="text" name="username_input">
+        </label><br>
+        <label>Password
+            <input type="text" name="password_input">
+        </label><br>
+        <input type="submit" value="Login">
+    </form>
+
+    <h2>Sign Up</h2>
+    <form id="register_form" action="\register" method="POST">
+        <label>Username: 
+            <input type="text" name="username_input">
+        </label><br>
+
+        <label>Email:
+            <input type="text" name="email_input">
+        </label><br>
+
+        <label>Password:
+            <input type="text" name="password_input">
+        </label><br>
+
+
+
+        <input type="Submit" value="Register">
+    </form>
+
 {% endblock %}

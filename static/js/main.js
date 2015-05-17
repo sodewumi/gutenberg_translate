@@ -49,18 +49,6 @@ $(document).ready(function(){
             }
         }
 
-        
-
-
-
-
-        // if (translated_list.length === 0) {
-        //     $("#translated").append("<p class='finished_translations' id='t"+textId+"'>"+translatedText+"</p>");
-        //     console.log("first");
-        // } else {
-        //     console.log("hey");
-        // }
-
     }
 
     // hides and shows edit button

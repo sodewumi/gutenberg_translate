@@ -6,12 +6,61 @@ import jinja2
 
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
-app.jinja_env.undefined = jinja2.StrictUndefined
+app.jinja_env .undefined = jinja2.StrictUndefined
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def display_homepage():
-    """Return homepage."""
+    """Returns homepage."""
     return render_template("homepage.html")
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    """Logs in user"""
+    username = request.form["username_input"]
+    print username, "*********"
+    password = request.form["password_input"]
+    print password, "**********"
+    user_object = User.query.filter(User.username == username).first()
+
+    
+    if user_object:
+        if user_object.password == password:
+            session["login"] = username
+            flash("You logged in successfully")
+            return render_template("explore_books.html")
+        else:
+            flash("Incorrect password. Try again.")
+            return redirect("/")
+    else:
+        flash("""This username doesn't exist. Click Register if you would
+            like to create an account.""")
+        return redirect("/")
+
+
+@app.route("/register", methods=["POST"])
+def register_user():
+    """Registers User"""
+
+    register_email = request.form["email_input"]
+    register_password = request.form["password_input"]
+    register_username = request.form["username_input"]
+
+    if User.query.filter(User.email == register_email).first():
+        flash("A person has already registered with the email")
+        return redirect("/")
+    elif User.query.filter(User.username == register_username).first():
+        flash("A person has already taken that username")
+        return redirect("/")
+    else:
+        new_user = User(email=register_email, password=register_password,
+                        username=register_username)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("Thanks for creating an account with Gutenberg Translate!")
+        return render_template("explore_books.html")
+
+    return render_template("registration_form.html")
+    return render_template("/explore")
 
 @app.route("/profile")
 def display_profile():
@@ -44,18 +93,13 @@ def display_translation_page():
     if chapter_chosen:
         paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = chapter_chosen).all()
 
-        print paragraphs_in_chapter_list, "*********"
-
         for paragraph in paragraphs_in_chapter_list:
             translated_paragraph = Translation.query.filter_by(
                 user_id=1, 
                 language="French", 
                 paragraph_id=paragraph.paragraph_id).first()
-            # print translated_paragraph, "*********"
-            t_paragraphs_in_chapter_list.append(translated_paragraph)
 
-        
-        # print display_translations, "*************"
+            t_paragraphs_in_chapter_list.append(translated_paragraph)
     else:
         paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 0)
         t_paragraphs_in_chapter_list = db.session.query(Translation).filter_by(translation_id=1, language="French")
@@ -68,7 +112,7 @@ def display_translation_page():
 def save_translation_text():
     """
         Saves the text translation in the database
-    """  
+    """
     translated_text = request.form['translated_text']
     paragraph_id_input = request.form["p_id"]
     
@@ -99,6 +143,7 @@ def save_translation_text():
 
 
 def open_file():
+    # move to book class
     """
         Opens a file from my computer and converts it to a
          list of chapters and sublist of paragrpahs"""
@@ -119,6 +164,7 @@ def open_file():
     return book_chapters
 
 def book_database():
+    # move to book class
     """ Pushs newly created books into a database"""
 
     book = open_file()

@@ -1,5 +1,4 @@
-h1,
-h2 {
+h1 {
     text-align: center
 }
 
@@ -16,4 +15,10 @@ h2 {
 #untranslated{
     float: left;
     padding-right: 1%;
+}
+
+
+#translated h2,
+#untranslated h2 {
+    text-align: center
 }

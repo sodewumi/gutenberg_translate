@@ -26,7 +26,7 @@ def login_user():
 
     if user_object:
         if user_object.password == password:
-            session["login"] = username
+            session["login"] = [username, user_object.user_id]
             flash("You logged in successfully")
             return render_template("explore_books.html")
         else:
@@ -77,11 +77,46 @@ def display_explore_books():
 
     return render_template("explore_books.html", all_book_objs=all_book_objs)
 
-@app.route("/description/<int:gutenberg_extraction_number>")
+
+@app.route("/description/<int:gutenberg_extraction_number>", methods=["GET"])
 def display_book_description(gutenberg_extraction_number):
     """Return a description of the book."""
     book_obj = Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number).one()
-    return render_template("book_description.html", display_book = book_obj)
+    return render_template("book_description.html", display_book = book_obj,
+        gutenberg_extraction_number=gutenberg_extraction_number)
+
+
+@app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])
+def submit_add_translation_form(gutenberg_extraction_number):
+    """ 
+        Takes information from add_book_form and adds it to the database.
+        Renders /translate  
+    """
+    # add logic if they enter information improperly
+    # collaborator_list = request.form["translation_collaborators_input"]
+    # print collaborator_list, "*****************"
+    #  don't know if I should keep here
+    # translation_language = request.form["translation_language_input"]
+
+    # gets book from project gutenberg
+    book_text = open_file(gutenberg_extraction_number)
+
+    # splits the book to a list of chapters
+    chapter_list = split_chapters(book_text)
+
+    # push chapter_list into a database
+    book_database(chapter_list)
+
+    book_to_translate= Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number)
+    number_of_chapters = db.session.query(Chapter).count()
+    paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 0)
+
+    return render_template("translation_page.html", number_of_chapters=number_of_chapters,
+        display_chapter=paragraphs_in_chapter_list, chapter_chosen=None, display_translations=None)
+
+def render_book():
+    pass
+
 
 @app.route("/translate", methods=["GET"])
 def display_translation_page():
@@ -147,41 +182,39 @@ def save_translation_text():
     return jsonify({"status": "OK", "translated_text": translated_text, "order": paragraph_id_input})
 
 
-def open_file(filename):
+def open_file(file_id):
     # move to book class
     """
         Opens a file from project gutenberg 
     """
 
-    return load_etext(filename)
+    return load_etext(file_id)
 
-def split_chapters(file):
+def split_chapters(full_text):
     # doesn't get rid of text produced by anonymous volunteers
-    head_deliminator = "*** START OF THIS PROJECT GUTENBERG EBOOK PRIDE AND PREJUDICE ***"
-    head_deliminator_idx = book_string.index(head_deliminator)
-    tail_deliminator_idx = book_string.index("*** END OF THIS PROJECT GUTENBERG")
+    # head_deliminator = "*** START OF THIS PROJECT GUTENBERG EBOOK PRIDE AND PREJUDICE ***"
+    # head_deliminator_idx = book_string.index(head_deliminator)
+    # tail_deliminator_idx = book_string.index("*** END OF THIS PROJECT GUTENBERG")
 
-    book_string = book_string[head_deliminator_idx + len(head_deliminator) : tail_deliminator_idx]
+    # book_string = book_string[head_deliminator_idx + len(head_deliminator) : tail_deliminator_idx]
 
-    book_chapters = book_string.split("Chapter")
+    book_chapters = full_text.split("CHAPTER")
 
     for i in range(len(book_chapters)):
         book_chapters[i] = book_chapters[i].split('\n\n')
 
     return book_chapters
 
-def book_database():
+def book_database(parsed_book):
     # move to book class
     """ Pushs newly created books into a database"""
 
-    book = open_file()
-
     # I start at 0, because I want to copyright information to show
-    for c, chapters in enumerate(book, 0):
+    for c, chapters in enumerate(parsed_book, 0):
         # change book_id in the future
         db.session.add(Chapter(chapter_number=c, book_id=1))
-        for paragrpahs in chapters:
-            db.session.add(Paragraph(untranslated_paragraph=paragrpahs, chapter_id=c))
+        for paragraphs in chapters:
+            db.session.add(Paragraph(untranslated_paragraph=paragraphs, chapter_id=c))
 
     db.session.commit()
 

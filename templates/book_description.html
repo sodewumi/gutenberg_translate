@@ -17,12 +17,18 @@
             </p>
         </div>
 
-        <button type="button" class="btn btn-primary" data-toggle="modal"
+        <p>
+            <a class="btn btn-primary" id="add_book_btn" href="/translate/{{ gutenberg_extraction_number }}">
+                Translate Book
+            </a>
+
+        </p>
+<!--         <button type="button" class="btn btn-primary" data-toggle="modal"
                 data-target="#add_book_form">
             Translate Book
-        </button>
+        </button> -->
 
-        <div class="modal fade" id="add_book_form" tabindex="-1" role="dialog" 
+        <!-- <div class="modal fade" id="add_book_form" tabindex="-1" role="dialog" 
                 aria-labelledby="myLargeModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -34,28 +40,20 @@
                 </div>
 
                 <div class="modal-body">
-                    <form class="form col-md-12 center-block" action="/">
+                    <form name="render_translations" action="/translation_page.html/{{ gutenberg_extraction_number }}">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                Translate Books
+                        </button>
+
+                    </form>
+                    <form class="form col-md-12 center-block" id="add_book_form" 
+                            action="/translate/{{ gutenberg_extraction_number }}" method="GET">
                         <div class="form-group">Add Collaborators' Usernames (seperate by commas):
-                            <input type="text" class="form-control input-lg" placeholder="Usernames">
+                            <input type="text" name="translation_collaborators_input" 
+                                class="form-control input-lg" placeholder="Usernames">
                         </div>
                         <div class="form-group">
-                            Choose your translation language:<br>
-                            <select>
-                                <option value="arabic">Arabic</option>
-                                <option value="chinese_sim">Chinese (Simplified)</option>
-                                <option value="chinese_trad">Chinese (Traditional)</option>
-                                <option value="french">French</option>
-                                <option value="hindi">Hindi</option>
-                                <option value="japanese">Japanese</option>
-                                <option value="portuguese">Portuguese</option>
-                                <option value="russian">Russian</option>
-                                <option value="spanish">Spanish</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                Translate Book
-                            </button>
+
                         </div>
                     </form>
                 </div>
@@ -70,7 +68,7 @@
 
             </div>
           </div>
-        </div>
+        </div> -->
     </div>
 </div>
 

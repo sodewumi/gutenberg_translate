@@ -5,7 +5,7 @@
 
 
     <div id="user_controls">
-        <form action="/translate" method="GET">
+        <form action="\translate" method="GET">
             <label>Chapter:
                 <select name="chapter_selection">
                     {% for chapter_number in range(number_of_chapters) %}
@@ -14,6 +14,22 @@
                 </select>
             </label>
             <input type="submit">
+        </form>
+        <form id="chosen_translation_language">
+            <label>
+                Choose your translation language:<br>
+                <select name="translation_language_input">
+                    <option value="arabic">Arabic</option>
+                    <option value="chinese_sim">Chinese (Simplified)</option>
+                    <option value="chinese_trad">Chinese (Traditional)</option>
+                    <option value="french">French</option>
+                    <option value="hindi">Hindi</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="portuguese">Portuguese</option>
+                    <option value="russian">Russian</option>
+                    <option value="spanish">Spanish</option>
+                </select>
+            </label>
         </form>
     </div>
 
@@ -35,7 +51,7 @@
 
     <div id="translated">
         <h2>Translated Text</h2>
-
+        {% if display_translations %}
         {% for existing_paragraph in display_translations %}
 
             {% if existing_paragraph %}
@@ -44,6 +60,7 @@
             </p>
             {% endif %}
         {% endfor %}
+        {% endif %}
 
         <form name="text_form" method="POST" action="/save_text" id="translate_textarea">
             <label>Translate :<br>

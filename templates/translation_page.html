@@ -36,13 +36,12 @@
     <div id="translated">
         <h2>Translated Text</h2>
 
+        {% for existing_paragraph in display_translations %}
 
-        {% for paragraph in display_translations %}
-
-            {% if paragraph %}
-            <div class="finished_translations {{ paragraph.paragraph_id }}">
-                <p>{{ paragraph.translated_paragraph }}</p>
-            </div>
+            {% if existing_paragraph %}
+            <p class="finished_translations" id="t{{ existing_paragraph.paragraph_id }}">
+                {{ existing_paragraph.translated_paragraph }}
+            </p>
             {% endif %}
         {% endfor %}
 

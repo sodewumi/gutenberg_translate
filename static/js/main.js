@@ -10,16 +10,56 @@ $(document).ready(function(){
     function placeParagraph(translatedText, textId) {
         // PLaces the translated text in the #translated div if a user adds or
         // updates a translation. Doesn't make a db call.
-        translated_list = $(".new_translated");
+        var translatedList = $(".finished_translations");
+        var translatedListLength = translatedList.length;
+        var paragraphTextId;
+        var insertionParagraphNumber = 0; //max
+        var textIdNum = +textId;
 
-        console.log(translated_list);
 
-        if (translated_list.length === 0) {
-            $("#translated").append("<p class='new_translated' id='n"+textId+"'>"+translatedText+"</p>");
-            console.log("fist");
+        // checks if a translation has been added previously
+        if (translatedListLength === 0) {
+            console.log("appending");
+            $("#translated").append("<p class='finished_translations' id='t"+textId+
+                "'>"+translatedText+"</p>");
         } else {
-            console.log("hey")
+            console.log('not empty');
+            // finds the paragraph whose textId is before the newly translated
+            // paragraph (including itself)
+            translatedList.each(function () {
+                paragraphTextId = $(this).attr("id");
+                paragraphTextId = +paragraphTextId.substring(1);
+
+                if ((insertionParagraphNumber <= paragraphTextId) &&
+                        (insertionParagraphNumber < textIdNum)) {
+                    insertionParagraphNumber = paragraphTextId;
+                }
+            });
+
+            // checks if you are updating or adding a new translation
+            if (insertionParagraphNumber === textIdNum) {
+                updated_paragraph = $("#t" +textId);
+                $("#t" +textId).empty();
+                $("#t" +textId).html(translatedText);
+            } else {
+                var beforeParagraph = $("#t" +
+                    insertionParagraphNumber.toString());
+                beforeParagraph.after("<p class='finished_translations' id='t"+textId+"'>"+translatedText+"</p>");
+
+            }
         }
+
+        
+
+
+
+
+        // if (translated_list.length === 0) {
+        //     $("#translated").append("<p class='finished_translations' id='t"+textId+"'>"+translatedText+"</p>");
+        //     console.log("first");
+        // } else {
+        //     console.log("hey");
+        // }
 
     }
 

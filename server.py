@@ -1,5 +1,7 @@
 from flask import flash, Flask, redirect, render_template, request, session, jsonify
 from model import Book, User, Genre, Chapter, Paragraph, Translation, connect_to_db, db
+from gutenberg.acquire import load_etext
+from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
 import jinja2
 
@@ -22,7 +24,6 @@ def login_user():
     print password, "**********"
     user_object = User.query.filter(User.username == username).first()
 
-    
     if user_object:
         if user_object.password == password:
             session["login"] = username
@@ -142,11 +143,11 @@ def save_translation_text():
     return jsonify({"status": "OK", "translated_text": translated_text, "order": paragraph_id_input})
 
 
-def open_file():
+def open_file(fileId):
     # move to book class
     """
-        Opens a file from my computer and converts it to a
-         list of chapters and sublist of paragrpahs"""
+        Opens a file from project gutenberg 
+    """
 
     book_string = open("./books/pride_and_prejudice.txt").read()
     # doesn't get rid of text produced by anonymous volunteers

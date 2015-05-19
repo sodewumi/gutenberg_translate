@@ -25,6 +25,7 @@ class Book(db.Model):
     cover = db.Column(db.String())
     genre_name = db.Column(db.String(10))
     gutenberg_extraction_num = db.Column(db.Integer)
+    # isbn = db.Column(db.String)
     chapters = db.relationship("Chapter", backref="book")
     genres = db.relationship("Genre", uselist=False, backref="book")
 

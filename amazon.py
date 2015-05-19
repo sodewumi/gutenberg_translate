@@ -11,9 +11,11 @@ config = {
 }
 
 api = API(cfg=config)
+res = api.item_lookup("0486284735", SearchIndex='Books', IdType='ISBN')
+# print "%s" % (res.ItemAttributes.Title)
 
-items = api.item_search('Books', Publisher="O'Reilly")
+for item in res.Items.Item:
+    print '%s (%s) in group' % (
+    item.ItemAttributes.Title, item.ASIN)
 
-for book in items:
-    print '%s: "%s"' % (book.ItemAttributes.Author,
-                        book.ItemAttributes.Title)
+

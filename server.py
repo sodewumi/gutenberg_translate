@@ -104,7 +104,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     # splits the book to a list of chapters
     chapter_list = split_chapters(book_text)
-
+    print chapter_list
     # push chapter_list into a database
     book_database(chapter_list)
 
@@ -188,31 +188,26 @@ def open_file(file_id):
     """
         Opens a file from project gutenberg 
     """
-
+    print "opened"
     return load_etext(file_id)
 
 def split_chapters(full_text):
-    # doesn't get rid of text produced by anonymous volunteers
-    # head_deliminator = "*** START OF THIS PROJECT GUTENBERG EBOOK PRIDE AND PREJUDICE ***"
-    # head_deliminator_idx = book_string.index(head_deliminator)
-    # tail_deliminator_idx = book_string.index("*** END OF THIS PROJECT GUTENBERG")
-
-    # book_string = book_string[head_deliminator_idx + len(head_deliminator) : tail_deliminator_idx]
-
-    book_chapters = full_text.split(u'CHAPTER')
-
-    # roman numerals
-    # chapters_deliminator = re.findall(ur'chapter [IVXCLM]+\.?', untrans_p, re.IGNORECASE)
 
 
-    for i in range(len(book_chapters)):
-        book_chapters[i] = book_chapters[i].split('\n\n')
+    book = strip_headers(full_text)
 
-    return book_chapters
+    chapter_list = re.split(ur'\n\bchapter\b \w+\.?', book, flags=re.IGNORECASE)
+    paragraphs_in_chapter_list = []
+
+    for i in range(len(chapter_list)):
+        paragraphs_in_chapter_list.append(chapter_list[i].split('\n\n'))
+
+    return paragraphs_in_chapter_list
 
 def book_database(parsed_book):
     # move to book class
     """ Pushs newly created books into a database"""
+    print "pushed"
 
     # I start at 0, because I want to copyright information to show
     for c, chapters in enumerate(parsed_book, 0):

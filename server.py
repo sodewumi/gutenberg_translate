@@ -110,7 +110,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     book_to_translate= Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number)
     number_of_chapters = db.session.query(Chapter).count()
-    paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 0)
+    paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 1)
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
         display_chapter=paragraphs_in_chapter_list, chapter_chosen=None, display_translations=None)
@@ -142,7 +142,7 @@ def display_translation_page():
 
             t_paragraphs_in_chapter_list.append(translated_paragraph)
     else:
-        paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 0)
+        paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 1)
         t_paragraphs_in_chapter_list = db.session.query(Translation).filter_by(translation_id=1, language="French")
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
@@ -207,10 +207,9 @@ def split_chapters(full_text):
 def book_database(parsed_book):
     # move to book class
     """ Pushs newly created books into a database"""
-    print "pushed"
 
     # I start at 0, because I want to copyright information to show
-    for c, chapters in enumerate(parsed_book, 0):
+    for c, chapters in enumerate(parsed_book, 1):
         # change book_id in the future
         db.session.add(Chapter(chapter_number=c, book_id=1))
         for paragraphs in chapters:

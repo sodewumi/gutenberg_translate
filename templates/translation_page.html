@@ -8,7 +8,7 @@
         <form action="\translate" method="GET">
             <label>Chapter:
                 <select name="chapter_selection">
-                    {% for chapter_number in range(number_of_chapters) %}
+                    {% for chapter_number in range(1, number_of_chapters+1) %}
                     <option value="{{ chapter_number|string() }}">Chapter {{ chapter_number }}</option>
                     {% endfor %}
                 </select>

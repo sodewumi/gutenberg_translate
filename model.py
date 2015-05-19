@@ -24,13 +24,28 @@ class Book(db.Model):
     rating = db.Column(db.Integer)
     cover = db.Column(db.String())
     genre_name = db.Column(db.String(10))
-    gutenberg_extraction_num = db.Column(db.Integer)
-    # isbn = db.Column(db.String)
+    gutenberg_extraction_num = db.Column(db.String(10))
+    isbn = db.Column(db.String(10))
     chapters = db.relationship("Chapter", backref="book")
     genres = db.relationship("Genre", uselist=False, backref="book")
 
     def __repr__(self):
         return "<Book: book_id=%d, name=%s>" % (self.book_id, self.name)
+
+
+class UserBook(db.Model):
+    __tablename__ = "userbooks"
+
+    userbook_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    language = db.Column(db.String(15))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
+    book = db.relationship("Book", backref=db.backref("userbooks"))
+    user = db.relationship("User", backref=db.backref("userbooks"))
+
+    def __repr__(self):
+        return "<UserBook: user_id=%d, book_id=%d, language=%s>" % (
+            self.user_id, self.book_id, self.language) 
 
 
 class Genre(db.Model):

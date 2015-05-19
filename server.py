@@ -54,12 +54,16 @@ def register_user():
         flash("A person has already taken that username")
         return redirect("/")
     else:
-        new_user = User(email=register_email, password=register_password,
-                        username=register_username)
-        db.session.add(new_user)
-        db.session.commit()
-        flash("Thanks for creating an account with Gutenberg Translate!")
-        return render_template("explore_books.html")
+        if register_email and register_password and register_username:
+            new_user = User(email=register_email, password=register_password,
+                            username=register_username)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Thanks for creating an account with Gutenberg Translate!")
+            return render_template("explore_books.html")
+        else:
+            flash("PLease fill out all fields")
+            return redirect("/")
 
     return render_template("registration_form.html")
     return render_template("/explore")
@@ -122,8 +126,8 @@ def render_book():
 @app.route("/translate", methods=["GET"])
 def display_translation_page():
     """
-        Displays the a chapter of the book. 
-        When page first loads, chapter starts at 0.
+        Displays a chapter of the book. 
+        When page first loads, chapter starts at 1.
     """
     number_of_chapters = db.session.query(Chapter).count()
 
@@ -184,7 +188,6 @@ def save_translation_text():
 
 
 def open_file(file_id):
-    # move to book class
     """
         Opens a file from project gutenberg 
     """
@@ -192,8 +195,10 @@ def open_file(file_id):
     return load_etext(file_id)
 
 def split_chapters(full_text):
-
-
+    """
+        Removes header and footer from project gutenberg book. 
+        Makes a list of chapters, where each chapter is a sublist of paragraphs
+    """
     book = strip_headers(full_text)
 
     chapter_list = re.split(ur'\n\bchapter\b \w+\.?', book, flags=re.IGNORECASE)

@@ -114,7 +114,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
     # if the book text hasn't been put inside the database yet, run the process_book
     # function to get split, and push book into the database.
     if not chapter_obj_list:
-        process_book(gutenberg_extraction_number)
+        process_book_chapters(gutenberg_extraction_number)
         chapter_obj_list = db.session.query(Chapter).filter(
             Chapter.book_id == book_id_tupple[0]).all()
 
@@ -127,12 +127,9 @@ def submit_add_translation_form(gutenberg_extraction_number):
         db.session.add(Userbook_obj)
         db.session.commit()
     
-    number_of_chapters = len(chapter_obj_list) + 1
+    number_of_chapters = len(chapter_obj_list)
     # a user can only traslate one book in one language at a time
-
-
     paragraph_obj_list = render_untranslated_chapter(book_id_tupple[0], 0)
-
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
         display_chapter=paragraph_obj_list, chapter_chosen=None,
@@ -157,7 +154,7 @@ def display_translation_page(book_id):
     # get the chapters associated with the book
     book_obj = Book.query.get(book_id)
     chapter_obj_list = book_obj.chapters
-    number_of_chapters = len(chapter_obj_list) + 1
+    number_of_chapters = len(chapter_obj_list)
 
     # checks if the selection form has been submitted
     # connect to chapter_number
@@ -245,32 +242,41 @@ def split_chapters(full_text):
 
     return paragraphs_in_chapter_list
 
-def book_database(parsed_book):
-    # move to book class
+def book_database(parsed_book, book_obj):
     """ Pushs newly created books into a database"""
 
-    # I start at 0, because I want to copyright information to show
+    book_id = book_obj.book_id
+
+    # start at 1 to account the sqlite3 starts counting at 1
     for c, chapters in enumerate(parsed_book, 1):
-        # change book_id in the future
-        db.session.add(Chapter(chapter_number=c, book_id=1))
+        db.session.add(Chapter(chapter_number=c, book_id=book_id))
+        db.session.commit()
+        new_chapter_obj = Chapter.query.filter_by(chapter_number=c, 
+            book_id=book_id).one()
+        new_chapter_id = new_chapter_obj.chapter_id
+
         for paragraphs in chapters:
-            db.session.add(Paragraph(untranslated_paragraph=paragraphs, chapter_id=c))
+            db.session.add(Paragraph(untranslated_paragraph=paragraphs,
+                chapter_id=new_chapter_id))
 
     db.session.commit()
 
-def process_book(guten_extract_num):
+def process_book_chapters(guten_extraction_number):
     """
         Loads a book from project gutenberg, splits the chapters, and pushes it to
         a database.
     """
+    book_obj = Book.query.filter_by(gutenberg_extraction_num=guten_extraction_number).one()
+
     # gets book from project gutenberg
-    book_text = open_file(guten_extract_num)
+    book_text = open_file(guten_extraction_number)
 
     # splits the book to a list of chapters
     chapter_list = split_chapters(book_text)
 
     # push chapter_list into a database
-    book_database(chapter_list)
+    book_database(chapter_list, book_obj)
+    print "hey ma***********"
 
 
 if __name__ == "__main__":

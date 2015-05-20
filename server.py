@@ -129,7 +129,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
     
     number_of_chapters = len(chapter_obj_list)
     # a user can only traslate one book in one language at a time
-    paragraph_obj_list = render_untranslated_chapter(book_id_tupple[0], 0)
+    paragraph_obj_list = render_untranslated_chapter(book_id_tupple[0], 1)
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
         display_chapter=paragraph_obj_list, chapter_chosen=None,
@@ -162,7 +162,7 @@ def display_translation_page(book_id):
         paragraph_obj_list = chapter_obj_list[chosen_chapter].paragraphs
         translated_paragraphs_list = find_trans_paragraphs(book_obj, paragraph_obj_list)
     else:
-        paragraph_obj_list = chapter_obj_list[0].paragraphs
+        paragraph_obj_list = chapter_obj_list[1].paragraphs
         translated_paragraphs_list = find_trans_paragraphs(book_obj, paragraph_obj_list)
 
     return render_template("translation_page.html",

@@ -104,13 +104,17 @@ def submit_add_translation_form(gutenberg_extraction_number):
     collaborator_list = request.args.get("translation_collaborators_input")
     translation_language = request.args.get("translation_language_input")
 
-    process_book(gutenberg_extraction_number)
-
-
     book_id_tupple = db.session.query(Book.book_id).filter(
-        Book.gutenberg_extraction_num == gutenberg_extraction_number).one()
+        Book.gutenberg_extraction_num == gutenberg_extraction_number).first()
+
     chapter_obj_list = db.session.query(Chapter).filter(
         Chapter.book_id == book_id_tupple[0]).all()
+    
+    if not chapter_obj_list:
+        process_book(gutenberg_extraction_number)
+        chapter_obj_list = db.session.query(Chapter).filter(
+            Chapter.book_id == book_id_tupple[0]).all()
+
     number_of_chapters = len(chapter_obj_list) + 1
 
 

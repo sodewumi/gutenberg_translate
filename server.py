@@ -1,8 +1,9 @@
 from flask import flash, Flask, redirect, render_template, request, session, jsonify
-from model import Book, User, Genre, Chapter, Paragraph, Translation, connect_to_db, db
+from model import Book, User, Genre, Chapter, Paragraph, UserBook, Translation, connect_to_db, db
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
+# import amazon
 import jinja2
 import re
 
@@ -28,8 +29,9 @@ def login_user():
     if user_object:
         if user_object.password == password:
             session["login"] = [username, user_object.user_id]
+            print session["login"], "***********"
             flash("You logged in successfully")
-            return render_template("explore_books.html")
+            return redirect("/explore")
         else:
             flash("Incorrect password. Try again.")
             return redirect("/")
@@ -60,9 +62,9 @@ def register_user():
             db.session.add(new_user)
             db.session.commit()
             flash("Thanks for creating an account with Gutenberg Translate!")
-            return render_template("explore_books.html")
+            return redirect("/explore")
         else:
-            flash("PLease fill out all fields")
+            flash("Please fill out all fields")
             return redirect("/")
 
     return render_template("registration_form.html")
@@ -87,6 +89,7 @@ def display_explore_books():
 def display_book_description(gutenberg_extraction_number):
     """Return a description of the book."""
     book_obj = Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number).one()
+    
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number)
 
@@ -98,29 +101,35 @@ def submit_add_translation_form(gutenberg_extraction_number):
         Renders /translate  
     """
     # add logic if they enter information improperly
-    # collaborator_list = request.form["translation_collaborators_input"]
-    # print collaborator_list, "*****************"
-    #  don't know if I should keep here
-    # translation_language = request.form["translation_language_input"]
+    collaborator_list = request.args.get("translation_collaborators_input")
+    translation_language = request.args.get("translation_language_input")
 
-    # gets book from project gutenberg
-    book_text = open_file(gutenberg_extraction_number)
+    process_book(gutenberg_extraction_number)
 
-    # splits the book to a list of chapters
-    chapter_list = split_chapters(book_text)
-    print chapter_list
-    # push chapter_list into a database
-    book_database(chapter_list)
 
-    book_to_translate= Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number)
-    number_of_chapters = db.session.query(Chapter).count()
-    paragraphs_in_chapter_list = db.session.query(Paragraph).filter_by(chapter_id = 1)
+    book_id_tupple = db.session.query(Book.book_id).filter(
+        Book.gutenberg_extraction_num == gutenberg_extraction_number).one()
+    chapter_obj_list = db.session.query(Chapter).filter(
+        Chapter.book_id == book_id_tupple[0]).all()
+    number_of_chapters = len(chapter_obj_list) + 1
+
+
+    Userbook_obj = UserBook(user_id=session[u'login'][1],
+        book_id=book_id_tupple[0], language=translation_language)
+
+    paragraph_obj_list = render_untranslated_chapter(book_id_tupple[0], 0)
+    db.session.add(Userbook_obj)
+    db.session.commit()
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
-        display_chapter=paragraphs_in_chapter_list, chapter_chosen=None, display_translations=None)
+        display_chapter=paragraph_obj_list, chapter_chosen=None, display_translations=None)
 
-def render_book():
-    pass
+def render_untranslated_chapter(book_id, chosen_chap):
+    book_obj = Book.query.get(book_id)
+    # book.chapters a list of chapter objects
+    paragraph_obj_list = book_obj.chapters[chosen_chap].paragraphs
+
+    return paragraph_obj_list
 
 
 @app.route("/translate", methods=["GET"])
@@ -221,6 +230,20 @@ def book_database(parsed_book):
             db.session.add(Paragraph(untranslated_paragraph=paragraphs, chapter_id=c))
 
     db.session.commit()
+
+def process_book(guten_extract_num):
+    """
+        Loads a book from project gutenberg, splits the chapters, and pushes it to
+        a database.
+    """
+    # gets book from project gutenberg
+    book_text = open_file(guten_extract_num)
+
+    # splits the book to a list of chapters
+    chapter_list = split_chapters(book_text)
+
+    # push chapter_list into a database
+    book_database(chapter_list)
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(15), nullable=False)
     username = db.Column(db.String(15), nullable=False, unique=True)
-    translations = db.relationship("Translation", backref="user")
+    # translations = db.relationship("Translation", backref="user")
 
 
 class Book(db.Model):
@@ -34,6 +34,7 @@ class Book(db.Model):
 
 
 class UserBook(db.Model):
+    
     __tablename__ = "userbooks"
 
     userbook_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -42,6 +43,7 @@ class UserBook(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
     book = db.relationship("Book", backref=db.backref("userbooks"))
     user = db.relationship("User", backref=db.backref("userbooks"))
+    translations = db.relationship("Translation", backref="userbooks")
 
     def __repr__(self):
         return "<UserBook: user_id=%d, book_id=%d, language=%s>" % (
@@ -90,7 +92,8 @@ class Translation(db.Model):
     language = db.Column(db.String(15))
     translated_paragraph = db.Column(db.String()) 
     paragraph_id = db.Column(db.Integer, db.ForeignKey("paragraphs.paragraph_id")) #fk
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    userbook_id = db.Column(db.Integer, db.ForeignKey("userbooks.userbook_id"))
+    # user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
     def __repr__(self):
         return """"<Translation: translation_id=%d, language=%s, paragraph_id=%d,

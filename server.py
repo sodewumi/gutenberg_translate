@@ -118,14 +118,21 @@ def submit_add_translation_form(gutenberg_extraction_number):
         chapter_obj_list = db.session.query(Chapter).filter(
             Chapter.book_id == book_id_tupple[0]).all()
 
+    user_book_id_check = UserBook.query.filter_by(user_id=session[u'login'][1],
+        book_id=book_id_tupple[0], language=translation_language).first()
+
+    if not user_book_id_check:
+        Userbook_obj = UserBook(user_id=session[u'login'][1],
+            book_id=book_id_tupple[0], language=translation_language)
+        db.session.add(Userbook_obj)
+        db.session.commit()
+    
     number_of_chapters = len(chapter_obj_list) + 1
     # a user can only traslate one book in one language at a time
-    Userbook_obj = UserBook(user_id=session[u'login'][1],
-        book_id=book_id_tupple[0], language=translation_language)
+
 
     paragraph_obj_list = render_untranslated_chapter(book_id_tupple[0], 0)
-    db.session.add(Userbook_obj)
-    db.session.commit()
+
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
         display_chapter=paragraph_obj_list, chapter_chosen=None,

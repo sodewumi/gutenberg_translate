@@ -191,36 +191,33 @@ def save_translation_text():
     """
         Saves the text translation in the database
     """
+
     translated_text = request.form['translated_text']
-    paragraph_id_input = request.form["p_id"]
+    paragraph_id_input = int(request.form["p_id"])
+    book_id = int(request.form["hidden_book_id_input"])
+
     book_obj = Book.query.get(book_id)
     user_id = session[u'login'][1]
     userbook_obj = db.session.query(UserBook).filter(
         UserBook.user_id==user_id,
-        UserBook.book_id==chosen_book_obj.book_id).one()
-    
-    # user id is 1
-    # language is French
-    #  still need to add this
-    find_translated_text_in_db = db.session.query(Translation).filter_by(
-        paragraph_id=paragraph_id_input, user_User=Book.userbook_id).first()
+        UserBook.book_id==book_obj.book_id).one()
 
+    find_translated_text_in_db = db.session.query(Translation).filter_by(
+        paragraph_id=paragraph_id_input, userbook_id=userbook_obj.userbook_id).first()
 
     if find_translated_text_in_db:
         updated_translation = db.session.query(Translation).filter_by(
-            paragraph_id = paragraph_id_input).update({"translated_paragraph":translated_text, "user_id":user_id})
+            paragraph_id = paragraph_id_input).update({
+            "translated_paragraph":translated_text,
+            "userbook_id":userbook_obj.userbook_id
+        })
         db.session.commit()
-        # UPDATE Translation SET translated_paragraph=translated_text, user_id=1 WHERE paragraph_id = paragraph_id_input
     else:
-        print "it's saved to the database"
-        new_translation_for_db = Translation(language="French",
+        new_translation_for_db = Translation(language=userbook_obj.language,
             translated_paragraph=translated_text, paragraph_id=paragraph_id_input,
-            user_id=1)
+            userbook_id=userbook_obj.userbook_id)
         db.session.add(new_translation_for_db)
         db.session.commit()
-        # INSERT INTO Translation(language, translated_paragraph, paragraph_id, user_id)
-        # VALUES ("French", translated_text, paragraph_id_input, 1)
-
 
     return jsonify({"status": "OK", "translated_text": translated_text, "order": paragraph_id_input})
 

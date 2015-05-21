@@ -232,7 +232,7 @@ def save_translation_text():
         db.session.add(new_translation_for_db)
         db.session.commit()
 
-    return jsonify({"status": "OK", "translated_text": translated_text, "order": paragraph_id_input})
+    return jsonify({"status": "OK", "translated_text": translated_text, "paragraph_id": paragraph_id_input})
 
 
 def open_file(file_id):

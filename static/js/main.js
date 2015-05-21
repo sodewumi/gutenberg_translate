@@ -7,47 +7,53 @@ $(document).ready(function(){
 
     }
 
-    function placeParagraph(translatedText, textId) {
+    function placeParagraph(translatedText, pId) {
         // PLaces the translated text in the #translated div if a user adds or
         // updates a translation. Doesn't make a db call.
-        var translatedList = $(".finished_translations");
-        var translatedListLength = translatedList.length;
-        var paragraphTextId;
-        var insertionParagraphNumber = 0; //max
-        var textIdNum = +textId;
+        var paragraphId = $("#"+pId);
+
+        paragraphId.empty();
+        paragraphId.after("<p>"+translatedText+"</p>");
 
 
-        // checks if a translation has been added previously
-        if (translatedListLength === 0) {
-            console.log("appending");
-            $("#translated").append("<p class='finished_translations' id='t"+textId+
-                "'>"+translatedText+"</p>");
-        } else {
-            console.log('not empty');
-            // finds the paragraph whose textId is before the newly translated
-            // paragraph (including itself)
-            translatedList.each(function () {
-                paragraphTextId = $(this).attr("id");
-                paragraphTextId = +paragraphTextId.substring(1);
+        // var translatedList = $(".finished_translations");
+        // var translatedListLength = translatedList.length;
+        // var paragraphTextId;
+        // var insertionParagraphNumber = 0; //max
+        // var textIdNum = +textId;
 
-                if ((insertionParagraphNumber <= paragraphTextId) &&
-                        (insertionParagraphNumber < textIdNum)) {
-                    insertionParagraphNumber = paragraphTextId;
-                }
-            });
 
-            // checks if you are updating or adding a new translation
-            if (insertionParagraphNumber === textIdNum) {
-                updated_paragraph = $("#t" +textId);
-                $("#t" +textId).empty();
-                $("#t" +textId).html(translatedText);
-            } else {
-                var beforeParagraph = $("#t" +
-                    insertionParagraphNumber.toString());
-                beforeParagraph.after("<p class='finished_translations' id='t"+textId+"'>"+translatedText+"</p>");
+        // // checks if a translation has been added previously
+        // if (translatedListLength === 0) {
+        //     console.log("appending");
+        //     $("#translated").append("<p class='finished_translations' id='t"+textId+
+        //         "'>"+translatedText+"</p>");
+        // } else {
+        //     console.log('not empty');
+        //     // finds the paragraph whose textId is before the newly translated
+        //     // paragraph (including itself)
+        //     translatedList.each(function () {
+        //         paragraphTextId = $(this).attr("id");
+        //         paragraphTextId = +paragraphTextId.substring(1);
 
-            }
-        }
+        //         if ((insertionParagraphNumber <= paragraphTextId) &&
+        //                 (insertionParagraphNumber < textIdNum)) {
+        //             insertionParagraphNumber = paragraphTextId;
+        //         }
+        //     });
+
+        //     // checks if you are updating or adding a new translation
+        //     if (insertionParagraphNumber === textIdNum) {
+        //         updated_paragraph = $("#t" +textId);
+        //         $("#t" +textId).empty();
+        //         $("#t" +textId).html(translatedText);
+        //     } else {
+        //         var beforeParagraph = $("#t" +
+        //             insertionParagraphNumber.toString());
+        //         beforeParagraph.after("<p class='finished_translations' id='t"+textId+"'>"+translatedText+"</p>");
+
+        //     }
+        // }
 
     }
 
@@ -78,7 +84,7 @@ $(document).ready(function(){
             type: "POST",
             success: function(response) {
                 $("#translate_textarea").hide();
-                placeParagraph(response.translated_text, response.order);
+                placeParagraph(response.translated_text, response.paragraph_id);
             },
             error: function(error) {
                 console.log(error);

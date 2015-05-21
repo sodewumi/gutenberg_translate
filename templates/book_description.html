@@ -16,13 +16,7 @@
                 <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
             </p>
         </div>
-<!-- 
-        <p>
-            <a class="btn btn-primary" id="add_book_btn" href="/translate/{{ gutenberg_extraction_number }}">
-                Translate Book
-            </a>
 
-        </p> -->
         {% if user_in_userbook %}
             <form action="/translate/{{ book_id }}/render" method="GET">
                 <input type="submit" value='Go to existing translations'>

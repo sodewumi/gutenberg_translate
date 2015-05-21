@@ -19,7 +19,7 @@ def display_homepage():
 
 @app.route("/login", methods=["POST"])
 def login_user():
-    """Logs in user"""
+    """Logs in user. Adds user_id and username to session"""
     username = request.form["username_input"]
     print username, "*********"
     password = request.form["password_input"]
@@ -70,6 +70,13 @@ def register_user():
     return render_template("registration_form.html")
     return render_template("/explore")
 
+@app.route("/logout")
+def logout_user():
+    """Remove login information from session"""
+    session.pop(u'login')
+    flash("You've successfully logged out. Goodbye.")
+    return redirect("/")
+    
 @app.route("/profile")
 def display_profile():
     """Return a user's profile page."""
@@ -108,7 +115,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
     # logic for collaborators to be added later after MVP
     collaborator_list = request.args.get("translation_collaborators_input")
     translation_language = request.args.get("translation_language_input")
-
+    # change to book obj
     book_id_tupple = db.session.query(Book.book_id).filter(
         Book.gutenberg_extraction_num == gutenberg_extraction_number).first()
 

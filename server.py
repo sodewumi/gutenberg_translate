@@ -193,17 +193,22 @@ def save_translation_text():
     """
     translated_text = request.form['translated_text']
     paragraph_id_input = request.form["p_id"]
+    book_obj = Book.query.get(book_id)
+    user_id = session[u'login'][1]
+    userbook_obj = db.session.query(UserBook).filter(
+        UserBook.user_id==user_id,
+        UserBook.book_id==chosen_book_obj.book_id).one()
     
     # user id is 1
     # language is French
     #  still need to add this
     find_translated_text_in_db = db.session.query(Translation).filter_by(
-        paragraph_id=paragraph_id_input, language="French").first()
-    print find_translated_text_in_db, "db trans text ******************"
+        paragraph_id=paragraph_id_input, user_User=Book.userbook_id).first()
+
 
     if find_translated_text_in_db:
         updated_translation = db.session.query(Translation).filter_by(
-            paragraph_id = paragraph_id_input).update({"translated_paragraph":translated_text, "user_id":1})
+            paragraph_id = paragraph_id_input).update({"translated_paragraph":translated_text, "user_id":user_id})
         db.session.commit()
         # UPDATE Translation SET translated_paragraph=translated_text, user_id=1 WHERE paragraph_id = paragraph_id_input
     else:

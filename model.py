@@ -26,7 +26,7 @@ class Book(db.Model):
     genre_name = db.Column(db.String(10))
     gutenberg_extraction_num = db.Column(db.String(10))
     isbn = db.Column(db.String(10))
-    chapters = db.relationship("Chapter", backref="book")
+    chapters = db.relationship("Chapter", backref="book") 
     genres = db.relationship("Genre", uselist=False, backref="book")
 
     def __repr__(self):
@@ -34,7 +34,7 @@ class Book(db.Model):
 
 
 class UserBook(db.Model):
-    
+
     __tablename__ = "userbooks"
 
     userbook_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -89,6 +89,7 @@ class Translation(db.Model):
     __tablename__ = "translations"
 
     translation_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # get rid of language
     language = db.Column(db.String(15))
     translated_paragraph = db.Column(db.String()) 
     paragraph_id = db.Column(db.Integer, db.ForeignKey("paragraphs.paragraph_id")) #fk

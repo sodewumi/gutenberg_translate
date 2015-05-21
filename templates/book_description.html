@@ -23,61 +23,71 @@
             </a>
 
         </p> -->
-        <button type="button" class="btn btn-primary" data-toggle="modal"
-                data-target="#add_book_form">
-            Translate Book
-        </button>
+        {% if user_in_userbook %}
+            <form action="/translate/{{ book_id }}/render" method="GET">
+                <input type="submit" value='Go to existing translations'>
+            </form>
+        {% else %}
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#add_book_form">
+                Translate Book
+            </button>
 
-        <div class="modal fade" id="add_book_form" tabindex="-1" role="dialog" 
-                aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title text-center">
-                        Translate {{ display_book.name }}
-                    </h1>
-                </div>
+            <div class="modal fade" id="add_book_form" tabindex="-1" role="dialog" 
+                    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title text-center">
+                            Translate {{ display_book.name }}
+                        </h1>
+                    </div>
 
-                <div class="modal-body">
-                    <form name="render_translations" action="/translate/{{ gutenberg_extraction_number }}">
-                        <div class="form-group">
-                            <p>
-                                Add Collaborators' Usernames (seperate by commas):
-                            </p>
-                            <input type="text" name="translation_collaborators_input" 
-                                class="form-control input-lg" placeholder="Usernames">
+                    <div class="modal-body">
+                        <form name="render_translations" action="/translate/{{ gutenberg_extraction_number }}">
+                            <div class="form-group">
+                                <p>
+                                    Add Collaborators' Usernames (seperate by commas):
+                                </p>
+                                <input type="text" name="translation_collaborators_input" 
+                                    class="form-control input-lg" placeholder="Usernames">
+                            </div>
+                            <div class="form-group">
+                                <p>
+                                    Choose your translation language:
+                                </p>
+                                <select name="translation_language_input">
+                                    <option value="arabic">Arabic</option>
+                                    <option value="chinese_s">
+                                        Chinese (simplified)
+                                    </option>
+                                    <option value="chinese_t">
+                                        Chinese (traditional)
+                                    </option>
+                                    <option value="french">French</option>
+                                    <option value="german">German</option>
+                                    <option value="portuguese">Portuguese</option>
+                                    <option value="russian">Russian</option>
+                                    <option value="spanish">Spanish</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                    Translate Books
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="col-md-12">
+                            <button class="btn" data-dismiss="modal" aria-hidden="true">
+                                Cancel
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <p>
-                                Choose your translation language:
-                            </p>
-                            <select name="translation_language_input">
-                                <option value="arabic">Arabic</option>
-                                <option value="chinese_s">Chinese (simplified)</option>
-                                <option value="chinese_t">Chinese (traditional)</option>
-                                <option value="french">French</option>
-                                <option value="german">German</option>
-                                <option value="portuguese">Portuguese</option>
-                                <option value="russian">Russian</option>
-                                <option value="spanish">Spanish</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                Translate Books
-                        </button>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <div class="col-md-12">
-                        <button class="btn" data-dismiss="modal" aria-hidden="true">
-                            Cancel
-                        </button>
                     </div>
                 </div>
+              </div>
             </div>
-          </div>
-        </div>
+        {% endif %}
     </div>
 </div>
 

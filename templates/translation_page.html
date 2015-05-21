@@ -4,6 +4,7 @@
     <h1>Translation Page</h1>
 
     <div id="user_controls">
+        <h3>{{ book_obj.name }} by {{ book_obj.author }} in {{ language }}</h3>
         <form action="/translate/{{ book_id }}/render" method="GET">
             <label>Chapter:
                 <select name="chapter_selection">
@@ -13,22 +14,6 @@
                 </select>
             </label>
             <input type="submit">
-        </form>
-        <form id="chosen_translation_language">
-            <label>
-                Choose your translation language:<br>
-                <select name="translation_language_input">
-                    <option value="arabic">Arabic</option>
-                    <option value="chinese_sim">Chinese (Simplified)</option>
-                    <option value="chinese_trad">Chinese (Traditional)</option>
-                    <option value="french">French</option>
-                    <option value="hindi">Hindi</option>
-                    <option value="japanese">Japanese</option>
-                    <option value="portuguese">Portuguese</option>
-                    <option value="russian">Russian</option>
-                    <option value="spanish">Spanish</option>
-                </select>
-            </label>
         </form>
     </div>
 
@@ -54,7 +39,13 @@
 
         {% for paragraph in display_chapter %}
         <div class="trans_para" id="{{ paragraph.paragraph_id }}">
-            <p>{{ paragraph.paragraph_id }}</p>
+            {% if display_translations %}
+                {% for existing_translation in display_translations %}
+                    {% if existing_translation.paragraph_id == paragraph.paragraph_id %}
+                        <p>{{ existing_translation.translated_paragraph }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
         {% endfor %}
 

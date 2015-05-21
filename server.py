@@ -89,9 +89,13 @@ def display_explore_books():
 def display_book_description(gutenberg_extraction_number):
     """Return a description of the book."""
     book_obj = Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number).one()
-    
+    book_id = book_obj.book_id
+    user_in_userbook = UserBook.query.filter_by(user_id=session[u'login'][1],
+        book_id = book_id).first()
+    print user_in_userbook, "******************"
     return render_template("book_description.html", display_book = book_obj,
-        gutenberg_extraction_number=gutenberg_extraction_number)
+        gutenberg_extraction_number=gutenberg_extraction_number,
+        user_in_userbook=user_in_userbook, book_id=book_id)
 
 
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])
@@ -133,7 +137,8 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
         display_chapter=paragraph_obj_list, chapter_chosen=None,
-        display_translations=None, book_id=book_id_tupple[0])
+        display_translations=None, book_id=book_id_tupple[0], 
+        language=Userbook_obj.language)
 
 def render_untranslated_chapter(book_id, chosen_chap):
     """Shows the translated page chosen"""
@@ -149,7 +154,13 @@ def display_translation_page(book_id):
         Displays a chapter of the book. 
         When page first loads, chapter starts at 1.
     """
-    chosen_chapter = int(request.args.get("chapter_selection"))
+    language = db.session.query(UserBook.language).filter(
+        UserBook.user_id==session[u'login'][1],
+        UserBook.book_id==book_id)
+    chosen_chapter = request.args.get("chapter_selection")
+
+    if chosen_chapter:
+        chosen_chapter = int(chosen_chapter)
 
     # get the chapters associated with the book
     book_obj = Book.query.get(book_id)
@@ -168,7 +179,8 @@ def display_translation_page(book_id):
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
-        display_translations=translated_paragraphs_list, book_id=book_id)
+        display_translations=translated_paragraphs_list, book_id=book_id,
+        language=language[0], book_obj=book_obj)
 
 def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list):
     user_id = session[u'login'][1]
@@ -182,7 +194,8 @@ def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list):
             userbook_id=userbook_obj.userbook_id, 
             language=userbook_obj.language, 
             paragraph_id=paragraph.paragraph_id).first()
-        translated_paragraphs_list.append(translated_paragraph)
+        if translated_paragraph:
+            translated_paragraphs_list.append(translated_paragraph)
 
     return translated_paragraphs_list
 

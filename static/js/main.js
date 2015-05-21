@@ -13,7 +13,7 @@ $(document).ready(function(){
         var paragraphId = $("#"+pId);
 
         paragraphId.empty();
-        paragraphId.after("<p>"+translatedText+"</p>");
+        paragraphId.html("<p>"+translatedText+"</p>");
 
 
         // var translatedList = $(".finished_translations");

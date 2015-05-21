@@ -11,10 +11,6 @@ import jinja2
 import re
 
 
-app = Flask(__name__)
-app.secret_key = 'will hook to .gitignore soon'
-app.jinja_env .undefined = jinja2.StrictUndefined
-
 
 
 config = {
@@ -26,23 +22,21 @@ config = {
 
 api = API(cfg=config)
 
-isbn_list = db.session.query(Book).all()
-
-
+isbn_list = db.session.query(Book.isbn).all()
+print isbn_list
 # res = api.item_lookup("0486284735", "0553213458", "091406116X", "0393967972",
-#     "0141441674", "0140449264", SearchIndex='Books', IdType='ISBN')
+    # "0141441674", "0140449264", SearchIndex='Books', IdType='ISBN')
 # print "%s" % (res.ItemAttributes.Title)
 
+def book_lookup(isbn):
+    res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN')
+    for item in res.Items.Item:
+        print '%s (%s) in group' % (
+        item.ItemAttributes.Title, item.ASIN)
+
 # print res
+print "hi"
 # for item in res.Items.Item:
 #     print '%s (%s) in group' % (
 #     item.ItemAttributes.Title, item.ASIN)
-
-if __name__ == "__main__":
-    connect_to_db(app)
-    app.debug = True
-    DebugToolbarExtension(app)
-    # book_database()
-    app.run(debug=True)
-
 

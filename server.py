@@ -1,11 +1,19 @@
+# standard library modules
+import re
+import os
+# third-party modules
+import jinja2
+from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify
-from model import Book, User, Genre, Chapter, Paragraph, UserBook, Translation, connect_to_db, db
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
-# import amazon
-import jinja2
-import re
+from lxml import etree
+# my modules
+from model import Book, Chapter, connect_to_db, db, Genre, Paragraph, Translation, User, UserBook
+
+
+
 
 
 app = Flask(__name__)
@@ -88,7 +96,7 @@ def display_explore_books():
     """Return a full list of books from project gutenberg."""
 
     all_book_objs = Book.query.all()
-
+    amazon_setup(all_book_objs)
     return render_template("explore_books.html", all_book_objs=all_book_objs)
 
 
@@ -301,8 +309,39 @@ def process_book_chapters(guten_extraction_number):
 
     # push chapter_list into a database
     book_database(chapter_list, book_obj)
-    print "hey ma***********"
 
+def amazon_setup(book_obj_list):
+    """
+        Connects to amazon web services API
+    """
+
+    config = {
+        'access_key': os.environ['ACCESS_KEY'],
+        'secret_key': os.environ['SECRET_KEY'],
+        'associate_tag': os.environ['ASSOCIATE_TAG'],
+        'locale': 'us'
+    }
+
+    api = API(cfg=config)
+
+    isbn_list = []
+    for book_obj in book_obj_list:
+        isbn_list.append(book_obj.isbn)
+    print isbn_list, "******************"
+
+    book_lookup(isbn_list, api)
+
+def find_book_isbns():
+    isbn_list = db.session.query(Book.isbn).all()
+    print isbn_list, "********************"
+
+def book_lookup(isbn_list, api):
+    for isbn in isbn_list:
+        res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN')
+        for item in res.Items.Item:
+            print '%s (%s) in group' % (
+            item.ItemAttributes.Title, item.ASIN)
+       
 
 if __name__ == "__main__":
     connect_to_db(app)

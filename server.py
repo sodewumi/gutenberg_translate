@@ -340,12 +340,12 @@ def book_lookup(isbn_list, api):
 
     for isbn in isbn_list:
         res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN',
-            ResponseGroup="Images")
+            ResponseGroup="Images, Reviews")
         for item in res.Items.Item:
             img_url = item.LargeImage.URL
-            # asin = item.ASIN
-            print img_url, "***********"
-            image_dict.setdefault(isbn, img_url)
+            reviews_url = item.CustomerReviews.IFrameURL
+            image_dict.setdefault(isbn, {"image": img_url})
+            image_dict[isbn].setdefault("reviews", reviews_url)
     print image_dict
             
        

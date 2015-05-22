@@ -96,7 +96,7 @@ def display_explore_books():
     """Return a full list of books from project gutenberg."""
 
     all_book_objs = Book.query.all()
-    aws_api_to_db(amazon_setup(all_book_objs))
+    # aws_api_to_db(amazon_setup(all_book_objs))
     return render_template("explore_books.html", all_book_objs=all_book_objs)
 
 

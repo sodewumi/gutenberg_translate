@@ -48,7 +48,7 @@ $(document).ready(function(){
         });
     });
 
-
+    function goodreads(){}
     // when page loads
     function main() {
         // hide the edit text button

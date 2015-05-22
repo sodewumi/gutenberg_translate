@@ -13,6 +13,26 @@ class User(db.Model):
     # translations = db.relationship("Translation", backref="user")
 
 
+class Group(db.Model):
+    """Name and Id of all groups"""
+
+    __tablename__ = "groups"
+
+    group_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    group_name = db.Column(db.String(30), nullable=False)
+
+
+class UserGroup(db.Model):
+    """Specifies which groups a user belongs to"""
+
+    __tablename__ = "usergroups"
+
+    usergroup_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.group_id"))
+    user = db.relationship("User", backref=db.backref("usergroups"))
+    group = db.relationship("Group", backref=db.backref("usergroups"))
+
 class Book(db.Model):
 
     __tablename__ = "books"
@@ -27,34 +47,34 @@ class Book(db.Model):
     gutenberg_extraction_num = db.Column(db.String(10))
     isbn = db.Column(db.String(10))
     chapters = db.relationship("Chapter", backref="book") 
-    genres = db.relationship("Genre", uselist=False, backref="book")
+    # genres = db.relationship("Genre", uselist=False, backref="book")
 
     def __repr__(self):
         return "<Book: book_id=%d, name=%s>" % (self.book_id, self.name)
 
 
-class UserBook(db.Model):
+class UserGroupBook(db.Model):
 
-    __tablename__ = "userbooks"
+    __tablename__ = "usergroupsbooks"
 
-    userbook_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    usergroupbook_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     language = db.Column(db.String(15))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    usergroup_id = db.Column(db.Integer, db.ForeignKey("usergroups.usergroup_id"))
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
-    book = db.relationship("Book", backref=db.backref("userbooks"))
-    user = db.relationship("User", backref=db.backref("userbooks"))
-    translations = db.relationship("Translation", backref="userbooks")
+    book = db.relationship("Book", backref=db.backref("usergroupsbooks"))
+    usergroup = db.relationship("UserGroup", backref=db.backref("usergroupsbooks"))
+    translations = db.relationship("Translation", backref="usergroupsbooks")
 
     def __repr__(self):
-        return "<UserBook: user_id=%d, book_id=%d, language=%s>" % (
+        return "<UserGroupBook: user_id=%d, book_id=%d, language=%s>" % (
             self.user_id, self.book_id, self.language) 
 
 
-class Genre(db.Model):
+# class Genre(db.Model):
 
-    __tablename__ = "genres"
+#     __tablename__ = "genres"
 
-    genre_name = db.Column(db.String(10), db.ForeignKey("books.book_id"), primary_key=True)
+#     genre_name = db.Column(db.String(10), db.ForeignKey("books.book_id"), primary_key=True)
 
 
 class Chapter(db.Model):
@@ -89,11 +109,9 @@ class Translation(db.Model):
     __tablename__ = "translations"
 
     translation_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # get rid of language
-    language = db.Column(db.String(15))
     translated_paragraph = db.Column(db.String()) 
     paragraph_id = db.Column(db.Integer, db.ForeignKey("paragraphs.paragraph_id")) #fk
-    userbook_id = db.Column(db.Integer, db.ForeignKey("userbooks.userbook_id"))
+    usergroupbook_id = db.Column(db.Integer, db.ForeignKey("usergroupsbooks.usergroupbook_id"))
     # user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
     def __repr__(self):

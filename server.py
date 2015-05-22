@@ -10,7 +10,7 @@ from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
 from lxml import etree
 # my modules
-from model import Book, Chapter, connect_to_db, db, Genre, Paragraph, Translation, User, UserBook
+from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, UserGroupBook, UserGroup
 
 
 
@@ -103,14 +103,21 @@ def display_explore_books():
 @app.route("/description/<int:gutenberg_extraction_number>", methods=["GET"])
 def display_book_description(gutenberg_extraction_number):
     """Return a description of the book."""
+
     book_obj = Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number).one()
     book_id = book_obj.book_id
-    user_in_userbook = UserBook.query.filter_by(user_id=session[u'login'][1],
+
+    # checks if user is in usergroupbook table. 
+    # if true: book_descritption.html button will take them to 
+    #   "/translate/<int:book_id>/render" route
+    # if false: book_description takes them to
+    #   "/translate/<int:gutenberg_extraction_number>" route
+    user_in_usergroupbook = UserGroupBook.query.filter_by(user_id=session[u'login'][1],
         book_id = book_id).first()
-    print user_in_userbook, "******************"
+    print user_in_usergroupbook, "******************"
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number,
-        user_in_userbook=user_in_userbook, book_id=book_id)
+        user_in_userbook=user_in_usergroupbook, book_id=book_id)
 
 
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])

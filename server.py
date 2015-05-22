@@ -96,7 +96,7 @@ def display_explore_books():
     """Return a full list of books from project gutenberg."""
 
     all_book_objs = Book.query.all()
-    amazon_setup(all_book_objs)
+    aws_api_to_db(amazon_setup(all_book_objs))
     return render_template("explore_books.html", all_book_objs=all_book_objs)
 
 
@@ -329,14 +329,11 @@ def amazon_setup(book_obj_list):
         isbn_list.append(book_obj.isbn)
     # print isbn_list, "******************"
 
-    book_lookup(isbn_list, api)
+    return book_lookup(isbn_list, api)
 
-def find_book_isbns():
-    isbn_list = db.session.query(Book.isbn).all()
-    # print isbn_list, "********************"
 
 def book_lookup(isbn_list, api):
-    image_dict = {}
+    api_dict = {}
 
     for isbn in isbn_list:
         res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN',
@@ -344,10 +341,23 @@ def book_lookup(isbn_list, api):
         for item in res.Items.Item:
             img_url = item.LargeImage.URL
             reviews_url = item.CustomerReviews.IFrameURL
-            image_dict.setdefault(isbn, {"image": img_url})
-            image_dict[isbn].setdefault("reviews", reviews_url)
-    print image_dict
-            
+            api_dict.setdefault(isbn, {"image": img_url})
+            api_dict[isbn].setdefault("reviews", reviews_url)
+    return api_dict
+
+def aws_api_to_db(api_dict):
+
+    for isbn in api_dict:
+        book_obj = Book.query.filter_by(isbn=isbn)
+        for info in isbn:
+            if info == "image":
+                print "*****image******", api_dict[isbn][info]
+                book_obj.cover = api_dict[isbn][info]
+            else:
+                print "******review******", api_dict[isbn][info]
+                book_obj.reviews = api_dict[isbn][info]
+    db.commit()
+
        
 
 if __name__ == "__main__":

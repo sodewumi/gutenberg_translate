@@ -327,20 +327,27 @@ def amazon_setup(book_obj_list):
     isbn_list = []
     for book_obj in book_obj_list:
         isbn_list.append(book_obj.isbn)
-    print isbn_list, "******************"
+    # print isbn_list, "******************"
 
     book_lookup(isbn_list, api)
 
 def find_book_isbns():
     isbn_list = db.session.query(Book.isbn).all()
-    print isbn_list, "********************"
+    # print isbn_list, "********************"
 
 def book_lookup(isbn_list, api):
+    image_dict = {}
+
     for isbn in isbn_list:
-        res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN')
+        res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN',
+            ResponseGroup="Images")
         for item in res.Items.Item:
-            print '%s (%s) in group' % (
-            item.ItemAttributes.Title, item.ASIN)
+            img_url = item.LargeImage.URL
+            # asin = item.ASIN
+            print img_url, "***********"
+            image_dict.setdefault(isbn, img_url)
+    print image_dict
+            
        
 
 if __name__ == "__main__":

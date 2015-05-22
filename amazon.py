@@ -31,8 +31,8 @@ print isbn_list
 def book_lookup(isbn):
     res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN')
     for item in res.Items.Item:
-        print '%s (%s) in group' % (
-        item.ItemAttributes.Title, item.ASIN)
+        print '%s (%s) image=%s' % (
+        item.ItemAttributes.Title, item.ASIN, item.SmallImage.URL)
 
 # print res
 print "hi"

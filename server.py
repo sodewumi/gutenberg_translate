@@ -10,7 +10,7 @@ from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
 from lxml import etree
 # my modules
-from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, UserGroupBook, UserGroup
+from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup
 
 
 
@@ -104,20 +104,34 @@ def display_explore_books():
 def display_book_description(gutenberg_extraction_number):
     """Return a description of the book."""
 
-    book_obj = Book.query.filter_by(gutenberg_extraction_num = gutenberg_extraction_number).one()
+    book_obj = Book.query.filter_by(gutenberg_extraction_num =
+        gutenberg_extraction_number).one()
     book_id = book_obj.book_id
 
-    # checks if user is in usergroupbook table. 
-    # if true: book_descritption.html button will take them to 
-    #   "/translate/<int:book_id>/render" route
-    # if false: book_description takes them to
-    #   "/translate/<int:gutenberg_extraction_number>" route
-    user_in_usergroupbook = UserGroupBook.query.filter_by(user_id=session[u'login'][1],
-        book_id = book_id).first()
-    print user_in_usergroupbook, "******************"
+    bookgroup_obj_list = BookGroup.query.filter(BookGroup.book_id == book_id).all()
+    usergroups_obj_list = UserGroup.query.filter(UserGroup.user_id ==
+        session[u'login'][1]).all()
+
+    usergroup_dict = {}
+    matching_usergroup_bookgroup_dict = {}
+    group_obj_list = []
+
+    for usergroup in usergroups_obj_list:
+        usergroup_dict.setdefault(usergroup.group_id, usergroup)
+    
+    for bookgroup_obj in bookgroup_obj_list:
+        bookgroup_group_id = bookgroup_obj.group.group_id
+        for usergroup_group_id, usergroup_obj in usergroup:
+            if bookgroup_group_id == usergroup_group_id:
+                group_obj = Group.filter.query(group_id = bookgroup_group_id)
+                matching_usergroup_bookgroup_dict.setdefault(bookgroup_group_id, 
+                    [bookgroup_obj, usergroup_obj, group_obj]
+                )
+
+
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number,
-        user_in_userbook=user_in_usergroupbook, book_id=book_id)
+        matching_usergroup_bookgroup_dict=matching_usergroup_bookgroup_dict)
 
 
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])

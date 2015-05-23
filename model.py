@@ -53,17 +53,17 @@ class Book(db.Model):
         return "<Book: book_id=%d, name=%s>" % (self.book_id, self.name)
 
 
-class UserGroupBook(db.Model):
+class BookGroup(db.Model):
 
-    __tablename__ = "usergroupsbooks"
+    __tablename__ = "bookgroups"
 
-    usergroupbook_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    bookgroup_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     language = db.Column(db.String(15))
-    usergroup_id = db.Column(db.Integer, db.ForeignKey("usergroups.usergroup_id"))
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.group_id"))
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
-    book = db.relationship("Book", backref=db.backref("usergroupsbooks"))
-    usergroup = db.relationship("UserGroup", backref=db.backref("usergroupsbooks"))
-    translations = db.relationship("Translation", backref="usergroupsbooks")
+    book = db.relationship("Book", backref=db.backref("bookgroups"))
+    group = db.relationship("Group", backref=db.backref("bookgroups"))
+    translations = db.relationship("Translation", backref="bookgroups")
 
     def __repr__(self):
         return "<UserGroupBook: user_id=%d, book_id=%d, language=%s>" % (
@@ -111,7 +111,7 @@ class Translation(db.Model):
     translation_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     translated_paragraph = db.Column(db.String()) 
     paragraph_id = db.Column(db.Integer, db.ForeignKey("paragraphs.paragraph_id")) #fk
-    usergroupbook_id = db.Column(db.Integer, db.ForeignKey("usergroupsbooks.usergroupbook_id"))
+    bookgroup_id = db.Column(db.Integer, db.ForeignKey("bookgroups.bookgroup_id"))
     # user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
     def __repr__(self):

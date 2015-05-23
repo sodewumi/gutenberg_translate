@@ -66,8 +66,8 @@ class BookGroup(db.Model):
     translations = db.relationship("Translation", backref="bookgroups")
 
     def __repr__(self):
-        return "<UserGroupBook: user_id=%d, book_id=%d, language=%s>" % (
-            self.user_id, self.book_id, self.language) 
+        return "<BookGroup: bookgroup_id=%d group_id=%d, book_id=%d, language=%s>" % (
+           self.bookgroup_id, self.group_id, self.book_id, self.language) 
 
 
 # class Genre(db.Model):

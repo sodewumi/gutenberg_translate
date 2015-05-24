@@ -109,23 +109,19 @@ def display_book_description(gutenberg_extraction_number):
     book_id = book_obj.book_id
 
     bookgroup_obj_list = BookGroup.query.filter(BookGroup.book_id == book_id).all()
-    print bookgroup_obj_list, "bookgroup list *********"
+
     usergroups_obj_list = UserGroup.query.filter(UserGroup.user_id ==
         session[u'login'][1]).all()
-    print session[u'login'][1]
-    print usergroups_obj_list, "user list **********"
-
 
     usergroup_dict = {}
     matching_usergroup_bookgroup_dict = {}
-    group_obj_list = []
+    all_usergroups_dict = {}
+    groupid_username = {}
 
     for usergroup in usergroups_obj_list:
         usergroup_dict.setdefault(usergroup.group_id, usergroup)
-    
-    print usergroup_dict, "**************"
+
     for bookgroup_obj in bookgroup_obj_list:
-        # also just group_id
         bookgroup_group_id = bookgroup_obj.group.group_id
         for usergroup_group_id, usergroup_obj in usergroup_dict.iteritems():
             if bookgroup_group_id == usergroup_group_id:
@@ -134,10 +130,26 @@ def display_book_description(gutenberg_extraction_number):
                     [bookgroup_obj, usergroup_obj, group_obj]
                 )
 
+    for group_id in matching_usergroup_bookgroup_dict:
+        user_id_set = set()
+        all_usergroup_list = db.session.query(UserGroup).filter(UserGroup.group_id == group_id).all()
+        for usergroup in all_usergroup_list:
+            user_id_set.add(usergroup.user_id)
+        all_usergroups_dict.setdefault(group_id, user_id_set)
+
+    for group_id, user_id in all_usergroups_dict.iteritems():
+        for a_userid in user_id:
+            username = db.session.query(User.username).filter(User.user_id == a_userid).one()
+            if group_id in groupid_username:
+                groupid_username[group_id][a_userid] = str(username[0])
+            else:
+                groupid_username.setdefault(group_id, {a_userid: str(username[0])})
+
 
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number,
-        matching_usergroup_bookgroup_dict=matching_usergroup_bookgroup_dict)
+        matching_usergroup_bookgroup_dict=matching_usergroup_bookgroup_dict,
+        display_username_dict=  groupid_username)
 
 
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])

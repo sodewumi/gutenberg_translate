@@ -13,9 +13,6 @@ from lxml import etree
 from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup
 
 
-
-
-
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
 app.jinja_env .undefined = jinja2.StrictUndefined
@@ -145,11 +142,17 @@ def display_book_description(gutenberg_extraction_number):
             else:
                 groupid_username.setdefault(group_id, {a_userid: str(username[0])})
 
+    # good_reads()
 
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number,
         matching_usergroup_bookgroup_dict=matching_usergroup_bookgroup_dict,
         display_username_dict=  groupid_username)
+
+def good_reads():
+    uri = "https://www.goodreads.com/book/isbn?format=json&isbn=0486284735"
+    uri = request.get_json(uri)
+    print uri.json()
 
 
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])

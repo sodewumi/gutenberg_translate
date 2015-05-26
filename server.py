@@ -100,7 +100,7 @@ def display_explore_books():
 @app.route("/description/<int:gutenberg_extraction_number>", methods=["GET"])
 def display_book_description(gutenberg_extraction_number):
     """Return a description of the book."""
-
+    
     book_obj = Book.query.filter_by(gutenberg_extraction_num =
         gutenberg_extraction_number).one()
     book_id = book_obj.book_id
@@ -126,6 +126,42 @@ def display_book_description(gutenberg_extraction_number):
                 matching_usergroup_bookgroup_dict.setdefault(bookgroup_group_id, 
                     [bookgroup_obj, usergroup_obj, group_obj]
                 )
+
+    collab_groups = db.aliased(UserGroup)
+    collaborators = db.aliased(User)
+
+    # collaborator_names = db.session.query(UserGroup).join(
+    #                         collab_groups).join(collab_groups.user_id).filter(
+    #                         orginal_groups.user_id == session[u'login'][1],
+    #                         collab_groups.group_id == orginal_groups.group_id,
+    #                         collab_groups.user_id != orginal_groups.user_id,
+    #                         collaborators.user_id == collab_groups.user_id
+    #                         )
+
+    # print collaborator_names
+    collabs = db.session.query(UserGroup).filter(
+                UserGroup.user_id == session[u'login'][1]).join(
+                collab_groups, UserGroup.parent)
+    
+
+    print collabs, "*******************"
+
+# SELECT * 
+# FROM user_groups as original_groups
+#     JOIN user_groups as collab_groups 
+#     JOIN users as collaborators 
+# WHERE original_groups.user_id = {{user_id}}
+#     AND collab_groups.group_id = original_groups.group_id AND collab_groups.user_id != original_groups.user_id
+#     AND collborators.user_id = collab_groups.user_id
+
+
+
+    # # group_id from users_groups_list
+    # collaborators_list = db.session.query(UserGroup).filter(group_id == group_id, user_id !=user_id = session[u'login'][1]).all()
+    # # get user name from collabort
+    # collaborators_names = db.session.query(User).filter(user_id = user_id)
+
+    # db.session.query()
 
     for group_id in matching_usergroup_bookgroup_dict:
         user_id_set = set()

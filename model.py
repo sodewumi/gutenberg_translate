@@ -32,6 +32,12 @@ class UserGroup(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey("groups.group_id"))
     user = db.relationship("User", backref=db.backref("usergroups"))
     group = db.relationship("Group", backref=db.backref("usergroups"))
+    children = db.relationship("UserGroup",
+                backref=db.backref('parent', remote_side=[usergroup_id])
+            )
+    def __repr__(self):
+        return "<UserGroup: usergroup_id=%d, user_id=%d, group_id=%d>" %(
+            self.usergroup_id, self.user_id, self.group_id)
 
 class Book(db.Model):
 

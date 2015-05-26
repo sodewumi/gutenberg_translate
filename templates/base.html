@@ -15,6 +15,11 @@
 </head>
 <body>
     <nav>
+        <ul>
+            <li><a href="/">Explore Books</a></li>
+            <li><a href="#">Your Translations</a></li>
+            <li><a href="#"> {{ session['login'][0] }}</a></li>
+        </ul>
         <p>
             {% with messages = get_flashed_messages() %}
                 {% for message in messages %}

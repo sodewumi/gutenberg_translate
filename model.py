@@ -21,6 +21,7 @@ class Group(db.Model):
 
     group_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     group_name = db.Column(db.String(30), nullable=False)
+    
 
 
 class UserGroup(db.Model):
@@ -69,11 +70,15 @@ class BookGroup(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
 
     translations = db.relationship("Translation", backref="bookgroups")
+    group = db.relationship("Group", backref=db.backref("bookgroups"))
 
     def __repr__(self):
         return "<BookGroup: bookgroup_id=%d group_id=%d, book_id=%d, language=%s>" % (
            self.bookgroup_id, self.group_id, self.book_id, self.language) 
 
+# book_group.group
+
+# group.book_groups
 
 # class Genre(db.Model):
 

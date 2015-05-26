@@ -17,20 +17,30 @@
             </p>
         </div>
 
-
         {% if current_user.groups %}
-            {% for group in current_user.groups %}
+
             <ul>
-                <li>{{ group.group_name }}</li>
-                {% for user in group.users %}
-                <li>{{ user.username }}</li>
-                {% endfor %} 
-
-
-            </ul>   
-
-
+            {% for group in current_user.groups %}
+            <li>{{ group.group_name }}</li>
+            {% for group_id in group_language_dict %}
+                {% if group.group_id == group_id %}
+                    <li>{{ group_language_dict[group_id] }}</li>
+                {% endif %}
             {% endfor %}
+                <ul>
+                    {% for user in group.users %}
+                    <li>{{ user.username }}</li>
+                    
+                    {% endfor %}
+                    <li>
+                        <form action="/translate/{{ display_book.book_id }}/render" method="GET">
+                        <input type="submit" value='Go to existing translations'>
+                        <input type="hidden" value"the_language">
+                        </form>
+                    </li>
+                </ul>
+            {% endfor %}
+            </ul>
 
         {% else %}
             <button type="button" class="btn btn-primary" data-toggle="modal"

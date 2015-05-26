@@ -99,17 +99,29 @@ def display_explore_books():
 
 @app.route("/description/<int:gutenberg_extraction_number>", methods=["GET"])
 def display_book_description(gutenberg_extraction_number):
-    """Return a description of the book."""
+    """
+        *Return a description of the book: reviews, image, and excerpt
+        *Displays other groups that the user is in that is translating that
+            particular book. This includes: group names, usernames, and
+            translation language
+    """
     
     book_obj = Book.query.filter_by(gutenberg_extraction_num =
         gutenberg_extraction_number).one()
-    book_id = book_obj.book_id
-
+    # add to user class
     current_user = User.query.filter(User.user_id == session[u'login'][1]).one()
-    # good_reads()
+    
+    # find group translation language
+    current_groups_list = current_user.groups
+
+    group_language_dict = {}
+    for group in current_groups_list:
+        language = group.bookgroups[0].language
+        group_language_dict.setdefault(group.group_id, language)
 
     return render_template("book_description.html", display_book = book_obj,
-        gutenberg_extraction_number=gutenberg_extraction_number, current_user=current_user)
+        gutenberg_extraction_number=gutenberg_extraction_number, 
+        current_user=current_user, group_language_dict=group_language_dict)
 
 def good_reads():
     uri = "https://www.goodreads.com/book/isbn?format=json&isbn=0486284735"

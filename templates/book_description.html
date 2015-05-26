@@ -18,26 +18,20 @@
         </div>
 
 
-        {% if matching_usergroup_bookgroup_dict %}
-            <h2>Your Current Translation Groups for {{ display_book.name  }}</h2>
-            {% for group_id, bg_ug_g_list in matching_usergroup_bookgroup_dict.iteritems() %}
-                <h3>Group Name: {{ bg_ug_g_list[2].group_name }}</h3>
-                <h3>Collaborators</h3>
-                
-                <ul>
-                {% for inner_group_id, inner_user_info in display_username_dict.iteritems() %}
-                    {% if inner_group_id == group_id %}
-                        {% for user_id, username in inner_user_info.iteritems() %}
-                        <li> {{ username }}</li>
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-                </ul>
-                
-                <form action="/translate/{{ display_book.book_id }}/render" method="GET">
-                    <input type="submit" value='Go to existing translations'>
-                </form>
+        {% if current_user.groups %}
+            {% for group in current_user.groups %}
+            <ul>
+                <li>{{ group.group_name }}</li>
+                {% for user in group.users %}
+                <li>{{ user.username }}</li>
+                {% endfor %} 
+
+
+            </ul>   
+
+
             {% endfor %}
+
         {% else %}
             <button type="button" class="btn btn-primary" data-toggle="modal"
                     data-target="#add_book_form">

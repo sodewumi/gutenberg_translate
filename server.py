@@ -105,85 +105,11 @@ def display_book_description(gutenberg_extraction_number):
         gutenberg_extraction_number).one()
     book_id = book_obj.book_id
 
-    bookgroup_obj_list = BookGroup.query.filter(BookGroup.book_id == book_id).all()
-
-    usergroups_obj_list = UserGroup.query.filter(UserGroup.user_id ==
-        session[u'login'][1]).all()
-
-    usergroup_dict = {}
-    matching_usergroup_bookgroup_dict = {}
-    all_usergroups_dict = {}
-    groupid_username = {}
-
-    for usergroup in usergroups_obj_list:
-        usergroup_dict.setdefault(usergroup.group_id, usergroup)
-
-    for bookgroup_obj in bookgroup_obj_list:
-        bookgroup_group_id = bookgroup_obj.group.group_id
-        for usergroup_group_id, usergroup_obj in usergroup_dict.iteritems():
-            if bookgroup_group_id == usergroup_group_id:
-                group_obj = Group.query.filter_by(group_id = bookgroup_group_id).one()
-                matching_usergroup_bookgroup_dict.setdefault(bookgroup_group_id, 
-                    [bookgroup_obj, usergroup_obj, group_obj]
-                )
-
-    collab_groups = db.aliased(UserGroup)
-    collaborators = db.aliased(User)
-
-    # collaborator_names = db.session.query(UserGroup).join(
-    #                         collab_groups).join(collab_groups.user_id).filter(
-    #                         orginal_groups.user_id == session[u'login'][1],
-    #                         collab_groups.group_id == orginal_groups.group_id,
-    #                         collab_groups.user_id != orginal_groups.user_id,
-    #                         collaborators.user_id == collab_groups.user_id
-    #                         )
-
-    # print collaborator_names
-    collabs = db.session.query(UserGroup).filter(
-                UserGroup.user_id == session[u'login'][1]).join(
-                collab_groups, UserGroup.parent)
-    
-
-    print collabs, "*******************"
-
-# SELECT * 
-# FROM user_groups as original_groups
-#     JOIN user_groups as collab_groups 
-#     JOIN users as collaborators 
-# WHERE original_groups.user_id = {{user_id}}
-#     AND collab_groups.group_id = original_groups.group_id AND collab_groups.user_id != original_groups.user_id
-#     AND collborators.user_id = collab_groups.user_id
-
-
-
-    # # group_id from users_groups_list
-    # collaborators_list = db.session.query(UserGroup).filter(group_id == group_id, user_id !=user_id = session[u'login'][1]).all()
-    # # get user name from collabort
-    # collaborators_names = db.session.query(User).filter(user_id = user_id)
-
-    # db.session.query()
-
-    for group_id in matching_usergroup_bookgroup_dict:
-        user_id_set = set()
-        all_usergroup_list = db.session.query(UserGroup).filter(UserGroup.group_id == group_id).all()
-        for usergroup in all_usergroup_list:
-            user_id_set.add(usergroup.user_id)
-        all_usergroups_dict.setdefault(group_id, user_id_set)
-
-    for group_id, user_id in all_usergroups_dict.iteritems():
-        for a_userid in user_id:
-            username = db.session.query(User.username).filter(User.user_id == a_userid).one()
-            if group_id in groupid_username:
-                groupid_username[group_id][a_userid] = str(username[0])
-            else:
-                groupid_username.setdefault(group_id, {a_userid: str(username[0])})
-
+    current_user = User.query.filter(User.user_id == session[u'login'][1]).one()
     # good_reads()
 
     return render_template("book_description.html", display_book = book_obj,
-        gutenberg_extraction_number=gutenberg_extraction_number,
-        matching_usergroup_bookgroup_dict=matching_usergroup_bookgroup_dict,
-        display_username_dict=  groupid_username)
+        gutenberg_extraction_number=gutenberg_extraction_number, current_user=current_user)
 
 def good_reads():
     uri = "https://www.goodreads.com/book/isbn?format=json&isbn=0486284735"

@@ -11,7 +11,8 @@ class User(db.Model):
     password = db.Column(db.String(15), nullable=False)
     username = db.Column(db.String(15), nullable=False, unique=True)
     # translations = db.relationship("Translation", backref="user")
-
+    groups = db.relationship("Group", backref=db.backref("users"),
+            secondary="usergroups")
 
 class Group(db.Model):
     """Name and Id of all groups"""
@@ -30,11 +31,8 @@ class UserGroup(db.Model):
     usergroup_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     group_id = db.Column(db.Integer, db.ForeignKey("groups.group_id"))
-    user = db.relationship("User", backref=db.backref("usergroups"))
-    group = db.relationship("Group", backref=db.backref("usergroups"))
-    children = db.relationship("UserGroup",
-                backref=db.backref('parent', remote_side=[usergroup_id])
-            )
+
+    
     def __repr__(self):
         return "<UserGroup: usergroup_id=%d, user_id=%d, group_id=%d>" %(
             self.usergroup_id, self.user_id, self.group_id)
@@ -52,7 +50,9 @@ class Book(db.Model):
     genre_name = db.Column(db.String(10))
     gutenberg_extraction_num = db.Column(db.String(10))
     isbn = db.Column(db.String(10))
-    chapters = db.relationship("Chapter", backref="book") 
+    chapters = db.relationship("Chapter", backref="book")
+    groups = db.relationship("Group", backref=db.backref("books"),
+        secondary="bookgroups") 
     # genres = db.relationship("Genre", uselist=False, backref="book")
 
     def __repr__(self):
@@ -67,8 +67,7 @@ class BookGroup(db.Model):
     language = db.Column(db.String(15))
     group_id = db.Column(db.Integer, db.ForeignKey("groups.group_id"))
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"))
-    book = db.relationship("Book", backref=db.backref("bookgroups"))
-    group = db.relationship("Group", backref=db.backref("bookgroups"))
+
     translations = db.relationship("Translation", backref="bookgroups")
 
     def __repr__(self):

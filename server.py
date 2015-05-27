@@ -134,7 +134,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
     """ 
         Takes information from add_book_form and adds it to the database whenever
         a book has not yet to the book database.
-        Renders /translate  
+        Book taken from book_explore.html
     """
     # logic for collaborators to be added later after MVP
     collaborator_list = request.args.get("translation_collaborators_input")
@@ -188,10 +188,15 @@ def display_translation_page(book_id):
         Displays a chapter of the book. 
         When page first loads, chapter starts at 1.
     """
-
+    # If language was taken from form translate book button
     language = request.args.get("hidden_language_input")
     group_id = request.args.get("hidden_groupid_input")
-    # from form in translation_page.html
+
+    # if not language and group_id:
+    #     language = 
+    #     group_id =
+
+
     chosen_chapter = request.args.get("chapter_selection")
 
     if chosen_chapter:
@@ -220,6 +225,7 @@ def display_translation_page(book_id):
 
 def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list, 
         language, group_id, book_id):
+    """Finds the translated paragraphs per group"""
 
     bookgroup_obj = BookGroup.query.filter_by(
         book_id=int(book_id),

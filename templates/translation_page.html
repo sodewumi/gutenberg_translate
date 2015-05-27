@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Translation Page</h1>
 
-    <div id="user_controls" data-language="{{ language }}" data-groupid="{{ group_id }}">
+    <div id="user_controls" data-bookId ="{{ book_id }}" data-language="{{ language }}" data-groupid="{{ group_id }}">
         <h3>{{ book_obj.name }} by {{ book_obj.author }} in {{ language }}</h3>
         <form action="/translate/{{ book_id }}/render" method="GET">
             <label>Chapter:
@@ -13,7 +13,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <input type="submit">
+            <input id="chosen_chap_submit" type="submit">
         </form>
     </div>
 

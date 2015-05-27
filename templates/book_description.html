@@ -33,7 +33,7 @@
                         {% endfor %}
 
                         <li>
-                            <form action="/translate/{{ display_book.book_id }}/render" method="GET">
+                            <form class="edit_book_form" action="/translate/{{ display_book.book_id }}/render" method="GET" data-bookId ="{{ book_id }}"data-language="{{ language }}" data-groupid="{{ group_id }}">
                             <input type="hidden" name="hidden_language_input" 
                                 value="{{ group_language_dict[group.group_id] }}">
                             <input type="hidden" name="hidden_groupid_input"

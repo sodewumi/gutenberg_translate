@@ -1,6 +1,8 @@
 $(document).ready(function(){
     // add logic about what happens if edit button is already clicked
-    var untrans_p_class;
+    var langId = $("#user_controls").data('language');
+    var groupId = $("#user_controls").data('groupid');
+
     var paragraphId;
 
     function placeParagraph(translatedText, pId) {
@@ -23,21 +25,35 @@ $(document).ready(function(){
     });
 
     // when clicked, gets the paragraph id from the clicked paragraph and shows text area
-    $(".edit_text").on("click", function () {
-        $("#translate_textarea").show();
-        // var groupid = $("#user_controls").data('groupid');
-        untrans_p_class = $(this).parent().attr("class");
-        untrans_p_class = untrans_p_class.split(" ");
-        paragraphId = untrans_p_class[1];
-    });
+    // $(".edit_text").on("click", function () {
+    //     $("#translate_textarea").show();
+    //     // var groupid = $("#user_controls").data('groupid');
+    //     untrans_p_class = $(this).parent().attr("class");
+    //     untrans_p_class = untrans_p_class.split(" ");
+    //     paragraphId = untrans_p_class[1];
+    // });
 
 
-//     $(".edit_text").click(function () {
-//         var paraid = $(this).data('paragraphid');
-//         var langid = $("#user_controls").data('language');
-//         var groupid = $("#user_controls").data('groupid');
-// });
+    // $(".edit_text").click(function () {
+    //     $("#translate_textarea").show();
+    //     paragraph_id = $(this).data('paragraphid');
 
+    // });
+
+    // $("#chosen_chap_submit").on("click", function (evt) {
+    //     $.ajax({
+    //         url: "/translate",
+    //         data: $('form').serialize() + "&p_id=" + paragraphId + "&g_id=" + groupId + "&l_id=" + langId,
+    //         type: "POST",
+    //         success: function(response) {
+    //             $("#translate_textarea").hide();
+    //             placeParagraph(response.translated_text, response.paragraph_id);
+    //         },
+    //         error: function(error) {
+    //             console.log(error);
+    //         }
+    //     });
+    // });
 
     $("#submit_bttn").on("click", function (evt) {
         evt.preventDefault();
@@ -45,7 +61,7 @@ $(document).ready(function(){
 
         $.ajax({
             url: "/save_text",
-            data: $('form').serialize() + "&p_id=" + paragraphId,
+            data: $('form').serialize() + "&p_id=" + paragraphId + "&g_id=" + groupId + "&l_id=" + langId,
             type: "POST",
             success: function(response) {
                 $("#translate_textarea").hide();

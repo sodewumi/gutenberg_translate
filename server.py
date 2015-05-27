@@ -188,9 +188,7 @@ def display_translation_page(book_id):
         Displays a chapter of the book. 
         When page first loads, chapter starts at 1.
     """
-    # language = db.session.query(UserBook.language).filter(
-    #     UserBook.user_id==session[u'login'][1],
-    #     UserBook.book_id==book_id)
+
     language = request.args.get("hidden_language_input")
     group_id = request.args.get("hidden_groupid_input")
     # from form in translation_page.html
@@ -218,36 +216,16 @@ def display_translation_page(book_id):
         number_of_chapters = number_of_chapters, 
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=book_id,
-        language=language, book_obj=book_obj)
+        language=language, book_obj=book_obj, group_id=group_id)
 
 def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list, 
         language, group_id, book_id):
-    # translated_paragraphs_list = []
-    # print int(group_id), "*************group id"
-    # group_obj = Group.query.get(int(group_id))
-
-    # group_bookgroup_objs = group_obj.bookgroups
-
-    # for bookgroup in group_bookgroup_objs:
-    #     temp = bookgroup.query.filter(bookgroup.book_id == int(book_id),
-    #         bookgroup.group_id == int(group_id), bookgroup.language == str(language)).first()
-    #     if temp:
-    #         bookgroup_obj = temp
 
     bookgroup_obj = BookGroup.query.filter_by(
         book_id=int(book_id),
         group_id=int(group_id),
         language=str(language)
         ).one()
-
-    # for paragraph in paragraph_obj_list:
-    #     # print bookgroup_obj.bookgroup_id, "********bookgroup_id"
-    #     # print paragraph.paragraph_id, "****************paragraph_id"
-    #     translated_paragraph = Translation.query.filter_by(
-    #         bookgroup_id=bookgroup_obj.bookgroup_id,
-    #         paragraph_id=paragraph.paragraph_id).first()
-    #     if translated_paragraph:
-    #         translated_paragraphs_list.append(translated_paragraph)
 
     paragraph_ids = [p.paragraph_id for p in paragraph_obj_list]
 
@@ -256,7 +234,6 @@ def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list,
         Translation.paragraph_id.in_(paragraph_ids)
         ).all()
 
-    # print 
     return translated_paragraphs
 
 @app.route("/save_text", methods=["POST"])

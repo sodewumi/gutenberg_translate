@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Translation Page</h1>
 
-    <div id="user_controls">
+    <div id="user_controls" data-language="{{ language }}" data-groupid="{{ group_id }}">
         <h3>{{ book_obj.name }} by {{ book_obj.author }} in {{ language }}</h3>
         <form action="/translate/{{ book_id }}/render" method="GET">
             <label>Chapter:
@@ -27,10 +27,12 @@
         {% for paragraph in display_chapter %}
         <div class="a_chapter_and_bttn {{ paragraph.paragraph_id }}">
             <p>{{ paragraph.untranslated_paragraph }}</p>
-            <button class="edit_text">Edit</button> 
+            <button class="edit_text" data-paragraphid="{{ paragraph.paragraph_id }}"> Edit
+            </button> 
         </div>
         {% endfor %}
     </div>
+
 
 
     <div id="translated">

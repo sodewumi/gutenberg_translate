@@ -25,10 +25,19 @@ $(document).ready(function(){
     // when clicked, gets the paragraph id from the clicked paragraph and shows text area
     $(".edit_text").on("click", function () {
         $("#translate_textarea").show();
+        // var groupid = $("#user_controls").data('groupid');
         untrans_p_class = $(this).parent().attr("class");
         untrans_p_class = untrans_p_class.split(" ");
         paragraphId = untrans_p_class[1];
     });
+
+
+//     $(".edit_text").click(function () {
+//         var paraid = $(this).data('paragraphid');
+//         var langid = $("#user_controls").data('language');
+//         var groupid = $("#user_controls").data('groupid');
+// });
+
 
     $("#submit_bttn").on("click", function (evt) {
         evt.preventDefault();

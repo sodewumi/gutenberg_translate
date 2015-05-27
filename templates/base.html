@@ -16,9 +16,10 @@
 <body>
     <nav>
         <ul>
-            <li><a href="/">Explore Books</a></li>
-            <li><a href="#">Your Translations</a></li>
-            <li><a href="#"> {{ session['login'][0] }}</a></li>
+            <li><a href="/">Gutenberg Translate</a></li>
+            <li><a href="/explore">Explore Books</a></li>
+            <li><a href="/profile">Your Translations</a></li>
+            <li><a href="#"> username </a></li>
         </ul>
         <p>
             {% with messages = get_flashed_messages() %}

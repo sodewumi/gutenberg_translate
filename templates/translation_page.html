@@ -42,7 +42,7 @@
 
 
 
-    <div id="translated" data-bookId ="{{ book_id }}" data-language="{{ language }}" data-groupid="{{ group_id }}">
+    <div id="translated" data-bookid ="{{ book_obj.book_id }}" data-bookgroupid ="{{ bookgroup_id }}"data-language="{{ language }}" data-groupid="{{ group_id }}">
         <h2>Translated Text</h2>
 
         {% for paragraph in display_chapter %}

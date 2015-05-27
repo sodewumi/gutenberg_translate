@@ -207,17 +207,17 @@ def display_translation_page(book_id):
         Displays a chapter of the book. 
         When page first loads, chapter starts at 1.
     """
-    # If language was taken from form translate book button
+    # args comes from the form in either book_description.html or
+        # translation_page.html
     groups_language = request.args.get("hidden_lang_input")
     groups_group_id = request.args.get("hidden_groupid_input")
-    groups_book_id = book_id
-
-
     groups_group_id = int(groups_group_id)
-    groups_book_id = int(groups_book_id)
+
+    bookgroup_id_tuple = db.session.query(BookGroup.bookgroup_id).filter_by(language=groups_language, 
+                    group_id=groups_group_id, book_id=book_id).one()
+    bookgroup_id = bookgroup_id_tuple[0]
 
     chosen_chapter = request.args.get("chapter_selection")
-
     if chosen_chapter:
         chosen_chapter = int(chosen_chapter)
 
@@ -240,7 +240,8 @@ def display_translation_page(book_id):
         number_of_chapters = number_of_chapters, 
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=book_id,
-        language=groups_language, book_obj=book_obj, group_id=groups_group_id)
+        language=groups_language, book_obj=book_obj, group_id=groups_group_id,
+        bookgroup_id=bookgroup_id)
 
 def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list, 
         language, group_id, book_id):
@@ -269,28 +270,24 @@ def save_translation_text():
 
     translated_text = request.form['translated_text']
     paragraph_id_input = int(request.form["p_id"])
-    book_id = int(request.form["hidden_book_id_input"])
-
-    book_obj = Book.query.get(book_id)
-    user_id = session[u'login'][1]
-    userbook_obj = db.session.query(UserBook).filter(
-        UserBook.user_id==user_id,
-        UserBook.book_id==book_obj.book_id).one()
+    book_id_input = int(request.form["b_id"])
+    group_id_input = int(request.form["g_id"])
+    language_id_input = request.form["l_id"]
+    bookgroup_id_input = int(request.form["bg_id"])
 
     find_translated_text_in_db = db.session.query(Translation).filter_by(
-        paragraph_id=paragraph_id_input, userbook_id=userbook_obj.userbook_id).first()
+        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
 
     if find_translated_text_in_db:
         updated_translation = db.session.query(Translation).filter_by(
-            paragraph_id = paragraph_id_input).update({
-            "translated_paragraph":translated_text,
-            "userbook_id":userbook_obj.userbook_id
-        })
+                                paragraph_id = paragraph_id_input,
+                                bookgroup_id=bookgroup_id_input).update({
+                                "translated_paragraph":translated_text})
         db.session.commit()
     else:
-        new_translation_for_db = Translation(language=userbook_obj.language,
-            translated_paragraph=translated_text, paragraph_id=paragraph_id_input,
-            userbook_id=userbook_obj.userbook_id)
+        new_translation_for_db = Translation(translated_paragraph=translated_text,
+            paragraph_id=paragraph_id_input,
+            bookgroup_id=bookgroup_id_input)
         db.session.add(new_translation_for_db)
         db.session.commit()
 

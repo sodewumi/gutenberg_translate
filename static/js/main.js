@@ -1,7 +1,9 @@
 $(document).ready(function(){
     // add logic about what happens if edit button is already clicked
-    var langId = $("#user_controls").data('language');
-    var groupId = $("#user_controls").data('groupid');
+    var langId = $("#translated").data('language');
+    var groupId = $("#translated").data('groupid');
+    var bookId = $("#translated").data('bookid');
+    var bookgroupId = $("#translated").data('bookgroupid');
 
     var paragraphId;
 
@@ -44,13 +46,13 @@ $(document).ready(function(){
         }
     });
 
-    function userExists (exists) {
-        if (exists !== null) {
-            $("#collab_names").append("<li>"+exists+"</li>");
-        } else {
-            $("#collab_list").after("<p>This username doesn't exist</p>");
-        }
-    }
+    // function userExists (exists) {
+    //     if (exists !== null) {
+    //         $("#collab_names").append("<li>"+exists+"</li>");
+    //     } else {
+    //         $("#collab_list").after("<p>This username doesn't exist</p>");
+    //     }
+    // }
 
 
     // when clicked, gets the paragraph id from the clicked paragraph and shows text area
@@ -63,11 +65,12 @@ $(document).ready(function(){
     // });
 
 
-    // $(".edit_text").click(function () {
-    //     $("#translate_textarea").show();
-    //     paragraph_id = $(this).data('paragraphid');
+    $(".edit_text").click(function () {
+        $("#translate_textarea").show();
+        paragraphId = $(this).data('paragraphid');
+        console.log(paragraphId)
 
-    // });
+    });
 
     // $("#chosen_chap_submit").on("click", function (evt) {
     //     $.ajax({
@@ -90,7 +93,7 @@ $(document).ready(function(){
 
         $.ajax({
             url: "/save_text",
-            data: $('form').serialize() + "&p_id=" + paragraphId + "&g_id=" + groupId + "&l_id=" + langId,
+            data: $('form').serialize() + "&p_id=" + paragraphId + "&g_id=" + groupId + "&l_id=" + langId + "&b_id=" + bookId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
                 $("#translate_textarea").hide();

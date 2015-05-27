@@ -123,6 +123,22 @@ def display_book_description(gutenberg_extraction_number):
         gutenberg_extraction_number=gutenberg_extraction_number, 
         current_user=current_user, group_language_dict=group_language_dict)
 
+@app.route("/check_user", methods=["POST"])
+def check_user_exists(username_input):
+    """
+        Checks if user is in database. Returns True if user exists & False otherwise
+    """
+    username_input = username_input.lower().strip()
+    user_exists = User.query.filter_by(username = username_input).first()
+
+    if user_exists:
+        return jsonify({"collab_username": username_input})
+    else:
+        return jsonify({"collab_username": null})
+
+
+
+
 def good_reads():
     uri = "https://www.goodreads.com/book/isbn?format=json&isbn=0486284735"
     uri = request.get_json(uri)
@@ -140,25 +156,25 @@ def submit_add_translation_form(gutenberg_extraction_number):
     collaborator_list = request.args.get("translation_collaborators_input")
     translation_language = request.args.get("translation_language_input")
     # change to book obj
-    book_id_tupple = db.session.query(Book.book_id).filter(
+    book_id_tuple = db.session.query(Book.book_id).filter(
         Book.gutenberg_extraction_num == gutenberg_extraction_number).first()
 
     chapter_obj_list = db.session.query(Chapter).filter(
-        Chapter.book_id == book_id_tupple[0]).all()
+        Chapter.book_id == book_id_tuple[0]).all()
     
     # if the book text hasn't been put inside the database yet, run the process_book
     # function to get split, and push book into the database.
     if not chapter_obj_list:
         process_book_chapters(gutenberg_extraction_number)
         chapter_obj_list = db.session.query(Chapter).filter(
-            Chapter.book_id == book_id_tupple[0]).all()
+            Chapter.book_id == book_id_tuple[0]).all()
 
     user_book_id_check = UserBook.query.filter_by(user_id=session[u'login'][1],
-        book_id=book_id_tupple[0], language=translation_language).first()
+        book_id=book_id_tuple[0], language=translation_language).first()
 
     if not user_book_id_check:
         Userbook_obj = UserBook(user_id=session[u'login'][1],
-            book_id=book_id_tupple[0], language=translation_language)
+            book_id=book_id_tuple[0], language=translation_language)
         db.session.add(Userbook_obj)
         db.session.commit()
     
@@ -166,11 +182,11 @@ def submit_add_translation_form(gutenberg_extraction_number):
         gutenberg_extraction_num = gutenberg_extraction_number).one()
     number_of_chapters = len(chapter_obj_list)
     # a user can only traslate one book in one language at a time
-    paragraph_obj_list = render_untranslated_chapter(book_id_tupple[0], 1)
+    paragraph_obj_list = render_untranslated_chapter(book_id_tuple[0], 1)
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
         display_chapter=paragraph_obj_list, chapter_chosen=None,
-        display_translations=None, book_id=book_id_tupple[0], 
+        display_translations=None, book_id=book_id_tuple[0], 
         language=Userbook_obj.language, book_obj=book_obj)
 
 
@@ -181,6 +197,9 @@ def render_untranslated_chapter(book_id, chosen_chap):
 
     return paragraph_obj_list
 
+# @app.route("?route", methods=["GET"])
+# def sdlsh():
+#     pass
 
 @app.route("/translate/<int:book_id>/render", methods=["GET"])
 def display_translation_page(book_id):
@@ -189,13 +208,13 @@ def display_translation_page(book_id):
         When page first loads, chapter starts at 1.
     """
     # If language was taken from form translate book button
-    language = request.args.get("hidden_language_input")
-    group_id = request.args.get("hidden_groupid_input")
+    groups_language = request.args.get("hidden_lang_input")
+    groups_group_id = request.args.get("hidden_groupid_input")
+    groups_book_id = book_id
 
-    # if not language and group_id:
-    #     language = 
-    #     group_id =
 
+    groups_group_id = int(groups_group_id)
+    groups_book_id = int(groups_book_id)
 
     chosen_chapter = request.args.get("chapter_selection")
 
@@ -212,16 +231,16 @@ def display_translation_page(book_id):
     if chosen_chapter:
         paragraph_obj_list = chapter_obj_list[chosen_chapter].paragraphs
         translated_paragraphs_list = find_trans_paragraphs(book_obj, 
-                paragraph_obj_list, language, group_id, book_id)
+                paragraph_obj_list, groups_language, groups_group_id, book_id)
     else:
         paragraph_obj_list = chapter_obj_list[1].paragraphs
         translated_paragraphs_list = find_trans_paragraphs(book_obj,
-                paragraph_obj_list, language, group_id, book_id)
+                paragraph_obj_list, groups_language, groups_group_id, book_id)
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=book_id,
-        language=language, book_obj=book_obj, group_id=group_id)
+        language=groups_language, book_obj=book_obj, group_id=groups_group_id)
 
 def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list, 
         language, group_id, book_id):

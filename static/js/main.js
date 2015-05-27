@@ -24,6 +24,35 @@ $(document).ready(function(){
         $(this).find("button").hide();
     });
 
+    //on keypress send an ajax rquest that checks if user exists
+    $("#create_group_btn").on("keypress", function (evt) {
+        evt.preventDefault();
+        var key = e.which;
+        if (key == 13) {
+            $.ajax({
+                url: "/check_user",
+                data: $("#create_group_btn").val(),
+                type: "POST",
+                success: function(response) {
+                    $("#translate_textarea").val("");
+                    userExists(response.collab_username);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+
+    function userExists (exists) {
+        if (exists !== null) {
+            $("#collab_names").append("<li>"+exists+"</li>");
+        } else {
+            $("#collab_list").after("<p>This username doesn't exist</p>");
+        }
+    }
+
+
     // when clicked, gets the paragraph id from the clicked paragraph and shows text area
     // $(".edit_text").on("click", function () {
     //     $("#translate_textarea").show();

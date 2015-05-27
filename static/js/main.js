@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    // add logic about what happens if ehit button is already clicked
+    // add logic about what happens if edit button is already clicked
     var untrans_p_class;
     var paragraphId;
 

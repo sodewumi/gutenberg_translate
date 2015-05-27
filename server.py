@@ -153,7 +153,6 @@ def submit_add_translation_form(gutenberg_extraction_number):
         chapter_obj_list = db.session.query(Chapter).filter(
             Chapter.book_id == book_id_tupple[0]).all()
 
-
     user_book_id_check = UserBook.query.filter_by(user_id=session[u'login'][1],
         book_id=book_id_tupple[0], language=translation_language).first()
 
@@ -174,6 +173,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
         display_translations=None, book_id=book_id_tupple[0], 
         language=Userbook_obj.language, book_obj=book_obj)
 
+
 def render_untranslated_chapter(book_id, chosen_chap):
     """Shows the translated page chosen"""
     book_obj = Book.query.get(book_id)
@@ -188,9 +188,12 @@ def display_translation_page(book_id):
         Displays a chapter of the book. 
         When page first loads, chapter starts at 1.
     """
-    language = db.session.query(UserBook.language).filter(
-        UserBook.user_id==session[u'login'][1],
-        UserBook.book_id==book_id)
+    # language = db.session.query(UserBook.language).filter(
+    #     UserBook.user_id==session[u'login'][1],
+    #     UserBook.book_id==book_id)
+    language = request.args.get("hidden_language_input")
+    group_id = request.args.get("hidden_groupid_input")
+    # from form in translation_page.html
     chosen_chapter = request.args.get("chapter_selection")
 
     if chosen_chapter:
@@ -205,33 +208,56 @@ def display_translation_page(book_id):
     # connect to chapter_number
     if chosen_chapter:
         paragraph_obj_list = chapter_obj_list[chosen_chapter].paragraphs
-        translated_paragraphs_list = find_trans_paragraphs(book_obj, paragraph_obj_list)
+        translated_paragraphs_list = find_trans_paragraphs(book_obj, 
+                paragraph_obj_list, language, group_id, book_id)
     else:
         paragraph_obj_list = chapter_obj_list[1].paragraphs
-        translated_paragraphs_list = find_trans_paragraphs(book_obj, paragraph_obj_list)
-
+        translated_paragraphs_list = find_trans_paragraphs(book_obj,
+                paragraph_obj_list, language, group_id, book_id)
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=book_id,
-        language=language[0], book_obj=book_obj)
+        language=language, book_obj=book_obj)
 
-def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list):
-    user_id = session[u'login'][1]
-    translated_paragraphs_list = []
-    userbook_obj = db.session.query(UserBook).filter(
-        UserBook.user_id==user_id,
-        UserBook.book_id==chosen_book_obj.book_id).one()
+def find_trans_paragraphs(chosen_book_obj, paragraph_obj_list, 
+        language, group_id, book_id):
+    # translated_paragraphs_list = []
+    # print int(group_id), "*************group id"
+    # group_obj = Group.query.get(int(group_id))
 
-    for paragraph in paragraph_obj_list:
-        translated_paragraph = Translation.query.filter_by(
-            userbook_id=userbook_obj.userbook_id, 
-            language=userbook_obj.language, 
-            paragraph_id=paragraph.paragraph_id).first()
-        if translated_paragraph:
-            translated_paragraphs_list.append(translated_paragraph)
+    # group_bookgroup_objs = group_obj.bookgroups
 
-    return translated_paragraphs_list
+    # for bookgroup in group_bookgroup_objs:
+    #     temp = bookgroup.query.filter(bookgroup.book_id == int(book_id),
+    #         bookgroup.group_id == int(group_id), bookgroup.language == str(language)).first()
+    #     if temp:
+    #         bookgroup_obj = temp
+
+    bookgroup_obj = BookGroup.query.filter_by(
+        book_id=int(book_id),
+        group_id=int(group_id),
+        language=str(language)
+        ).one()
+
+    # for paragraph in paragraph_obj_list:
+    #     # print bookgroup_obj.bookgroup_id, "********bookgroup_id"
+    #     # print paragraph.paragraph_id, "****************paragraph_id"
+    #     translated_paragraph = Translation.query.filter_by(
+    #         bookgroup_id=bookgroup_obj.bookgroup_id,
+    #         paragraph_id=paragraph.paragraph_id).first()
+    #     if translated_paragraph:
+    #         translated_paragraphs_list.append(translated_paragraph)
+
+    paragraph_ids = [p.paragraph_id for p in paragraph_obj_list]
+
+    translated_paragraphs = Translation.query.filter(
+        Translation.bookgroup_id == bookgroup_obj.bookgroup_id,
+        Translation.paragraph_id.in_(paragraph_ids)
+        ).all()
+
+    # print 
+    return translated_paragraphs
 
 @app.route("/save_text", methods=["POST"])
 def save_translation_text():

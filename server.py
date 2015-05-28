@@ -155,6 +155,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
         a book has not yet to the book database.
         Book taken from book_explore.html
     """
+    print "********************************************"
     # add to usergroup
     # logic for collaborators to be added later after MVP
     group_name = request.args.get("group_name_input")
@@ -166,26 +167,35 @@ def submit_add_translation_form(gutenberg_extraction_number):
         User.username.in_(collaborator_list)
         ).all()
 
-    print collaborators_user_objs, "********************8"
-    return "hey"
-
-
     # change to book obj
     book_id_tuple = db.session.query(Book.book_id).filter(
         Book.gutenberg_extraction_num == gutenberg_extraction_number).first()
     book_id = book_id_tuple[0]
 
-    process_book_chapters(gutenberg_extraction_number)
-    chapter_obj_list = db.session.query(Chapter).filter(Chapter.book_id ==
-                        book_id_tuple[0]).all()
+    chapter_obj_list = db.session.query(Chapter).filter(
+        Chapter.book_id == book_id).all()
+    
+    # if the book text hasn't been put inside the database yet, run the process_book
+    # function to get split, and push book into the database.
+    if not chapter_obj_list:
+        process_book_chapters(gutenberg_extraction_number)
+        chapter_obj_list = db.session.query(Chapter).filter(
+            Chapter.book_id == book_id_tuple[0]).all()
+
     # create group
     new_group_obj = Group(group_name = group_name)
 
     db.session.add(new_group_obj)
     # create usergroup
+    db.session.commit()
     new_usergroup_obj = UserGroup(user_id=session["login"][1],
                         group_id=new_group_obj.group_id)
     db.session.add(new_usergroup_obj)
+
+    for a_collaborator in collaborators_user_objs:
+        new_usergroup_obj = UserGroup(user_id=a_collaborator.user_id,
+                            group_id=new_group_obj.group_id)
+        db.session.add(new_usergroup_obj)
     db.session.commit()
     # create bookgroup
     new_bookgroup_obj = BookGroup(group_id=new_group_obj.group_id,
@@ -193,13 +203,8 @@ def submit_add_translation_form(gutenberg_extraction_number):
     db.session.add(new_bookgroup_obj)
     db.session.commit()
 
-    
-    return redirect("/translate/<int:" + new_group_obj.group_id + ">/render")
-
-    return render_template("translation_page.html", number_of_chapters=number_of_chapters,
-        display_chapter=paragraph_obj_list, chapter_chosen=None,
-        display_translations=None, book_id=book_id, 
-        language=new_bookgroup_obj.language, book_obj=book_obj)
+    return redirect("/translate/" + str(new_bookgroup_obj.bookgroup_id) +
+        "/render")
 
 
 def render_untranslated_chapter(book_id, chosen_chap):

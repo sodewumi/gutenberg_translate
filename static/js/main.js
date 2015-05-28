@@ -20,14 +20,6 @@ $(document).ready(function(){
     }
 
     function hiddenInputs(newUsername) {
-        // if (counter === 0){
-        //     $("#add_book_form .form-group").last().after("<input type='hidden'" +
-        //         "id='name"+ counter +"'>");
-        // } else {
-        //     counter += 1;
-        //     $("#add_book_form .form-group").last().after("<input type='hidden'" +
-        //         "'id='name"+ counter +"'>");
-        // }
 
         var hiddenInput = $("<input type='hidden' name='usernames'>").val(newUsername);
         $("#add_book_form .form-group").last().after(hiddenInput);
@@ -70,14 +62,15 @@ $(document).ready(function(){
     });
 
     //on keypress send an ajax rquest that checks if user exists
-    $("#collab_names").on("keypress", function (evt) {
+    $("#group_name_input").on("keypress", function (evt) {
         $("#error_message").empty();
         var key = evt.which;
         if (key === 13) {
             evt.preventDefault();
+
             $.ajax({
                 url: "/check_user",
-                data: "&collab_names=" + $("#collab_names").val(),
+                data: "&collab_names=" + $("#group_name_input").val(),
                 type: "POST",
                 success: function(response) {
                     $("#translate_textarea").val("");
@@ -87,7 +80,7 @@ $(document).ready(function(){
                     console.log(error);
                 }
             });
-            $("#collab_names").val("");
+            $("#group_name_input").val("");
         }
     });
 

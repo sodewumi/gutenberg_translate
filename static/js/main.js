@@ -11,13 +11,39 @@ $(document).ready(function(){
         // Places the translated text in the assigned paragraph div depending on
         // whether a user adds or updates a translation. Doesn't make a db call.
         // change name
+
         var paragraphId = $("#"+pId);
 
         paragraphId.empty();
         paragraphId.html("<p>"+translatedText+"</p>");
     }
 
+    function userExists (exists) {
+        // Shows different messages depending on what the user enters into the 
+        // $("#collab_names") input
 
+        var already_found = false;
+
+        if (exists !== null) {
+            $(".collab_usernames").each(function () {
+                this_username = $(this).html();
+                this_username = this_username.toLowerCase();
+                this_username = $.trim(this_username);
+
+                if (this_username === exists) {
+                    $("#error_message").html("You've already added this username");
+                    already_found = true;
+                    return already_found;
+                }
+            });
+
+            if (already_found === false) {
+                $("#collab_list").append("<li class='collab_usernames'>"+exists+"</li>");
+            }
+        } else {
+            $("#error_message").html("This username doesn't exist");
+        }
+    }
 
     // hides and shows edit button
     $(".a_chapter_and_bttn").on("mouseenter", function () {
@@ -50,62 +76,10 @@ $(document).ready(function(){
         }
     });
 
-    function userExists (exists) {
-        var already_found = false;
-        collab_list = $("#collab_list");
-        if (exists !== null) {
-            $(".collab_usernames").each(function () {
-                this_username = $(this).html();
-                this_username = this_username.toLowerCase();
-                this_username = $.trim(this_username);
-
-                if (this_username === exists) {
-                    $("#error_message").html("You've already added this username");
-                    already_found = true;
-                    return already_found;
-                }
-            });
-
-            if (already_found === false) {
-                $("#collab_list").append("<li class='collab_usernames'>"+exists+"</li>");
-            }
-
-        } else {
-            $("#error_message").html("This username doesn't exist");
-        }
-
-    }
-
-
-    // when clicked, gets the paragraph id from the clicked paragraph and shows text area
-    // $(".edit_text").on("click", function () {
-    //     $("#translate_textarea").show();
-    //     // var groupid = $("#user_controls").data('groupid');
-    //     untrans_p_class = $(this).parent().attr("class");
-    //     untrans_p_class = untrans_p_class.split(" ");
-    //     paragraphId = untrans_p_class[1];
-    // });
-
-
     $(".edit_text").click(function () {
         $("#translate_textarea").show();
         paragraphId = $(this).data('paragraphid');
     });
-
-    // $("#chosen_chap_submit").on("click", function (evt) {
-    //     $.ajax({
-    //         url: "/translate",
-    //         data: $('form').serialize() + "&p_id=" + paragraphId + "&g_id=" + groupId + "&l_id=" + langId,
-    //         type: "POST",
-    //         success: function(response) {
-    //             $("#translate_textarea").hide();
-    //             placeParagraph(response.translated_text, response.paragraph_id);
-    //         },
-    //         error: function(error) {
-    //             console.log(error);
-    //         }
-    //     });
-    // });
 
     $("#submit_bttn").on("click", function (evt) {
         evt.preventDefault();
@@ -123,6 +97,14 @@ $(document).ready(function(){
                 console.log(error);
             }
         });
+    });
+
+    $("#close_btn").on("click", function () {
+        $("#collab_names").val("");
+        $("#new_group_names").val("");
+        $("#collab_list li:not(:first)").remove();
+
+
     });
 
     function goodreads(){}

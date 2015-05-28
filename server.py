@@ -3,12 +3,13 @@ import re
 import os
 # third-party modules
 import jinja2
-from amazonproduct import API
+# from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify
+from flask.ext.socketio import SocketIO, emit
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
-from lxml import etree
+# from lxml import etree
 # my modules
 from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup
 
@@ -16,6 +17,7 @@ from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translatio
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
 app.jinja_env .undefined = jinja2.StrictUndefined
+socketio = SocketIO(app)
 
 @app.route("/", methods=["GET"])
 def display_homepage():
@@ -123,6 +125,7 @@ def display_book_description(gutenberg_extraction_number):
         gutenberg_extraction_number=gutenberg_extraction_number, 
         current_user=current_user, group_language_dict=group_language_dict)
 
+
 @app.route("/check_user", methods=["POST"])
 def check_user_exists():
     """
@@ -139,8 +142,6 @@ def check_user_exists():
         return jsonify({"collab_username": None})
 
 
-
-
 def good_reads():
     uri = "https://www.goodreads.com/book/isbn?format=json&isbn=0486284735"
     uri = request.get_json(uri)
@@ -154,42 +155,48 @@ def submit_add_translation_form(gutenberg_extraction_number):
         a book has not yet to the book database.
         Book taken from book_explore.html
     """
+    # add to usergroup
     # logic for collaborators to be added later after MVP
-    collaborator_list = request.args.get("translation_collaborators_input")
+    group_name = request.args.get("group_name_input")
     translation_language = request.args.get("translation_language_input")
+
+    collaborator_list = request.args.getlist("usernames")
+
+    return collaborator_list
+
     # change to book obj
     book_id_tuple = db.session.query(Book.book_id).filter(
         Book.gutenberg_extraction_num == gutenberg_extraction_number).first()
+    book_id = book_id_tuple[0]
 
-    chapter_obj_list = db.session.query(Chapter).filter(
-        Chapter.book_id == book_id_tuple[0]).all()
+    process_book_chapters(gutenberg_extraction_number)
+    chapter_obj_list = db.session.query(Chapter).filter(Chapter.book_id ==
+                        book_id_tuple[0]).all()
+    # create group
+    new_group_obj = Group(group_name = group_name)
+
+    db.session.add(new_group_obj)
+    # create usergroup
+    new_usergroup_obj = UserGroup(user_id=session["login"][1],
+                        group_id=new_group_obj.group_id)
+    db.session.add(new_usergroup_obj)
+    db.session.commit()
+    # create bookgroup
+    new_bookgroup_obj = BookGroup(group_id=new_group_obj.group_id,
+                        book_id=book_id, language=translation_language)
+    db.session.add(new_bookgroup_obj)
+    db.session.commit()
     
-    # if the book text hasn't been put inside the database yet, run the process_book
-    # function to get split, and push book into the database.
-    if not chapter_obj_list:
-        process_book_chapters(gutenberg_extraction_number)
-        chapter_obj_list = db.session.query(Chapter).filter(
-            Chapter.book_id == book_id_tuple[0]).all()
-
-    user_book_id_check = UserBook.query.filter_by(user_id=session[u'login'][1],
-        book_id=book_id_tuple[0], language=translation_language).first()
-
-    if not user_book_id_check:
-        Userbook_obj = UserBook(user_id=session[u'login'][1],
-            book_id=book_id_tuple[0], language=translation_language)
-        db.session.add(Userbook_obj)
-        db.session.commit()
-    
-    book_obj = db.session.query(Book).filter_by(
-        gutenberg_extraction_num = gutenberg_extraction_number).one()
+    book_obj = Book.query.filter_by(
+                gutenberg_extraction_num = gutenberg_extraction_number).one()
     number_of_chapters = len(chapter_obj_list)
     # a user can only traslate one book in one language at a time
     paragraph_obj_list = render_untranslated_chapter(book_id_tuple[0], 1)
 
     return render_template("translation_page.html", number_of_chapters=number_of_chapters,
         display_chapter=paragraph_obj_list, chapter_chosen=None,
-        display_translations=None, book_id=book_id_tuple[0], 
-        language=Userbook_obj.language, book_obj=book_obj)
+        display_translations=None, book_id=book_id, 
+        language=new_bookgroup_obj.language, book_obj=book_obj)
 
 
 def render_untranslated_chapter(book_id, chosen_chap):
@@ -203,7 +210,7 @@ def render_untranslated_chapter(book_id, chosen_chap):
 # def sdlsh():
 #     pass
 
-@app.route("/translate/<int:book_id>/render", methods=["GET"])
+@app.route("/translate/<int:group_id>/render", methods=["GET"])
 def display_translation_page(book_id):
     """
         Displays a chapter of the book. 
@@ -215,8 +222,10 @@ def display_translation_page(book_id):
     groups_group_id = request.args.get("hidden_groupid_input")
     groups_group_id = int(groups_group_id)
 
-    bookgroup_id_tuple = db.session.query(BookGroup.bookgroup_id).filter_by(language=groups_language, 
-                    group_id=groups_group_id, book_id=book_id).one()
+    bookgroup_id_tuple = db.session.query(BookGroup.bookgroup_id).filter_by(
+                        language=groups_language, group_id=groups_group_id,
+                        book_id=book_id).one()
+
     bookgroup_id = bookgroup_id_tuple[0]
 
     chosen_chapter = request.args.get("chapter_selection")

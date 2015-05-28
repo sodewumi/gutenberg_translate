@@ -4,6 +4,7 @@ $(document).ready(function(){
     var groupId = $("#translated").data('groupid');
     var bookId = $("#translated").data('bookid');
     var bookgroupId = $("#translated").data('bookgroupid');
+    var counter = 0;
 
     var paragraphId;
 
@@ -18,10 +19,23 @@ $(document).ready(function(){
         paragraphId.html("<p>"+translatedText+"</p>");
     }
 
+    function hiddenInputs(newUsername) {
+        // if (counter === 0){
+        //     $("#add_book_form .form-group").last().after("<input type='hidden'" +
+        //         "id='name"+ counter +"'>");
+        // } else {
+        //     counter += 1;
+        //     $("#add_book_form .form-group").last().after("<input type='hidden'" +
+        //         "'id='name"+ counter +"'>");
+        // }
+
+        var hiddenInput = $("<input type='hidden' name='usernames'>").val(newUsername);
+        $("#add_book_form .form-group").last().after(hiddenInput);
+
+    }
+
     function userExists (exists) {
         // Shows different messages depending on what the user enters into the 
-        // $("#collab_names") input
-
         var already_found = false;
 
         if (exists !== null) {
@@ -38,6 +52,7 @@ $(document).ready(function(){
             });
 
             if (already_found === false) {
+                hiddenInputs(exists);
                 $("#collab_list").append("<li class='collab_usernames'>"+exists+"</li>");
             }
         } else {

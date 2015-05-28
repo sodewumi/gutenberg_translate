@@ -74,7 +74,9 @@
                                 class="form-control input-lg" placeholder="Usernames" autocomplete="off">
                             <p id="error_message"></p>
                             <ul id="collab_list">
-
+                                <li class="collab_usernames">
+                                    {{ session["login"][0] }}
+                                </li>
                             </ul>
                         </div>
                         <div class="form-group">

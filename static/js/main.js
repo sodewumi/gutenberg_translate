@@ -51,13 +51,25 @@ $(document).ready(function(){
     });
 
     function userExists (exists) {
+        var already_found = false;
+        collab_list = $("#collab_list");
         if (exists !== null) {
-            console.log("hey");
-            $("#collab_list").append("<li>"+exists+"</li>");
+            $(".collab_usernames").each(function () {
+                if ($(this).html() === exists) {
+                    $("#error_message").html("You've already added this username");
+                    already_found = true;
+                    return already_found;
+                }
+            });
+
+            if (already_found === false) {
+                collab_list.append("<li class='collab_usernames'>"+exists+"</li>");
+            }
+
         } else {
-            console.log("boo");
             $("#error_message").html("This username doesn't exist");
         }
+
     }
 
 

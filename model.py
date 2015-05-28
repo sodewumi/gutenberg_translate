@@ -14,6 +14,10 @@ class User(db.Model):
     groups = db.relationship("Group", backref=db.backref("users"),
             secondary="usergroups")
 
+    def __repr__(self):
+        return "<User: username=%s, user_id=%d" %(
+            self.username, self.user_id)
+
 class Group(db.Model):
     """Name and Id of all groups"""
 

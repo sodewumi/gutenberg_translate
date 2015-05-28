@@ -30,7 +30,7 @@ $(document).ready(function(){
 
     //on keypress send an ajax rquest that checks if user exists
     $("#collab_names").on("keypress", function (evt) {
-
+        $("#error_message").empty();
         var key = evt.which;
         if (key === 13) {
             evt.preventDefault();
@@ -55,7 +55,11 @@ $(document).ready(function(){
         collab_list = $("#collab_list");
         if (exists !== null) {
             $(".collab_usernames").each(function () {
-                if ($(this).html() === exists) {
+                this_username = $(this).html();
+                this_username = this_username.toLowerCase();
+                this_username = $.trim(this_username);
+
+                if (this_username === exists) {
                     $("#error_message").html("You've already added this username");
                     already_found = true;
                     return already_found;
@@ -63,7 +67,7 @@ $(document).ready(function(){
             });
 
             if (already_found === false) {
-                collab_list.append("<li class='collab_usernames'>"+exists+"</li>");
+                $("#collab_list").append("<li class='collab_usernames'>"+exists+"</li>");
             }
 
         } else {

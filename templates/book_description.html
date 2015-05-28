@@ -68,6 +68,14 @@
                     <form id="create_group_form" name="render_translations" action="/translate/{{ gutenberg_extraction_number }}">
                         <div class="form-group">
                             <p>
+                                Group Name:
+                            </p>
+
+                            <input id = "new_group_names" type="text" name="group_name_input" class="form-control input-lg" placeholder="Add Group Name" autocomplete="off">
+
+                        </div>
+                        <div class="form-group">
+                            <p>
                                 Add Collaborators' Usernames:
                             </p>
                             <input id ="collab_names" type="text" name="translation_collaborators_input" 

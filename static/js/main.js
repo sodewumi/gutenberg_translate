@@ -52,11 +52,11 @@ $(document).ready(function(){
 
     function userExists (exists) {
         if (exists !== null) {
-            console.log("hey")
-            $("#collab_names").append("<li>"+exists+"</li>");
+            console.log("hey");
+            $("#collab_list").append("<li>"+exists+"</li>");
         } else {
-            console.log("boo")
-            $("#collab_list").after("<p>This username doesn't exist</p>");
+            console.log("boo");
+            $("#error_message").html("This username doesn't exist");
         }
     }
 

@@ -128,18 +128,14 @@ def check_user_exists():
     """
         Checks if user is in database. Returns True if user exists & False otherwise
     """
-
     username_input = request.form['collab_names']
     username_input = username_input.lower().strip()
 
-    print username_input, "**************************"
     user_exists = User.query.filter_by(username = username_input).first()
 
     if user_exists:
-        print "yes"
         return jsonify({"collab_username": username_input})
     else:
-        print "no"
         return jsonify({"collab_username": None})
 
 

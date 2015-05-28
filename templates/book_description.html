@@ -33,12 +33,15 @@
                         {% endfor %}
 
                         <li>
-                            <form class="edit_book_form" action="/translate/{{ display_book.book_id }}/render" method="GET" data-bookId ="{{ display_book.book_id }}" data-language="{{ group_language_dict[group.group_id] }}" data-groupid="{{ group.group_id }}">
-                            <input type="hidden" name="hidden_lang_input" 
-                                value="{{ group_language_dict[group.group_id] }}">
-                            <input type="hidden" name="hidden_groupid_input"
-                                value="{{ group.group_id }}">
-                            <input type="submit" value='Go to existing translations'>
+                            <form class="edit_book_form" action="/translate/{{ display_book.book_id }}/render"
+                                    method="GET" data-bookId ="{{ display_book.book_id }}"
+                                    data-language="{{ group_language_dict[group.group_id] }}"
+                                    data-groupid="{{ group.group_id }}">
+                                <input type="hidden" name="hidden_lang_input" 
+                                        value="{{ group_language_dict[group.group_id] }}">
+                                <input type="hidden" name="hidden_groupid_input"
+                                        value="{{ group.group_id }}">
+                                <input type="submit" value='Go to existing translations'>
                             </form>
                         </li>
                     </ul>
@@ -62,7 +65,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="create_greoup_form" name="render_translations" action="/translate/{{ gutenberg_extraction_number }}">
+                    <form id="create_group_form" name="render_translations" action="/translate/{{ gutenberg_extraction_number }}">
                         <div class="form-group">
                             <p>
                                 Add Collaborators' Usernames:

@@ -17,6 +17,8 @@ $(document).ready(function(){
         paragraphId.html("<p>"+translatedText+"</p>");
     }
 
+
+
     // hides and shows edit button
     $(".a_chapter_and_bttn").on("mouseenter", function () {
         $(this).find("button").show();
@@ -27,13 +29,14 @@ $(document).ready(function(){
     });
 
     //on keypress send an ajax rquest that checks if user exists
-    $("#create_group_btn").on("keypress", function (evt) {
-        evt.preventDefault();
-        var key = e.which;
-        if (key == 13) {
+    $("#collab_names").on("keypress", function (evt) {
+
+        var key = evt.which;
+        if (key === 13) {
+            evt.preventDefault();
             $.ajax({
                 url: "/check_user",
-                data: $("#create_group_btn").val(),
+                data: "&collab_names=" + $("#collab_names").val(),
                 type: "POST",
                 success: function(response) {
                     $("#translate_textarea").val("");
@@ -43,16 +46,19 @@ $(document).ready(function(){
                     console.log(error);
                 }
             });
+            $("#collab_names").val("");
         }
     });
 
-    // function userExists (exists) {
-    //     if (exists !== null) {
-    //         $("#collab_names").append("<li>"+exists+"</li>");
-    //     } else {
-    //         $("#collab_list").after("<p>This username doesn't exist</p>");
-    //     }
-    // }
+    function userExists (exists) {
+        if (exists !== null) {
+            console.log("hey")
+            $("#collab_names").append("<li>"+exists+"</li>");
+        } else {
+            console.log("boo")
+            $("#collab_list").after("<p>This username doesn't exist</p>");
+        }
+    }
 
 
     // when clicked, gets the paragraph id from the clicked paragraph and shows text area
@@ -68,8 +74,6 @@ $(document).ready(function(){
     $(".edit_text").click(function () {
         $("#translate_textarea").show();
         paragraphId = $(this).data('paragraphid');
-        console.log(paragraphId)
-
     });
 
     // $("#chosen_chap_submit").on("click", function (evt) {

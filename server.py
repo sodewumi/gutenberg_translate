@@ -124,17 +124,23 @@ def display_book_description(gutenberg_extraction_number):
         current_user=current_user, group_language_dict=group_language_dict)
 
 @app.route("/check_user", methods=["POST"])
-def check_user_exists(username_input):
+def check_user_exists():
     """
         Checks if user is in database. Returns True if user exists & False otherwise
     """
+
+    username_input = request.form['collab_names']
     username_input = username_input.lower().strip()
+
+    print username_input, "**************************"
     user_exists = User.query.filter_by(username = username_input).first()
 
     if user_exists:
+        print "yes"
         return jsonify({"collab_username": username_input})
     else:
-        return jsonify({"collab_username": null})
+        print "no"
+        return jsonify({"collab_username": None})
 
 
 

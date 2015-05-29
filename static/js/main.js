@@ -7,7 +7,7 @@ $(document).ready(function(){
     var counter = 0;
 
     var paragraphId;
-
+    
     function placeParagraph(translatedText, pId) {
         // Places the translated text in the assigned paragraph div depending on
         // whether a user adds or updates a translation. Doesn't make a db call.
@@ -100,9 +100,16 @@ $(document).ready(function(){
     });
 
     $(".edit_text").click(function () {
+        // stop the deletion of text when another edit button is clicked
+        // show the edited text in the textarea
         paragraphId = $(this).data('paragraphid');
         var translated_para = $("#" + paragraphId);
-        var translated_para_text = translated_para.val();
+        var translated_para_text =  $("#" + paragraphId + " p").text();
+
+        var height = $("." + paragraphId).height();
+        var width = $("." + paragraphId).width();
+        $("#translate_textarea textarea").height(height);
+        $("#translate_textarea textarea").width(width);
         $("#translate_textarea").val(translated_para_text);
         $("#translate_textarea").appendTo(translated_para);
         $("#translate_textarea").show();

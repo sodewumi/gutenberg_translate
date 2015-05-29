@@ -5,7 +5,7 @@ import os
 import jinja2
 import requests
 # from amazonproduct import API
-from flask import flash, Flask, redirect, render_template, request, session, jsonify
+from flask import flash, Flask, redirect, render_template, request, session, jsonify, url_for
 from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
@@ -212,8 +212,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     print new_bookgroup_obj.bookgroup_id, "********************"
 
-    return redirect("/translate/" + str(new_bookgroup_obj.bookgroup_id) +
-        "/render")
+    return redirect(url_for(".display_translation_page", bookgroup_id = new_bookgroup_obj.bookgroup_id))
 
 
 def render_untranslated_chapter(book_id, chosen_chap):
@@ -223,13 +222,15 @@ def render_untranslated_chapter(book_id, chosen_chap):
 
     return paragraph_obj_list
 
-@app.route("/translate/<int:bookgroup_id>/render", methods=["GET"])
-def display_translation_page(bookgroup_id):
+@app.route("/translate/render", methods=["GET"])
+def display_translation_page():
     """
         Displays a chapter of the book. 
         When page first loads, chapter starts at 1.
     """
     # all arguments come from the book_group
+    # bookgroup_obj = BookGroup.query.get(bookgroup_id)
+    bookgroup_id = int(request.args["bookgroup_id"])
     bookgroup_obj = BookGroup.query.get(bookgroup_id)
     bookgroup_id = bookgroup_obj.bookgroup_id
     bookgroup_language = bookgroup_obj.language
@@ -262,34 +263,34 @@ def display_translation_page(bookgroup_id):
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
         bookgroup_id=bookgroup_id)
 
-@socketio.on('connect')
-def test_connect():
-    emit('my response', {'data': 'Connected'})
+# @socketio.on('connect')
+# def test_connect():
+#     emit('my response', {'data': 'Connected'})
 
-@socketio.on('joined')
-def on_join(data):
-    """
-        Sent by clients when they enter a room.
-    """
-    username = session["login"][0]
-    room = data["bookgroup_id"]
-    join_room(room)
+# @socketio.on('joined')
+# def on_join(data):
+#     """
+#         Sent by clients when they enter a room.
+#     """
+#     username = session["login"][0]
+#     room = data["bookgroup_id"]
+#     join_room(room)
 
-    emit('status', {'msg': username + "has entered room" + str(room)}, room=room)
+#     emit('status', {'msg': username + "has entered room" + str(room)}, room=room)
 
-@socketio.on('text')
-def translated_text_rt(data):
-    """
-        Sent by clients while they are translating a paragraph
-    """
-    pass
+# @socketio.on('text')
+# def translated_text_rt(data):
+#     """
+#         Sent by clients while they are translating a paragraph
+#     """
+#     pass
 
-@socketio.on("left")
-def on_leave(data):
-    """
-        Sent by clients when they leave the room.
-    """
-    pass
+# @socketio.on("left")
+# def on_leave(data):
+#     """
+#         Sent by clients when they leave the room.
+#     """
+#     pass
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""
@@ -445,4 +446,3 @@ if __name__ == "__main__":
     # book_database()
     socketio.run(app)
     app.run(debug=True)
-

@@ -8,19 +8,19 @@ $(document).ready(function(){
 
     var paragraphId;
     
-    socket = io.connect();
-    socket.on('connect', function () {
-        socket.emit("joined", {"bookgroup_id": bookgroupId});
-    });
+    // socket = io.connect();
+    // socket.on('connect', function () {
+    //     socket.emit("joined", {"bookgroup_id": bookgroupId});
+    // });
 
-    socket.on('status', function (data) {
-        console.log(data.msg);
+    // socket.on('status', function (data) {
+    //     console.log(data.msg);
 
-    });
+    // });
 
-    socket.on('my response', function (data) {
-        console.log(data.msg);
-    });
+    // socket.on('my response', function (data) {
+    //     console.log(data.msg);
+    // });
 
     function placeParagraph(translatedText, pId) {
         // Places the translated text in the assigned paragraph div depending on

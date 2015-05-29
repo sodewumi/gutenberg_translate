@@ -33,7 +33,7 @@
                         {% endfor %}
 
                         <li>
-                            <form class="edit_book_form" action="/translate/{{ group_language_dict[group.group_id][1] }}/render"
+                            <form class="edit_book_form" action="/translate/render"
                                     method="GET" data-bookId ="{{ display_book.book_id }}"
                                     data-language="{{ group_language_dict[group.group_id][0] }}"
                                     data-groupid="{{ group.group_id }}">
@@ -41,6 +41,7 @@
                                         value="{{ group_language_dict[group.group_id][0] }}">
                                 <input type="hidden" name="hidden_groupid_input"
                                         value="{{ group.group_id }}">
+                                <input type="hidden" name="bookgroup_id_input" value="{{ group_language_dict[group.group_id][1] }}">
                                 <input type="submit" value='Go to existing translations'>
                             </form>
                         </li>

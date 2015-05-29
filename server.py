@@ -212,7 +212,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     print new_bookgroup_obj.bookgroup_id, "********************"
 
-    return redirect(url_for(".display_translation_page", bookgroup_id = new_bookgroup_obj.bookgroup_id))
+    return redirect(url_for(".display_translation_page", bookgroup_id_input = new_bookgroup_obj.bookgroup_id))
 
 
 def render_untranslated_chapter(book_id, chosen_chap):
@@ -230,7 +230,7 @@ def display_translation_page():
     """
     # all arguments come from the book_group
     # bookgroup_obj = BookGroup.query.get(bookgroup_id)
-    bookgroup_id = int(request.args["bookgroup_id"])
+    bookgroup_id = int(request.args["bookgroup_id_input"])
     bookgroup_obj = BookGroup.query.get(bookgroup_id)
     bookgroup_id = bookgroup_obj.bookgroup_id
     bookgroup_language = bookgroup_obj.language

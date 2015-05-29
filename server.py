@@ -3,6 +3,7 @@ import re
 import os
 # third-party modules
 import jinja2
+import requests
 # from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify
 from flask.ext.socketio import SocketIO, emit
@@ -127,7 +128,7 @@ def display_book_description(gutenberg_extraction_number):
         if bookgroup_id not in group_language_dict[group.group_id]:
             group_language_dict[group.group_id].append(bookgroup_id)
 
-
+    # print good_reads(), "********************"
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number, 
         current_user=current_user, group_language_dict=group_language_dict)
@@ -151,8 +152,8 @@ def check_user_exists():
 
 def good_reads():
     uri = "https://www.goodreads.com/book/isbn?format=json&isbn=0486284735"
-    uri = request.get_json(uri)
-    print uri.json()
+    response =requests.get(uri)
+    return response.json()
 
 
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])
@@ -285,9 +286,6 @@ def save_translation_text():
 
     translated_text = request.form['translated_text']
     paragraph_id_input = int(request.form["p_id"])
-    book_id_input = int(request.form["b_id"])
-    group_id_input = int(request.form["g_id"])
-    language_id_input = request.form["l_id"]
     bookgroup_id_input = int(request.form["bg_id"])
 
     find_translated_text_in_db = db.session.query(Translation).filter_by(

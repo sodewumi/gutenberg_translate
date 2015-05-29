@@ -24,13 +24,51 @@
         </form>
     </div>
 
-    <div id="untranslated">
+    <div class="untranslated_info">
         {% if chapter_chosen %}
         <h2>Chapter {{ chapter_chosen }}</h2>
         {% else %}
         <h2>Chapter 1</h2>
         {% endif %}
+    </div>
 
+
+    <div class="container-fluid">
+        {%  for paragraph in display_chapter %}
+        <div class="book_rendering row">
+            <div class="untranslated col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="a_chapter_and_bttn {{ paragraph.paragraph_id }}">
+                    <p>{{ paragraph.untranslated_paragraph }}</p>
+                    <button class="edit_text" data-paragraphid="{{ paragraph.paragraph_id }}"> Edit
+                    </button> 
+                </div>
+            </div>
+
+            <div class="trans_para col-xs-6 col-sm-6 col-md-6 col-lg-6" id="{{ paragraph.paragraph_id }}">
+                {% if display_translations %}
+                    {% for existing_translation in display_translations %}
+                        {% if existing_translation.paragraph_id == paragraph.paragraph_id %}
+                            <p>{{ existing_translation.translated_paragraph }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <form name="text_form" method="POST" action="/save_text" id="translate_textarea">
+        <label>Translate :<br>
+            <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
+        </label><br>
+        <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
+        <!-- <button>Delete</button> -->
+        <input type="button" value="submit" id="submit_bttn">
+
+    </form>
+<!-- 
+    <div id="untranslated">
         {% for paragraph in display_chapter %}
         <div class="a_chapter_and_bttn {{ paragraph.paragraph_id }}">
             <p>{{ paragraph.untranslated_paragraph }}</p>
@@ -42,7 +80,7 @@
 
 
 
-    <div id="translated" data-bookid ="{{ book_obj.book_id }}" data-bookgroupid ="{{ bookgroup_id }}"data-language="{{ language }}" data-groupid="{{ group_id }}">
+    <div id="translated" data-bookgroupid ="{{ bookgroup_id }}">
         <h2>Translated Text</h2>
 
         {% for paragraph in display_chapter %}
@@ -61,14 +99,14 @@
             <label>Translate :<br>
                 <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
             </label><br>
-            <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
+            <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}"> -->
             <!-- <button>Delete</button> -->
-            <input type="button" value="submit" id="submit_bttn">
+<!--             <input type="button" value="submit" id="submit_bttn">
 
         </form>
 
 
-    </div>
+    </div> -->
 
 
 {% endblock %}

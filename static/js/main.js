@@ -52,6 +52,7 @@ $(document).ready(function(){
         }
     }
 
+
     // hides and shows edit button
     $(".a_chapter_and_bttn").on("mouseenter", function () {
         $(this).find("button").show();

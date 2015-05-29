@@ -2,23 +2,25 @@ h1 {
     text-align: center
 }
 
-#translated,
-#untranslated {
+/*.trans_para,
+.untranslated {
     width: 48%
 }
 
-#translated{
+.trans_para{
     float: right;
     padding-left: 1%;
 }
 
-#untranslated{
+.untranslated{
     float: left;
     padding-right: 1%;
 }
 
-
-#translated h2,
+*/
+/*#translated h2,
 #untranslated h2 {
     text-align: center
 }
+*/
+

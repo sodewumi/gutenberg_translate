@@ -6,7 +6,7 @@ import jinja2
 import requests
 # from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify
-from flask.ext.socketio import SocketIO, emit
+from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
@@ -223,10 +223,6 @@ def render_untranslated_chapter(book_id, chosen_chap):
 
     return paragraph_obj_list
 
-# @app.route("?route", methods=["GET"])
-# def sdlsh():
-#     pass
-
 @app.route("/translate/<int:bookgroup_id>/render", methods=["GET"])
 def display_translation_page(bookgroup_id):
     """
@@ -265,6 +261,35 @@ def display_translation_page(bookgroup_id):
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
         bookgroup_id=bookgroup_id)
+
+@socketio.on('connect')
+def test_connect():
+    emit('my response', {'data': 'Connected'})
+
+@socketio.on('joined')
+def on_join(data):
+    """
+        Sent by clients when they enter a room.
+    """
+    username = session["login"][0]
+    room = data["bookgroup_id"]
+    join_room(room)
+
+    emit('status', {'msg': username + "has entered room" + str(room)}, room=room)
+
+@socketio.on('text')
+def translated_text_rt(data):
+    """
+        Sent by clients while they are translating a paragraph
+    """
+    pass
+
+@socketio.on("left")
+def on_leave(data):
+    """
+        Sent by clients when they leave the room.
+    """
+    pass
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""
@@ -305,7 +330,6 @@ def save_translation_text():
         db.session.commit()
 
     return jsonify({"status": "OK", "translated_text": translated_text, "paragraph_id": paragraph_id_input})
-
 
 def open_file(file_id):
     """
@@ -419,5 +443,6 @@ if __name__ == "__main__":
     app.debug = True
     DebugToolbarExtension(app)
     # book_database()
+    socketio.run(app)
     app.run(debug=True)
 

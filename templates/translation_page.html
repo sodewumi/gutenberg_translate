@@ -24,7 +24,7 @@
         </form>
     </div>
 
-    <div class="book-info container-fluid">
+    <div class="book-info">
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 {% if chapter_chosen %}
@@ -41,7 +41,7 @@
     </div>
 
 
-    <div class="container-fluid" id="wrapper">
+    <div id="wrapper">
         <form name="text_form" method="POST" action="/save_text"
             id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}"
             class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6">

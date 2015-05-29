@@ -106,12 +106,7 @@ $(document).ready(function(){
         var translated_para = $("#" + paragraphId);
         var translated_para_text =  $("#" + paragraphId + " p").text();
 
-        var height = $("." + paragraphId).height();
-        var width = $("." + paragraphId).width();
-        $("#translate_textarea textarea").height(height);
-        $("#translate_textarea textarea").width(width);
-        $("#translate_textarea").val(translated_para_text);
-        $("#translate_textarea").appendTo(translated_para);
+        $(".trans_para").hide();
         $("#translate_textarea").show();
     });
 

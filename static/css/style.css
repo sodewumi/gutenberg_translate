@@ -2,6 +2,9 @@ h1 {
     text-align: center
 }
 
+#translate_textarea {
+    z-index: 9999;
+}
 /*.trans_para,
 .untranslated {
     width: 48%

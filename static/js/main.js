@@ -3,7 +3,7 @@ $(document).ready(function(){
     var langId = $("#translated").data('language');
     var groupId = $("#translated").data('groupid');
     var bookId = $("#translated").data('bookid');
-    var bookgroupId = $("#translated").data('bookgroupid');
+    var bookgroupId = $("#translate_textarea").data('bookgroupid');
     var counter = 0;
 
     var paragraphId;
@@ -110,7 +110,7 @@ $(document).ready(function(){
 
         $.ajax({
             url: "/save_text",
-            data: $('form').serialize() + "&p_id=" + paragraphId + "&g_id=" + groupId + "&l_id=" + langId + "&b_id=" + bookId + "&bg_id=" + bookgroupId,
+            data: $('form').serialize() + "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
                 $("#translate_textarea").hide();

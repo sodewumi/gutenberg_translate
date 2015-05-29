@@ -100,8 +100,12 @@ $(document).ready(function(){
     });
 
     $(".edit_text").click(function () {
-        $("#translate_textarea").show();
         paragraphId = $(this).data('paragraphid');
+        var translated_para = $("#" + paragraphId);
+        var translated_para_text = translated_para.val();
+        $("#translate_textarea").val(translated_para_text);
+        $("#translate_textarea").appendTo(translated_para);
+        $("#translate_textarea").show();
     });
 
     $("#submit_bttn").on("click", function (evt) {

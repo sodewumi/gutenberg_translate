@@ -63,59 +63,25 @@
             </div>
         </div>
         {% endfor %}
+        <form name="text_form" method="POST" action="/save_text"
+            id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}">
+            <label>Translate :<br>
+                <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
+            </label><br>
+            <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
+            <!-- <button>Delete</button> -->
+            <input type="button" value="submit" id="submit_bttn">
+
+        </form>
     </div>
 
 
-    <form name="text_form" method="POST" action="/save_text"
+<!--     <form name="text_form" method="POST" action="/save_text"
         id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}">
         <label>Translate :<br>
             <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
         </label><br>
         <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
-        <!-- <button>Delete</button> -->
         <input type="button" value="submit" id="submit_bttn">
-
-    </form>
-<!-- 
-    <div id="untranslated">
-        {% for paragraph in display_chapter %}
-        <div class="a_chapter_and_bttn {{ paragraph.paragraph_id }}">
-            <p>{{ paragraph.untranslated_paragraph }}</p>
-            <button class="edit_text" data-paragraphid="{{ paragraph.paragraph_id }}"> Edit
-            </button> 
-        </div>
-        {% endfor %}
-    </div>
-
-
-
-    <div id="translated" data-bookgroupid ="{{ bookgroup_id }}">
-        <h2>Translated Text</h2>
-
-        {% for paragraph in display_chapter %}
-        <div class="trans_para" id="{{ paragraph.paragraph_id }}">
-            {% if display_translations %}
-                {% for existing_translation in display_translations %}
-                    {% if existing_translation.paragraph_id == paragraph.paragraph_id %}
-                        <p>{{ existing_translation.translated_paragraph }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
-        {% endfor %}
-
-        <form name="text_form" method="POST" action="/save_text" id="translate_textarea">
-            <label>Translate :<br>
-                <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
-            </label><br>
-            <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}"> -->
-            <!-- <button>Delete</button> -->
-<!--             <input type="button" value="submit" id="submit_bttn">
-
-        </form>
-
-
-    </div> -->
-
-
+    </form> -->
 {% endblock %}

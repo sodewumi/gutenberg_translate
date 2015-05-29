@@ -222,7 +222,7 @@ def render_untranslated_chapter(book_id, chosen_chap):
 
     return paragraph_obj_list
 
-@app.route("/translate/render", methods=["GET"])
+@app.route("/rendertranslations", methods=["GET"])
 def display_translation_page():
     """
         Displays a chapter of the book. 
@@ -263,20 +263,20 @@ def display_translation_page():
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
         bookgroup_id=bookgroup_id)
 
-# @socketio.on('connect')
-# def test_connect():
-#     emit('my response', {'data': 'Connected'})
+@socketio.on('connect', namespace='/rendertranslations')
+def test_connect():
+    emit('my response', {'data': 'Connected'})
 
-# @socketio.on('joined')
-# def on_join(data):
-#     """
-#         Sent by clients when they enter a room.
-#     """
-#     username = session["login"][0]
-#     room = data["bookgroup_id"]
-#     join_room(room)
+@socketio.on('joined', namespace='/rendertranslations')
+def on_join(data):
+    """
+        Sent by clients when they enter a room.
+    """
+    username = session["login"][0]
+    room = data["bookgroup_id"]
+    join_room(room)
 
-#     emit('status', {'msg': username + "has entered room" + str(room)}, room=room)
+    emit('joined_status', {'msg': username + "has entered room" + str(room)}, room=room)
 
 # @socketio.on('text')
 # def translated_text_rt(data):

@@ -8,19 +8,24 @@ $(document).ready(function(){
 
     var paragraphId;
     
+    // var socket = io.connect("localhost:5000", {
+    //     "resource": "translate/render"
+    // });
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
     // socket = io.connect();
-    // socket.on('connect', function () {
-    //     socket.emit("joined", {"bookgroup_id": bookgroupId});
-    // });
+    socket.on('connect', function () {
+        alert("connected");
+        socket.emit("joined", {"bookgroup_id": bookgroupId});
+    });
 
-    // socket.on('status', function (data) {
-    //     console.log(data.msg);
+    socket.on('joined_status', function (data) {
+        console.log(data.msg);
 
-    // });
+    });
 
-    // socket.on('my response', function (data) {
-    //     console.log(data.msg);
-    // });
+    socket.on('my response', function () {
+        alert("my response");
+    });
 
     function placeParagraph(translatedText, pId) {
         // Places the translated text in the assigned paragraph div depending on

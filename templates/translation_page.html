@@ -42,6 +42,18 @@
 
 
     <div class="container-fluid" id="wrapper">
+        <form name="text_form" method="POST" action="/save_text"
+            id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}"
+            class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6">
+            <label>Translate :<br>
+                <textarea name="translated_text" id="text_form_ta"
+                placeholder="Enter text here!" required></textarea>
+            </label><br>
+            <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
+            <!-- <button>Delete</button> -->
+            <input type="button" value="submit" id="submit_bttn">
+
+        </form>
         {%  for paragraph in display_chapter %}
         <div class="book_rendering row">
             <div class="untranslated col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -63,18 +75,7 @@
             </div>
         </div>
         {% endfor %}
-        <form name="text_form" method="POST" action="/save_text"
-            id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}"
-            class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6">
-            <label>Translate :<br>
-                <textarea name="translated_text" id="text_form_ta"
-                placeholder="Enter text here!" required></textarea>
-            </label><br>
-            <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
-            <!-- <button>Delete</button> -->
-            <input type="button" value="submit" id="submit_bttn">
 
-        </form>
     </div>
 
 

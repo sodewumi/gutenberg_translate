@@ -126,6 +126,7 @@ $(document).ready(function(){
                 console.log(error);
             }
         });
+        $(".trans_para").show();
     });
 
 

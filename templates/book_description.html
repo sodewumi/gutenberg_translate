@@ -24,7 +24,7 @@
 
                 <!-- checks which language a group translated a book into -->
                 <li>
-                    {{ group_language_dict[group.group_id] }}
+                    {{ group_language_dict[group.group_id][0] }}
                 </li>
                     <ul>
                         <!-- displays all people in the group -->
@@ -33,12 +33,12 @@
                         {% endfor %}
 
                         <li>
-                            <form class="edit_book_form" action="/translate/{{ display_book.book_id }}/render"
+                            <form class="edit_book_form" action="/translate/{{ group_language_dict[group.group_id][1] }}/render"
                                     method="GET" data-bookId ="{{ display_book.book_id }}"
-                                    data-language="{{ group_language_dict[group.group_id] }}"
+                                    data-language="{{ group_language_dict[group.group_id][0] }}"
                                     data-groupid="{{ group.group_id }}">
                                 <input type="hidden" name="hidden_lang_input" 
-                                        value="{{ group_language_dict[group.group_id] }}">
+                                        value="{{ group_language_dict[group.group_id][0] }}">
                                 <input type="hidden" name="hidden_groupid_input"
                                         value="{{ group.group_id }}">
                                 <input type="submit" value='Go to existing translations'>
@@ -81,8 +81,10 @@
                             <p>
                                 Add Collaborators' Usernames:
                             </p>
-                            <input id ="group_name_input" type="text" name="translation_collaborators_input" 
-                                class="form-control input-lg" placeholder="Usernames" autocomplete="off">
+                            <input id ="group_name_input" type="text" 
+                                name="translation_collaborators_input" 
+                                class="form-control input-lg" placeholder="Usernames"
+                                autocomplete="off">
                             <p id="error_message"></p>
                             <ul id="collab_list">
                                 <li class="collab_usernames">

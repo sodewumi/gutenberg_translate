@@ -107,9 +107,10 @@ def display_book_description(gutenberg_extraction_number):
             particular book. This includes: group names, usernames, and
             translation language
     """
-    
+    # 
     book_obj = Book.query.filter_by(gutenberg_extraction_num =
         gutenberg_extraction_number).one()
+
     # add to user class
     current_user = User.query.filter(User.user_id == session[u'login'][1]).one()
     
@@ -119,7 +120,13 @@ def display_book_description(gutenberg_extraction_number):
     group_language_dict = {}
     for group in current_groups_list:
         language = group.bookgroups[0].language
-        group_language_dict.setdefault(group.group_id, language)
+        bookgroup_id = group.bookgroups[0].bookgroup_id
+
+        group_language_dict.setdefault(group.group_id, [language])
+
+        if bookgroup_id not in group_language_dict[group.group_id]:
+            group_language_dict[group.group_id].append(bookgroup_id)
+
 
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number, 
@@ -155,7 +162,6 @@ def submit_add_translation_form(gutenberg_extraction_number):
         a book has not yet to the book database.
         Book taken from book_explore.html
     """
-    print "********************************************"
     # add to usergroup
     # logic for collaborators to be added later after MVP
     group_name = request.args.get("group_name_input")
@@ -202,6 +208,8 @@ def submit_add_translation_form(gutenberg_extraction_number):
                         book_id=book_id, language=translation_language)
     db.session.add(new_bookgroup_obj)
     db.session.commit()
+
+    print new_bookgroup_obj.bookgroup_id, "********************"
 
     return redirect("/translate/" + str(new_bookgroup_obj.bookgroup_id) +
         "/render")

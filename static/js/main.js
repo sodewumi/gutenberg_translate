@@ -84,6 +84,20 @@ $(document).ready(function(){
         }
     });
 
+    $("#new_group_names").on("keypress", function (evt) {
+        var keystroke = evt.which;
+        if (keystroke === 13) {
+            evt.preventDefault();
+        }
+    });
+
+    // clears out form when clicked
+    $("#close_btn").on("click", function () {
+        $("#group_name_input").val("");
+        $("#new_group_names").val("");
+        $("#collab_list li:not(:first)").remove();
+    });
+
     $(".edit_text").click(function () {
         $("#translate_textarea").show();
         paragraphId = $(this).data('paragraphid');
@@ -107,13 +121,6 @@ $(document).ready(function(){
         });
     });
 
-    $("#close_btn").on("click", function () {
-        $("#collab_names").val("");
-        $("#new_group_names").val("");
-        $("#collab_list li:not(:first)").remove();
-
-
-    });
 
     function goodreads(){}
     // when page loads

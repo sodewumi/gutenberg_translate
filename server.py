@@ -273,17 +273,21 @@ def on_join(data):
         Sent by clients when they enter a room.
     """
     username = session["login"][0]
-    room = data["bookgroup_id"]
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data["chapter_number"]
+    room = str(bookgroup_id) + str(chapter_number)
     join_room(room)
 
     emit('joined_status', {'msg': username + "has entered room" + str(room)}, room=room)
 
-# @socketio.on('text')
-# def translated_text_rt(data):
-#     """
-#         Sent by clients while they are translating a paragraph
-#     """
-#     pass
+@socketio.on('value changed', namespace='/rendertranslations')
+def translated_text_rt(message):
+    """
+        Sent by clients while they are translating a paragraph
+    """
+    print "YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+    print message, "****************************************"
+    emit('update text', message, broadcast=True)
 
 # @socketio.on("left")
 # def on_leave(data):

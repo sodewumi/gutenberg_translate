@@ -7,24 +7,42 @@ $(document).ready(function(){
     var counter = 0;
 
     var paragraphId;
-    
-    // var socket = io.connect("localhost:5000", {
-    //     "resource": "translate/render"
-    // });
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
-    // socket = io.connect();
+
     socket.on('connect', function () {
-        alert("connected");
-        socket.emit("joined", {"bookgroup_id": bookgroupId});
+        var chapterNumber = $("select[name=chapter_selection] option:selected").val();
+        socket.emit("joined", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
     });
+    // socket.emit('value changed', {"paragraphId" : 28, "change_text": "heyeyeg"});
+    // alert("socket send");
 
     socket.on('joined_status', function (data) {
         console.log(data.msg);
-
     });
 
     socket.on('my response', function () {
         alert("my response");
+    });
+
+    socket.on('update text', function (msg) {
+        console.log(msg);
+        $('#id' + msg.paragraphId +" p").val(msg.change_text);
+    });
+
+    $(".edit_text").click(function () {
+        // stop the deletion of text when another edit button is clicked
+        // show the edited text in the textarea
+        paragraphId = $(this).data('paragraphid');
+        var translated_para = $("#" + paragraphId);
+        var translated_para_text =  $("#" + paragraphId + " p").text();
+
+        $(".trans_para").hide();
+        $("#translate_textarea").show();
+        console.log(paragraphId);
+        console.log(translated_para_text);
+        // debugger;
+        socket.emit('value changed', {"paragraphId" : paragraphId, "change_text": translated_para_text});
+        console.log("Yeah boy");
     });
 
     function placeParagraph(translatedText, pId) {
@@ -118,16 +136,7 @@ $(document).ready(function(){
         $("#collab_list li:not(:first)").remove();
     });
 
-    $(".edit_text").click(function () {
-        // stop the deletion of text when another edit button is clicked
-        // show the edited text in the textarea
-        paragraphId = $(this).data('paragraphid');
-        var translated_para = $("#" + paragraphId);
-        var translated_para_text =  $("#" + paragraphId + " p").text();
 
-        $(".trans_para").hide();
-        $("#translate_textarea").show();
-    });
 
     $("#submit_bttn").on("click", function (evt) {
         evt.preventDefault();

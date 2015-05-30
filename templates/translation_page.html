@@ -79,12 +79,47 @@
     </div>
 
 
-<!--     <form name="text_form" method="POST" action="/save_text"
-        id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}">
-        <label>Translate :<br>
-            <textarea name="translated_text" id="text_form_ta" cols="40" rows="20" placeholder="Enter text here!" required></textarea>
-        </label><br>
-        <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
-        <input type="button" value="submit" id="submit_bttn">
-    </form> -->
+    <script type="text/javascript">
+        // var socket = io.connect("localhost:5000", {
+        //     "resource": "translate/render"
+        // });
+$(document).ready(function(){
+        var bookgroupId = $("#translate_textarea").data('bookgroupid');
+        var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
+        // socket = io.connect();
+        socket.on('connect', function () {
+            var chapterNumber = $("select[name=chapter_selection] option:selected").val();
+            socket.emit("joined", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+        });
+
+        socket.on('joined_status', function (data) {
+            console.log(data.msg);
+
+            
+        });
+        socket.on('my response', function () {
+            alert("my response");
+        });
+
+        socket.on('update text', function (msg) {
+            console.log(msg);
+            $('#id' + msg.paragraphId +" p").val(msg.change_text);
+        });
+
+        $(".edit_text").click(function () {
+        // stop the deletion of text when another edit button is clicked
+        // show the edited text in the textarea
+        paragraphId = $(this).data('paragraphid');
+        var translated_para = $("#" + paragraphId);
+        var translated_para_text =  $("#" + paragraphId + " p").text();
+
+        $(".trans_para").hide();
+        $("#translate_textarea").show();
+        console.log(paragraphId);
+        console.log(translated_para_text);
+        socket.emit('value changed', {"paragraphId" : paragraphId, "change_text": translated_para_text});
+        console.log("Yeah boy")
+    });
+});
+    </script>
 {% endblock %}

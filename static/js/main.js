@@ -1,66 +1,8 @@
 $(document).ready(function(){
     // add logic about what happens if edit button is already clicked
-    var langId = $("#translated").data('language');
-    var groupId = $("#translated").data('groupid');
-    var bookId = $("#translated").data('bookid');
-    var bookgroupId = $("#translate_textarea").data('bookgroupid');
-    var counter = 0;
-
-    var paragraphId;
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
-
-    socket.on('connect', function () {
-        var chapterNumber = $("select[name=chapter_selection] option:selected").val();
-        socket.emit("joined", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
-    });
-    // socket.emit('value changed', {"paragraphId" : 28, "change_text": "heyeyeg"});
-    // alert("socket send");
-
-    socket.on('joined_status', function (data) {
-        console.log(data.msg);
-    });
-
-    socket.on('my response', function () {
-        alert("my response");
-    });
-
-    socket.on('update text', function (msg) {
-        console.log(msg);
-        $('#id' + msg.paragraphId +" p").val(msg.change_text);
-    });
-
-    $(".edit_text").click(function () {
-        // stop the deletion of text when another edit button is clicked
-        // show the edited text in the textarea
-        paragraphId = $(this).data('paragraphid');
-        var translated_para = $("#" + paragraphId);
-        var translated_para_text =  $("#" + paragraphId + " p").text();
-
-        $(".trans_para").hide();
-        $("#translate_textarea").show();
-        console.log(paragraphId);
-        console.log(translated_para_text);
-        // debugger;
-        socket.emit('value changed', {"paragraphId" : paragraphId, "change_text": translated_para_text});
-        console.log("Yeah boy");
-    });
-
-    function placeParagraph(translatedText, pId) {
-        // Places the translated text in the assigned paragraph div depending on
-        // whether a user adds or updates a translation. Doesn't make a db call.
-        // change name
-
-        var paragraphId = $("#"+pId);
-
-        paragraphId.empty();
-        paragraphId.html("<p>"+translatedText+"</p>");
-    }
-
     function hiddenInputs(newUsername) {
-
         var hiddenInput = $("<input type='hidden' name='usernames'>").val(newUsername);
         $("#add_book_form .form-group").last().after(hiddenInput);
-
     }
 
     function userExists (exists) {
@@ -88,17 +30,7 @@ $(document).ready(function(){
             $("#error_message").html("This username doesn't exist");
         }
     }
-
-
-    // hides and shows edit button
-    $(".a_chapter_and_bttn").on("mouseenter", function () {
-        $(this).find("button").show();
-    });
-
-    $(".a_chapter_and_bttn").on("mouseleave", function () {
-        $(this).find("button").hide();
-    });
-
+    
     //on keypress send an ajax rquest that checks if user exists
     $("#group_name_input").on("keypress", function (evt) {
         $("#error_message").empty();
@@ -136,37 +68,4 @@ $(document).ready(function(){
         $("#collab_list li:not(:first)").remove();
     });
 
-
-
-    $("#submit_bttn").on("click", function (evt) {
-        evt.preventDefault();
-        var translated_text = $("#text_form_ta").val();
-
-        $.ajax({
-            url: "/save_text",
-            data: $('form').serialize() + "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
-            type: "POST",
-            success: function(response) {
-                $("#translate_textarea").hide();
-                placeParagraph(response.translated_text, response.paragraph_id);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
-        $(".trans_para").show();
-    });
-
-
-    function goodreads(){}
-    // when page loads
-    function main() {
-        // hide the edit text button
-        var edit_text_bttn = $(".edit_text");
-        edit_text_bttn.hide();
-
-        $("#translate_textarea").hide();
-    }
-
-    main();
 });

@@ -285,8 +285,7 @@ def translated_text_rt(message):
     """
         Sent by clients while they are translating a paragraph
     """
-    print "YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
-    print message, "****************************************"
+# 
     emit('update text', message, broadcast=True)
 
 # @socketio.on("left")

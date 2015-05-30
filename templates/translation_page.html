@@ -86,8 +86,6 @@
         var groupId = $("#translated").data('groupid');
         var bookId = $("#translated").data('bookid');
         var bookgroupId = $("#translate_textarea").data('bookgroupid');
-        var counter = 0;
-
         var paragraphId;
         var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
 
@@ -105,11 +103,13 @@
         });
 
         socket.on('update text', function (msg) {
-            console.log(msg);
+            console.log(msg.change_text);
             $('#id' + msg.paragraphId +" p").val(msg.change_text);
         });
 
-        $(".edit_text").click(function () {
+
+
+        $(".edit_text").click(function (editevt) {
             // stop the deletion of text when another edit button is clicked
             // show the edited text in the textarea
             paragraphId = $(this).data('paragraphid');
@@ -118,12 +118,15 @@
 
             $(".trans_para").hide();
             $("#translate_textarea").show();
-            console.log(paragraphId);
-            console.log(translated_para_text);
-            // debugger;
-            socket.emit('value changed', {"paragraphId" : paragraphId, "change_text": translated_para_text});
-            console.log("Yeah boy");
+            $("#text_form_ta").trigger("input");
         });
+
+        $("#text_form_ta").on("input", function (evt) {
+            console.log("input triggered")
+            socket.emit('value changed', {"paragraphId" : paragraphId,
+            "change_text": $(this).val()});
+            console.log($(this).text())       
+        })
 
         function placeParagraph(translatedText, pId) {
             // Places the translated text in the assigned paragraph div depending on

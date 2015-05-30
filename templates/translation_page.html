@@ -103,11 +103,11 @@
         });
 
         socket.on('update text', function (msg) {
-            console.log(msg.change_text);
-            $('#id' + msg.paragraphId +" p").val(msg.change_text);
+            // console.log(msg.change_text);
+            // console.log(msg.paragraphId)
+            // console.log('#id' + msg.paragraphId +" p")
+            $('#' + msg.paragraphId +" p").text(msg.change_text);
         });
-
-
 
         $(".edit_text").click(function (editevt) {
             // stop the deletion of text when another edit button is clicked
@@ -120,6 +120,7 @@
             $("#translate_textarea").show();
             $("#text_form_ta").trigger("input");
         });
+
 
         $("#text_form_ta").on("input", function (evt) {
             console.log("input triggered")

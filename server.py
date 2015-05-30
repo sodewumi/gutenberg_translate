@@ -275,7 +275,7 @@ def on_join(data):
     username = session["login"][0]
     bookgroup_id = data["bookgroup_id"]
     chapter_number = data["chapter_number"]
-    room = str(bookgroup_id) + str(chapter_number)
+    room = str(bookgroup_id) + "." + str(chapter_number)
     join_room(room)
 
     emit('joined_status', {'msg': username + "has entered room" + str(room)}, room=room)
@@ -285,15 +285,8 @@ def translated_text_rt(message):
     """
         Sent by clients while they are translating a paragraph
     """
-# 
-    emit('update text', message, broadcast=True)
 
-# @socketio.on("left")
-# def on_leave(data):
-#     """
-#         Sent by clients when they leave the room.
-#     """
-#     pass
+    emit('update text', message, broadcast=True)
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""

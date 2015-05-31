@@ -31,6 +31,10 @@ $(document).ready(function(){
         $('#' + msg.paragraphId +" p").text(msg.change_text);
     });
 
+    socket.on('render reverted text', function (msg) {
+        $('#' + msg.paragraphIdAjax +" p").text(msg.last_text);
+    });
+
     function placeParagraph(translatedText, pId) {
         // Places the translated text in the assigned paragraph div depending on
         // whether a user adds or updates a translation.
@@ -71,14 +75,14 @@ $(document).ready(function(){
             data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
-               console.log(response.last_saved_trans);
+                console.log(response.last_saved_trans + " ctb");
+               socket.emit("canceled translation", {"last_text" :
+                response.last_saved_trans, "paragraphIdAjax" : response.paragraph_id});
             },
             error: function(error) {
                 console.log(error);
             }
         });
-
-        // $(".trans_para").show();
     });
 
     // hides and shows edit button

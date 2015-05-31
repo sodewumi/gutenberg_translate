@@ -309,6 +309,14 @@ def translated_text_rt(message):
 
     emit('update text', message, broadcast=True)
 
+@socketio.on('canceled translation', namespace='/rendertranslations')
+def revert_text(message):
+    """ Takes the last saved translation and renders it on the page if the clients
+        cancels their translation
+    """
+    print "ct-py"
+    emit('render reverted text', message, broadcast=True)
+
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""
 
@@ -350,7 +358,7 @@ def save_translation_text():
     return jsonify({"status": "OK", "translated_text": translated_text, "paragraph_id": paragraph_id_input})
 
 @app.route("/cancel_translation", methods=["POST"])
-def revert_text():
+def last_saved_translations():
     """
         If the user cancels current translation, sends the last saved edit back
         to page.
@@ -358,9 +366,9 @@ def revert_text():
     paragraph_id_input = int(request.form["p_id"])
     bookgroup_id_input = int(request.form["bg_id"])
     translated_p_obj = db.session.query(Translation).filter_by(
-        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
+        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).one()
 
-    return jsonify({"status": "OK", "last_saved_trans": translated_p_obj.translated_paragraph})
+    return jsonify({"status": "OK", "last_saved_trans": translated_p_obj.translated_paragraph, "paragraph_id":paragraph_id_input})
 
 
 

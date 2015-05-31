@@ -32,7 +32,13 @@ $(document).ready(function(){
     });
 
     socket.on('render reverted text', function (msg) {
+        // If user cancels, rerenders the last translation within the database
         $('#' + msg.paragraphIdAjax +" p").text(msg.last_text);
+    });
+
+    socket.on('render submitted text', function (msg) {
+        // renders saved text when user hits submit
+        $('#' + msg.paragraphId +" p").text(msg.changed_text);
     });
 
     function placeParagraph(translatedText, pId) {
@@ -75,7 +81,6 @@ $(document).ready(function(){
             data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
-                console.log(response.last_saved_trans + " ctb");
                socket.emit("canceled translation", {"last_text" :
                 response.last_saved_trans, "paragraphIdAjax" : response.paragraph_id});
             },
@@ -104,7 +109,8 @@ $(document).ready(function(){
             data: $('form').serialize() + "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
-                placeParagraph(response.translated_text, response.paragraph_id);
+                socket.emit("submit text", {"changed_text" : response.translated_text, "paragraphId": response.paragraph_id});
+                // placeParagraph(response.translated_text, response.paragraph_id);
             },
             error: function(error) {
                 console.log(error);

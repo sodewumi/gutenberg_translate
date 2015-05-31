@@ -314,8 +314,13 @@ def revert_text(message):
     """ Takes the last saved translation and renders it on the page if the clients
         cancels their translation
     """
-    print "ct-py"
+
     emit('render reverted text', message, broadcast=True)
+
+@socketio.on('submit text', namespace='/rendertranslations')
+def new_text(message):
+
+    emit('render submitted text', message, broadcast=True)
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""

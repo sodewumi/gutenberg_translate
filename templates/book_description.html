@@ -31,7 +31,6 @@
                         {% for user in group.users %}
                         <li>{{ user.username }}</li>
                         {% endfor %}
-
                         <li>
                             <form class="edit_book_form" action="/rendertranslations"
                                     method="GET" data-bookId ="{{ display_book.book_id }}"

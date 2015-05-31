@@ -52,8 +52,6 @@ $(document).ready(function(){
         var translated_para = $("#" + paragraphId);
         var translated_para_text =  $("#" + paragraphId + " p").text();
 
-        $(".trans_para").hide();
-        $("#translate_textarea").show();
         $("#text_form_ta").trigger("input");
     });
 
@@ -109,8 +107,6 @@ $(document).ready(function(){
         // hide the edit text button
         var edit_text_bttn = $(".edit_text");
         edit_text_bttn.hide();
-
-        $("#translate_textarea").hide();
     }
 
     main();

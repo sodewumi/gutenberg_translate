@@ -42,25 +42,50 @@
 
 
     <div id="wrapper">
-        <form name="text_form" method="POST" action="/save_text"
-            id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}"
-            class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6">
-            <label>Translate :<br>
-                <textarea name="translated_text" id="text_form_ta"
-                placeholder="Enter text here!" required></textarea>
-            </label><br>
-            <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
-            <!-- <button>Delete</button> -->
-            <input type="button" value="submit" id="submit_bttn">
+        <div class="modal fade" id="add_translation_section" tabindex="-1" role="dialog" 
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title text-center">
+                        Translation
+                    </h1>
+                </div>
 
-        </form>
+                <div class="modal-body">
+                    <form name="text_form" method="POST" action="/save_text"
+                        id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}"
+                        class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6">
+                        <div class="form-group">Translate :<br>
+                            <textarea name="translated_text" id="text_form_ta"
+                            placeholder="Enter text here!" required></textarea>
+                        </div><br>
+                        <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
+                        <input type="button" value="submit" id="submit_bttn">
+                        <button id="cancel_translation">Cancel</button>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <button class="btn" id="close_btn" data-dismiss="modal" aria-hidden="true">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
         {%  for paragraph in display_chapter %}
         <div class="book_rendering row">
             <div class="untranslated col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <div class="a_chapter_and_bttn {{ paragraph.paragraph_id }}">
                     <p>{{ paragraph.untranslated_paragraph }}</p>
-                    <button class="edit_text" data-paragraphid="{{ paragraph.paragraph_id }}"> Edit
-                    </button> 
+                    <button type="button" class="btn edit_text" data-toggle="modal"
+                            data-target="#add_translation_section" data-paragraphid="{{ paragraph.paragraph_id }}">
+                        Translate Book
+                    </button>
                 </div>
             </div>
 

@@ -99,6 +99,12 @@ $(document).ready(function(){
         }
     });
 
+    // leaves room
+    $("#chosen_chap_submit").on("click", function (evt) {
+        var chapterNumber = $("select[name=chapter_selection] option:selected").val();
+        socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+    });
+
     function main() {
         // hide the edit text button
         var edit_text_bttn = $(".edit_text");

@@ -85,11 +85,20 @@ def logout_user():
     flash("You've successfully logged out. Goodbye.")
     return redirect("/")
     
-@app.route("/profile")
-def display_profile():
+@app.route("/profile/<int:user_id>")
+def display_profile(user_id):
     """Return a user's profile page."""
     
-    return render_template("profile.html")
+    user_obj = User.query.filter(User.user_id == user_id).one()
+
+    group_obj_list = user_obj.groups
+    bookgroup_obj_dict = {}
+
+    for i, group in enumerate(group_obj_list):
+        bookgroup_obj_dict[i] = [group.group_name]
+        bookgroup_obj_dict[i] = bookgroup_obj_dict[i].extend(group.bookgroups)
+    
+    return render_template("profile.html", bookgroup_obj_dict=bookgroup_obj_dict)
  
 @app.route("/explore")
 def display_explore_books():
@@ -210,8 +219,6 @@ def submit_add_translation_form(gutenberg_extraction_number):
     db.session.add(new_bookgroup_obj)
     db.session.commit()
 
-    print new_bookgroup_obj.bookgroup_id, "********************"
-
     return redirect(url_for(".display_translation_page", bookgroup_id_input = new_bookgroup_obj.bookgroup_id))
 
 
@@ -278,7 +285,21 @@ def on_join(data):
     room = str(bookgroup_id) + "." + str(chapter_number)
     join_room(room)
 
-    emit('joined_status', {'msg': username + "has entered room" + str(room)}, room=room)
+    emit('joined_status', {'msg': username + " has entered room " + str(room)}, room=room)
+
+@socketio.on('leave', namespace='/rendertranslations')
+def on_leave(data):
+    """
+        Sent by clients when the leave a room
+    """
+    username = session["login"][0]
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data["chapter_number"]
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    leave_room(room)
+
+    emit('joined_status', {'msg': username + " has left room " + str(room)}, room=room)
+
 
 @socketio.on('value changed', namespace='/rendertranslations')
 def translated_text_rt(message):
@@ -305,7 +326,7 @@ def save_translation_text():
     """
         Saves the text translation in the database
     """
-
+    
     translated_text = request.form['translated_text']
     paragraph_id_input = int(request.form["p_id"])
     bookgroup_id_input = int(request.form["bg_id"])
@@ -440,5 +461,5 @@ if __name__ == "__main__":
     app.debug = True
     DebugToolbarExtension(app)
     # book_database()
-    socketio.run(app)
+    # socketio.run(app)
     app.run(debug=True)

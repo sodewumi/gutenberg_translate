@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
-
 {% block body %}
-<p>profile</p>
+
+<h1>{{ session["login"][0] }}'s Profile</h1>
+
+<hr>
+<h2>Projects</h2>
+
+
+{% for num, list in bookgroup_obj_dict.iteritems() %}
+<ul>
+    <li>{{ list[0] }}</li>
+    <li>{{ list[1].language }}</li>
+
+</ul>
+
+{% endfor %}
+
+
 {% endblock %}

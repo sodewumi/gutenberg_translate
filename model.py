@@ -25,7 +25,10 @@ class Group(db.Model):
 
     group_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     group_name = db.Column(db.String(30), nullable=False)
-    
+
+    def __repr__(self):
+        return "<Group: group_id=%d, group_name=%s" %(
+            self.group_id, self.group_name)    
 
 
 class UserGroup(db.Model):

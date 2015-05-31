@@ -3,13 +3,13 @@
 <head>
     <!-- stylesheets -->
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-    <!-- <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css"> -->
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css">
+    <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
     <!-- javascript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <!--<script src="/static/bootstrap/js/bootstrap.js"></script>-->
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
 
 
 
@@ -23,8 +23,9 @@
         <ul>
             <li><a href="/">Gutenberg Translate</a></li>
             <li><a href="/explore">Explore Books</a></li>
-            <li><a href="/profile">Your Translations</a></li>
+
             {% if session.get('login') %}
+            <li><a href="/profile/{{ session['login'][1] }}">Your Translations</a></li>
             <li><a href="#"> {{ session['login'][0] }} </a></li>
             {% else %}
             <li>login</li>

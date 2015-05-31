@@ -49,8 +49,11 @@ $(document).ready(function(){
         // When .edit_text is click, it triggers the socket.emit on the input
         // event handler for #text_form_ta
         paragraphId = $(this).data('paragraphid');
-        var translated_para = $("#" + paragraphId);
         var translated_para_text =  $("#" + paragraphId + " p").text();
+        var untranslated_para_text = $("." + paragraphId + " p").text();
+
+        $("#current_untans_text p").text(untranslated_para_text);
+        $("#text_form_ta").val(translated_para_text);
 
         $("#text_form_ta").trigger("input");
     });
@@ -81,7 +84,6 @@ $(document).ready(function(){
             data: $('form').serialize() + "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
-                $("#translate_textarea").hide();
                 placeParagraph(response.translated_text, response.paragraph_id);
             },
             error: function(error) {

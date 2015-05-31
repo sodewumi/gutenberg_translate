@@ -1,8 +1,9 @@
-h1 {
+/*h1 {
     text-align: center
-}
+}*/
 
 #translate_textarea {
+    /*need so text form takes precedence over modal*/
     z-index: 9999;
 }
 /*.trans_para,
@@ -30,12 +31,12 @@ h1 {
 /*.untranslated {
     border: 2px solid red;
 }
-
-.trans_para {
+*/
+#current_untans_text {
     border: 2px solid green;
 }
 
 
-.book_rendering {
+#translate_textarea {
     border: 2px solid yellow;
-}*/
+}

@@ -349,6 +349,21 @@ def save_translation_text():
 
     return jsonify({"status": "OK", "translated_text": translated_text, "paragraph_id": paragraph_id_input})
 
+@app.route("/cancel_translation", methods=["POST"])
+def revert_text():
+    """
+        If the user cancels current translation, sends the last saved edit back
+        to page.
+    """
+    paragraph_id_input = int(request.form["p_id"])
+    bookgroup_id_input = int(request.form["bg_id"])
+    translated_p_obj = db.session.query(Translation).filter_by(
+        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
+
+    return jsonify({"status": "OK", "last_saved_trans": translated_p_obj.translated_paragraph})
+
+
+
 def open_file(file_id):
     """
         Opens a file from project gutenberg 
@@ -461,5 +476,5 @@ if __name__ == "__main__":
     app.debug = True
     DebugToolbarExtension(app)
     # book_database()
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)

@@ -65,6 +65,22 @@ $(document).ready(function(){
                 "change_text": $(this).val()});
     });
 
+    $("#cancel_translation_btn").on("click", function (evt) {
+        $.ajax({
+            url: "/cancel_translation",
+            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
+            type: "POST",
+            success: function(response) {
+               console.log(response.last_saved_trans);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+
+        // $(".trans_para").show();
+    });
+
     // hides and shows edit button
     $(".a_chapter_and_bttn").on("mouseenter", function () {
         $(this).find("button").show();

@@ -132,9 +132,9 @@ class Translation(db.Model):
     # user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
     def __repr__(self):
-        return """"<Translation: translation_id=%d, language=%s, paragraph_id=%d,
-            user_id=%d""" %(self.translation_id, self.language, self.paragraph_id,\
-                self.user_id)
+        return """"<Translation: translation_id=%d, paragraph_id=%d,
+            bookgroup_id=%d translated_paragraph=%s""" %(self.translation_id, self.paragraph_id,\
+                self.bookgroup_id, self.translated_paragraph)
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""

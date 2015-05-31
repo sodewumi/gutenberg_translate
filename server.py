@@ -18,7 +18,7 @@ from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translatio
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
 app.jinja_env .undefined = jinja2.StrictUndefined
-socketio = SocketIO(app)
+# socketio = SocketIO(app)
 
 @app.route("/", methods=["GET"])
 def display_homepage():
@@ -263,30 +263,30 @@ def display_translation_page():
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
         bookgroup_id=bookgroup_id)
 
-@socketio.on('connect', namespace='/rendertranslations')
-def test_connect():
-    emit('my response', {'data': 'Connected'})
+# @socketio.on('connect', namespace='/rendertranslations')
+# def test_connect():
+#     emit('my response', {'data': 'Connected'})
 
-@socketio.on('joined', namespace='/rendertranslations')
-def on_join(data):
-    """
-        Sent by clients when they enter a room.
-    """
-    username = session["login"][0]
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data["chapter_number"]
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    join_room(room)
+# @socketio.on('joined', namespace='/rendertranslations')
+# def on_join(data):
+#     """
+#         Sent by clients when they enter a room.
+#     """
+#     username = session["login"][0]
+#     bookgroup_id = data["bookgroup_id"]
+#     chapter_number = data["chapter_number"]
+#     room = str(bookgroup_id) + "." + str(chapter_number)
+#     join_room(room)
 
-    emit('joined_status', {'msg': username + "has entered room" + str(room)}, room=room)
+#     emit('joined_status', {'msg': username + "has entered room" + str(room)}, room=room)
 
-@socketio.on('value changed', namespace='/rendertranslations')
-def translated_text_rt(message):
-    """
-        Sent by clients while they are translating a paragraph
-    """
+# @socketio.on('value changed', namespace='/rendertranslations')
+# def translated_text_rt(message):
+#     """
+#         Sent by clients while they are translating a paragraph
+#     """
 
-    emit('update text', message, broadcast=True)
+#     emit('update text', message, broadcast=True)
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""
@@ -440,5 +440,5 @@ if __name__ == "__main__":
     app.debug = True
     DebugToolbarExtension(app)
     # book_database()
-    socketio.run(app)
+    # socketio.run(app)
     app.run(debug=True)

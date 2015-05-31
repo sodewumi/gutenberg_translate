@@ -87,27 +87,27 @@
         var bookId = $("#translated").data('bookid');
         var bookgroupId = $("#translate_textarea").data('bookgroupid');
         var paragraphId;
-        var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
+        // var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
 
-        socket.on('connect', function () {
-            var chapterNumber = $("select[name=chapter_selection] option:selected").val();
-            socket.emit("joined", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
-        });
+        // socket.on('connect', function () {
+        //     var chapterNumber = $("select[name=chapter_selection] option:selected").val();
+        //     socket.emit("joined", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+        // });
 
-        socket.on('joined_status', function (data) {
-            console.log(data.msg);
-        });
+        // socket.on('joined_status', function (data) {
+        //     console.log(data.msg);
+        // });
 
-        socket.on('my response', function () {
-            alert("my response");
-        });
+        // socket.on('my response', function () {
+        //     alert("my response");
+        // });
 
-        socket.on('update text', function (msg) {
-            // console.log(msg.change_text);
-            // console.log(msg.paragraphId)
-            // console.log('#id' + msg.paragraphId +" p")
-            $('#' + msg.paragraphId +" p").text(msg.change_text);
-        });
+        // socket.on('update text', function (msg) {
+        //     // console.log(msg.change_text);
+        //     // console.log(msg.paragraphId)
+        //     // console.log('#id' + msg.paragraphId +" p")
+        //     $('#' + msg.paragraphId +" p").text(msg.change_text);
+        // });
 
         $(".edit_text").click(function (editevt) {
             // stop the deletion of text when another edit button is clicked
@@ -124,8 +124,8 @@
 
         $("#text_form_ta").on("input", function (evt) {
             console.log("input triggered")
-            socket.emit('value changed', {"paragraphId" : paragraphId,
-            "change_text": $(this).val()});
+            // socket.emit('value changed', {"paragraphId" : paragraphId,
+            // "change_text": $(this).val()});
             console.log($(this).text())       
         })
 
@@ -165,6 +165,16 @@
                 }
             });
             $(".trans_para").show();
+        });
+
+        function isEmpty( el ){
+            return !$.trim(el.html())
+        }
+
+        $(".trans_para").each(function () {
+            if (isEmpty($(this))) {
+                $(this).html("<p></p>");                
+            }
         });
 
         function main() {

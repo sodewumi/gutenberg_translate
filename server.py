@@ -362,6 +362,24 @@ def save_translation_text():
 
     return jsonify({"status": "OK", "translated_text": translated_text, "paragraph_id": paragraph_id_input})
 
+@app.route("/in_translation", methods=["POST"])
+def check_translation_in_progress():
+    """
+        Checks if another user is currently translating the paragraph the user has
+        clicked on.
+    """
+
+    paragraph_id_input = int(request.form["p_id"])
+    bookgroup_id_input = int(request.form["bg_id"])
+    current_trans_text = request.form["current_trans_text"]
+    translated_p_obj = db.session.query(Translation).filter_by(
+        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).one()
+
+    if translated_p_obj.translated_paragraph == current_trans_text:
+        return jsonify({"status": "OK", "inProgress": False})
+    else:
+        return jsonify({"status": "OK", "inProgress": True})
+
 @app.route("/cancel_translation", methods=["POST"])
 def last_saved_translations():
     """

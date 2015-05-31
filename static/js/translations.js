@@ -25,9 +25,11 @@ $(document).ready(function(){
         console.log(data.msg);
     });
 
+    // TODO: Figure out if sockets can be combined together
     socket.on('update text', function (msg) {
         // The currently updated text is taken from the update text socket route
         //  and rendered on the appropriate paragraph.
+
         $('#' + msg.paragraphId +" p").text(msg.change_text);
     });
 
@@ -60,6 +62,20 @@ $(document).ready(function(){
         // event handler for #text_form_ta
         paragraphId = $(this).data('paragraphid');
         var translated_para_text =  $("#" + paragraphId + " p").text();
+
+        $.ajax({
+            url: "/in_translation",
+            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&current_trans_text=" + translated_para_text,
+            type: "POST",
+            success: function(response) {
+               console.log(response.inProgress);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+
+        // var translated_para_text =  $("#" + paragraphId + " p").text();
         var untranslated_para_text = $("." + paragraphId + " p").text();
 
         $("#current_untans_text p").text(untranslated_para_text);

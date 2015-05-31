@@ -43,13 +43,20 @@ $(document).ready(function(){
         $('#' + msg.paragraphId +" p").text(msg.changed_text);
     });
 
-    function placeParagraph(translatedText, pId) {
-        // Places the translated text in the assigned paragraph div depending on
-        // whether a user adds or updates a translation.
-        var paragraphId = $("#"+pId);
+    function translationInProgress (inProgress, paragraphId, translated_para_text) {
+        if (inProgress === false) {
+            $("#error_translation_in_progress").hide();
+            $("#translation_form").show();
+            var untranslated_para_text = $("." + paragraphId + " p").text();
 
-        paragraphId.empty();
-        paragraphId.html("<p>"+translatedText+"</p>");
+            $("#current_untans_text p").text(untranslated_para_text);
+            $("#text_form_ta").val(translated_para_text);
+
+            $("#text_form_ta").trigger("input");
+        } else {
+            $("#translation_form").hide();
+            $("#error_translation_in_progress").show();
+        }
     }
 
     function isEmpty( el ){
@@ -68,7 +75,7 @@ $(document).ready(function(){
             data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&current_trans_text=" + translated_para_text,
             type: "POST",
             success: function(response) {
-               console.log(response.inProgress);
+              translationInProgress(response.inProgress, paragraphId, translated_para_text);
             },
             error: function(error) {
                 console.log(error);
@@ -76,12 +83,7 @@ $(document).ready(function(){
         });
 
         // var translated_para_text =  $("#" + paragraphId + " p").text();
-        var untranslated_para_text = $("." + paragraphId + " p").text();
 
-        $("#current_untans_text p").text(untranslated_para_text);
-        $("#text_form_ta").val(translated_para_text);
-
-        $("#text_form_ta").trigger("input");
     });
 
     $("#text_form_ta").on("input", function (evt) {

@@ -127,6 +127,23 @@ def display_book_description(gutenberg_extraction_number):
     # find group translation language
     current_groups_list = current_user.groups
 
+    current_groupss_list = book_obj.groups
+    print book_obj
+    print current_groupss_list, "*current groups list**************"
+    group_id_list = [group.group_id for group in current_groupss_list]
+
+    groups_translating = Group.query.filter(Group.group_id.in_(group_id_list)).all()
+
+    print groups_translating, "*********************"
+    print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+
+
+    # collaborators_user_objs = User.query.filter(
+    #     User.username.in_(collaborator_list)
+    #     ).all() 
+
+
+
     group_language_dict = {}
     for group in current_groups_list:
         language = group.bookgroups[0].language
@@ -137,7 +154,7 @@ def display_book_description(gutenberg_extraction_number):
         if bookgroup_id not in group_language_dict[group.group_id]:
             group_language_dict[group.group_id].append(bookgroup_id)
 
-    # print good_reads(), "********************"
+
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number, 
         current_user=current_user, group_language_dict=group_language_dict)
@@ -292,14 +309,16 @@ def on_leave(data):
     """
         Sent by clients when the leave a room
     """
+
     username = session["login"][0]
     bookgroup_id = data["bookgroup_id"]
     chapter_number = data["chapter_number"]
+    print chapter_number, "***********8chapter number"
     room = str(bookgroup_id) + "." + str(chapter_number)
     leave_room(room)
 
-    emit('joined_status', {'msg': username + " has left room " + str(room)}, room=room)
-
+    emit('leave_status', {'msg': username + " has left room " + str(room)}, room=room)
+    print "IM LEAVING ************************************"
 
 @socketio.on('value changed', namespace='/rendertranslations')
 def translated_text_rt(message):
@@ -455,7 +474,7 @@ def process_book_chapters(guten_extraction_number):
     # push chapter_list into a database
     book_database(chapter_list, book_obj)
 
-def amazon_setup(book_obj_list):
+def amazon_setup():
     """
         Connects to amazon web services API
     """
@@ -469,7 +488,7 @@ def amazon_setup(book_obj_list):
 
     api = API(cfg=config)
 
-    # book_obj_list = Book.query.all()
+    book_obj_list = Book.query.all()
     isbn_list = []
     for book_obj in book_obj_list:
         isbn_list.append(book_obj.isbn)
@@ -485,12 +504,13 @@ def book_lookup(isbn_list, api):
         for item in res.Items.Item:
             img_url = str(item.LargeImage.URL)
             api_dict.setdefault(isbn, img_url)
-    return api_dict
+    return aws_api_to_db(api_dict)
 
 def aws_api_to_db(api_dict):
 
     for isbn in api_dict:
-        book_obj = Book.query.filter_by(isbn=isbn)
+        book_obj = Book.query.filter_by(isbn=isbn).one()
+        print book_obj, "a book obj *********************"
         book_obj.cover = api_dict[isbn]
     db.session.commit()
 

@@ -7,7 +7,7 @@
         {% for book in all_book_objs %}
         <li id="{{ book.gutenberg_extraction_num }}">
             <a href="/description/{{ book.gutenberg_extraction_num }}">
-                <img src="http://placekitten.com/g/96/140">
+                <img src="{{ book.cover }}">
             </a>
             <h2>{{ book.name }}</h2>
             <h3>{{ book.author }}</h3>

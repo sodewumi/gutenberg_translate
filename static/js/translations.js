@@ -22,6 +22,14 @@ $(document).ready(function(){
     socket.on('joined_status', function (data) {
         // Transmits a message from the server that the user succesfully joined
         // a room. Sent from joined socket route
+        alert(data.msg);
+        console.log(data.msg);
+    });
+
+    socket.on('leave_status', function (data) {
+        // Transmits a message from the server that the user succesfully joined
+        // a room. Sent from joined socket route
+        alert(data.msg);
         console.log(data.msg);
     });
 
@@ -144,8 +152,12 @@ $(document).ready(function(){
 
     // leaves room
     $("#chosen_chap_submit").on("click", function (evt) {
+
         socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
         var chapterNumber = $("select[name=chapter_selection] option:selected").val();
+
+                alert("leaving");
+
     });
 
     function main() {

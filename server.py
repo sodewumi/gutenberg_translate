@@ -4,13 +4,13 @@ import os
 # third-party modules
 import jinja2
 import requests
-# from amazonproduct import API
+from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify, url_for
 from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
-# from lxml import etree
+from lxml import etree
 # my modules
 from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup
 
@@ -466,13 +466,12 @@ def amazon_setup(book_obj_list):
 
     api = API(cfg=config)
 
+    # book_obj_list = Book.query.all()
     isbn_list = []
     for book_obj in book_obj_list:
         isbn_list.append(book_obj.isbn)
-    # print isbn_list, "******************"
 
     return book_lookup(isbn_list, api)
-
 
 def book_lookup(isbn_list, api):
     api_dict = {}
@@ -481,24 +480,16 @@ def book_lookup(isbn_list, api):
         res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN',
             ResponseGroup="Images, Reviews")
         for item in res.Items.Item:
-            img_url = item.LargeImage.URL
-            reviews_url = item.CustomerReviews.IFrameURL
-            api_dict.setdefault(isbn, {"image": img_url})
-            api_dict[isbn].setdefault("reviews", reviews_url)
+            img_url = str(item.LargeImage.URL)
+            api_dict.setdefault(isbn, img_url)
     return api_dict
 
 def aws_api_to_db(api_dict):
 
     for isbn in api_dict:
         book_obj = Book.query.filter_by(isbn=isbn)
-        for info in isbn:
-            if info == "image":
-                print "*****image******", api_dict[isbn][info]
-                book_obj.cover = api_dict[isbn][info]
-            else:
-                print "******review******", api_dict[isbn][info]
-                book_obj.reviews = api_dict[isbn][info]
-    db.commit()
+        book_obj.cover = api_dict[isbn]
+    db.session.commit()
 
 def book_ratings():
     book_isbn_tuple = db.session.query(Book.isbn, Book.book_id).all()
@@ -518,16 +509,14 @@ def book_ratings():
         book_obj.rating = rating_dict['average_rating']
 
         db.session.commit()
-    return "done"
 
-
-       
 
 if __name__ == "__main__":
     connect_to_db(app)
     app.debug = True
     DebugToolbarExtension(app)
     # book_database()
-    # print book_ratings()
+    # book_ratings()
+    # amazon_setup()
     socketio.run(app)
     app.run(debug=True)

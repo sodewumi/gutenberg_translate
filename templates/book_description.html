@@ -17,14 +17,14 @@
             </p>
         </div>
         <!-- if the user has any other groups translating the book -->
-        {% if current_user.groups %}
+        {% if groups_list %}
             <ul>
-                {% for group in current_user.groups %}
+                {% for group in groups_list %}
                 <li>{{ group.group_name }}</li>
 
                 <!-- checks which language a group translated a book into -->
                 <li>
-                    {{ group_language_dict[group.group_id][0] }}
+                    {{ group.bookgroups[0].language }}
                 </li>
                     <ul>
                         <!-- displays all people in the group -->
@@ -34,13 +34,13 @@
                         <li>
                             <form class="edit_book_form" action="/rendertranslations"
                                     method="GET" data-bookId ="{{ display_book.book_id }}"
-                                    data-language="{{ group_language_dict[group.group_id][0] }}"
+                                    data-language="{{  group.bookgroups[0].language }}"
                                     data-groupid="{{ group.group_id }}">
                                 <input type="hidden" name="hidden_lang_input" 
-                                        value="{{ group_language_dict[group.group_id][0] }}">
+                                        value="{{  group.bookgroups[0].language }}">
                                 <input type="hidden" name="hidden_groupid_input"
                                         value="{{ group.group_id }}">
-                                <input type="hidden" name="bookgroup_id_input" value="{{ group_language_dict[group.group_id][1] }}">
+                                <input type="hidden" name="bookgroup_id_input" value="{{ group.bookgroups[0].bookgroup_id }}">
                                 <input type="submit" value='Go to existing translations'>
                             </form>
                         </li>

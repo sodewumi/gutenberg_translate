@@ -150,15 +150,19 @@ $(document).ready(function(){
         }
     });
 
-    // leaves room
-    $("#chosen_chap_submit").on("click", function (evt) {
+    // $('#choosen_chap_form').on("submit", function (evt) {
+    //     socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+    //     var chapterNumber = $("select[name=chapter_selection] option:selected").val();
+    // });
+    // // leaves room
+    // $("#chosen_chap_submit").on("click", function (evt) {
 
-        socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
-        var chapterNumber = $("select[name=chapter_selection] option:selected").val();
 
-                alert("leaving");
 
-    });
+
+    //             alert("leaving");
+
+    // });
 
     function main() {
         // hide the edit text button

@@ -124,40 +124,16 @@ def display_book_description(gutenberg_extraction_number):
     # add to user class
     current_user = User.query.filter(User.user_id == session[u'login'][1]).one()
     
-    # find group translation language
-    current_groups_list = current_user.groups
+    current_groups_list = book_obj.groups
 
-    current_groupss_list = book_obj.groups
-    print book_obj
-    print current_groupss_list, "*current groups list**************"
-    group_id_list = [group.group_id for group in current_groupss_list]
 
+    group_id_list = [group.group_id for group in current_groups_list]
     groups_translating = Group.query.filter(Group.group_id.in_(group_id_list)).all()
-
     print groups_translating, "*********************"
-    print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-
-
-    # collaborators_user_objs = User.query.filter(
-    #     User.username.in_(collaborator_list)
-    #     ).all() 
-
-
-
-    group_language_dict = {}
-    for group in current_groups_list:
-        language = group.bookgroups[0].language
-        bookgroup_id = group.bookgroups[0].bookgroup_id
-
-        group_language_dict.setdefault(group.group_id, [language])
-
-        if bookgroup_id not in group_language_dict[group.group_id]:
-            group_language_dict[group.group_id].append(bookgroup_id)
 
 
     return render_template("book_description.html", display_book = book_obj,
-        gutenberg_extraction_number=gutenberg_extraction_number, 
-        current_user=current_user, group_language_dict=group_language_dict)
+        gutenberg_extraction_number=gutenberg_extraction_number, groups_list = groups_translating)
 
 
 @app.route("/check_user", methods=["POST"])

@@ -373,12 +373,15 @@ def check_translation_in_progress():
     bookgroup_id_input = int(request.form["bg_id"])
     current_trans_text = request.form["current_trans_text"]
     translated_p_obj = db.session.query(Translation).filter_by(
-        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).one()
+        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
 
-    if translated_p_obj.translated_paragraph == current_trans_text:
+    if not translated_p_obj:
         return jsonify({"status": "OK", "inProgress": False})
     else:
-        return jsonify({"status": "OK", "inProgress": True})
+        if translated_p_obj.translated_paragraph == current_trans_text:
+            return jsonify({"status": "OK", "inProgress": False})
+        else:
+            return jsonify({"status": "OK", "inProgress": True})
 
 @app.route("/cancel_translation", methods=["POST"])
 def last_saved_translations():

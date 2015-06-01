@@ -144,8 +144,8 @@ $(document).ready(function(){
 
     // leaves room
     $("#chosen_chap_submit").on("click", function (evt) {
-        var chapterNumber = $("select[name=chapter_selection] option:selected").val();
         socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+        var chapterNumber = $("select[name=chapter_selection] option:selected").val();
     });
 
     function main() {

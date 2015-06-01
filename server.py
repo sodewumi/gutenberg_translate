@@ -500,6 +500,27 @@ def aws_api_to_db(api_dict):
                 book_obj.reviews = api_dict[isbn][info]
     db.commit()
 
+def book_ratings():
+    book_isbn_tuple = db.session.query(Book.isbn, Book.book_id).all()
+    book_isbn_dict = dict(book_isbn_tuple)
+    isbn_str = ""
+    for book_isbn in book_isbn_dict:
+        isbn_str = isbn_str +","+ book_isbn
+    isbn_str = isbn_str[1:]
+
+    book_ratings_response =requests.get("https://www.goodreads.com/book/review_counts.json?format=json&isbns="+isbn_str+"&key="+ os.environ['GR_KEY'])
+    book_ratings_response = book_ratings_response.json()
+    book_ratings_list = book_ratings_response['books']
+
+    for rating_dict in book_ratings_list:
+        book_id = book_isbn_dict[rating_dict["isbn"]]
+        book_obj = Book.query.get(book_id)
+        book_obj.rating = rating_dict['average_rating']
+
+        db.session.commit()
+    return "done"
+
+
        
 
 if __name__ == "__main__":
@@ -507,5 +528,6 @@ if __name__ == "__main__":
     app.debug = True
     DebugToolbarExtension(app)
     # book_database()
+    # print book_ratings()
     socketio.run(app)
     app.run(debug=True)

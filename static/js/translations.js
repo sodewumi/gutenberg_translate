@@ -44,6 +44,9 @@ $(document).ready(function(){
     });
 
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
+        // if the user is translating a paragraph, it stops another user from translating the 
+        // same paragraph. Triggers triggers the socket.emit on the input
+        // event handler for #text_form_ta
         if (inProgress === false) {
             $("#error_translation_in_progress").hide();
             $("#translation_form").show();
@@ -64,9 +67,8 @@ $(document).ready(function(){
     }
 
     $(".edit_text").click(function (editevt) {
-        // TODO: show translated text when user begins to edit
-        // When .edit_text is click, it triggers the socket.emit on the input
-        // event handler for #text_form_ta
+        // Sends an AJAX response to check if the current translation
+        // matches the one in the database
         paragraphId = $(this).data('paragraphid');
         var translated_para_text =  $("#" + paragraphId + " p").text();
 
@@ -81,9 +83,6 @@ $(document).ready(function(){
                 console.log(error);
             }
         });
-
-        // var translated_para_text =  $("#" + paragraphId + " p").text();
-
     });
 
     $("#text_form_ta").on("input", function (evt) {

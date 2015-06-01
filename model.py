@@ -62,7 +62,7 @@ class Book(db.Model):
     groups = db.relationship("Group", backref=db.backref("books"),
         secondary="bookgroups") 
     # genres = db.relationship("Genre", uselist=False, backref="book")
-
+    
     def __repr__(self):
         return "<Book: book_id=%d, name=%s>" % (self.book_id, self.name)
 

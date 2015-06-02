@@ -1,10 +1,13 @@
 $(document).ready(function(){
 
+    $(window).on('beforeunload', function(){
+        socket.close();
+    });
+
     var groupId = $("#translated").data('groupid');
     var bookgroupId = $("#translate_textarea").data('bookgroupid');
     var paragraphId;
     var chapterNumber;
-
 
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
 
@@ -44,17 +47,19 @@ $(document).ready(function(){
     socket.on('render reverted text', function (msg) {
         // If user cancels, rerenders the last translation within the database
         $('#' + msg.paragraphIdAjax +" p").text(msg.last_text);
+        $('div.' + msg.paragraphIdAjax +" button").css("color", "red").prop('disabled', function(i, v) { return !v; });
     });
 
     socket.on('render submitted text', function (msg) {
         // renders saved text when user hits submit
         $('#' + msg.paragraphId +" p").text(msg.changed_text);
+        $('div.' + msg.paragraphId +" button").css("color", "red").prop('disabled', function(i, v) { return !v; });
     });
 
     socket.on('hide button', function (msg) {
         console.log("hey");
         console.log(msg.paragraph_id);
-        $('div.' + msg.paragraph_id +" button").hide();
+        $('div.' + msg.paragraph_id +" button").css("color","green").prop('disabled', function(i, v) { return !v; });
     });
 
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
@@ -84,6 +89,7 @@ $(document).ready(function(){
     function isEmpty( el ){
         return !$.trim(el.html());
     }
+
 
     $(".edit_text").click(function (editevt) {
         // Sends an AJAX response to check if the current translation

@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <h1>Translation Page</h1>
-
     <div id="user_controls">
         <h3>{{ book_obj.name }} by {{ book_obj.author }} in {{ language }}</h3>
         <form id="chosen_chap_form" method="GET">
-            <label>Chapter:
-                <select name="chapter_selection">
+            <div class="form-group">
+                <label for="sel1">Chapter:</label>
+                <select name="chapter_selection" class="form-control" id="sel1">
                     {% for chapter_number in range(1, number_of_chapters) %}
                     {% if chapter_number == chapter_chosen %}
                     <option value="{{ chapter_number|string() }}" selected="selected">Chapter {{ chapter_number }}</option>
@@ -16,12 +15,12 @@
                     {% endif %}
                     {% endfor %}
                 </select>
-            </label>
+            </div>
             <input type="hidden" value="{{ bookgroup_id }}" name="bookgroup_id_input">
             <input type="hidden" value="{{ book_id }}" name="hidden_bookid_input">
             <input type="hidden" value="{{ language }}" name="hidden_lang_input">
             <input type="hidden" value="{{ group_id }}" name="hidden_groupid_input">
-            <input id="chosen_chap_submit" type="submit">
+            <button id="chosen_chap_submit" type="submit">Choose</button>
         </form>
     </div>
 
@@ -93,7 +92,7 @@
                     <p>{{ paragraph.untranslated_paragraph }}</p>
                     <button class="btn edit_text" data-toggle="modal"
                             data-target="#add_translation_section" data-paragraphid="{{ paragraph.paragraph_id }}">
-                        Translate Paragraph
+                        <i class="fa fa-pencil-square-o"></i>
                     </button>
                 </div>
             </div>
@@ -109,7 +108,6 @@
             </div>
         </div>
         {% endfor %}
-
     </div>
 
     <script type="text/javascript" src="/static/js/translations.js"></script>

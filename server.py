@@ -93,8 +93,8 @@ def display_profile(user_id):
 
     user_groups_list = user_obj.groups
 
-    user_group_id_list = {group.group_id for group in user_groups_list}
-    # user_group_id_list = {group.group_id for group in current_user_groups_list}
+    group_bookgroups_list = {group.bookgroups for group in user_groups_list}
+    user_group_id_list = {group.group_id for group in current_user_groups_list}
 
     intersection = book_group_id_list & user_group_id_list
     groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
@@ -292,7 +292,6 @@ def on_leave(data):
     username = session["login"][0]
     bookgroup_id = data["bookgroup_id"]
     chapter_number = data.get("chapter_number")
-    print chapter_number, "***********8chapter number"
     room = str(bookgroup_id) + "." + str(chapter_number)
     leave_room(room)
 
@@ -322,8 +321,7 @@ def new_text(message):
 @socketio.on('remove button', namespace='/rendertranslations')
 def hide_buttons(message):
     """Hides the edit buttons from all users while a user is translating"""
-    print message
-    print "heellllllllllllllllllllllo"
+
     emit('hide button', message, broadcast=True)
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):

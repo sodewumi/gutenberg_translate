@@ -1,42 +1,21 @@
-/*h1 {
-    text-align: center
-}*/
-
 #translate_textarea {
     /*need so text form takes precedence over modal*/
     z-index: 9999;
 }
-/*.trans_para,
-.untranslated {
-    width: 48%
+
+html {
+  background: url(../img/cover6.JPG) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
 }
 
-.trans_para{
-    float: right;
-    padding-left: 1%;
+body {
+    background: transparent;
 }
 
-.untranslated{
-    float: left;
-    padding-right: 1%;
-}
-
-*/
-/*#translated h2,
-#untranslated h2 {
-    text-align: center
-}
-*/
-
-/*.untranslated {
-    border: 2px solid red;
-}
-*/
-#current_untans_text {
-    border: 2px solid green;
-}
-
-
-#translate_textarea {
-    border: 2px solid yellow;
+#login {
+    background-color: rgba(255, 255, 255, 0.9);
 }

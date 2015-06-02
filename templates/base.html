@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html class="full">
 <head>
     <!-- stylesheets -->
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
     <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
     <!-- javascript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -20,7 +21,7 @@
 </head>
 <body>
     <nav class="navbar navbar-default">
-      <div class="container-fluid">
+      <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -39,7 +40,7 @@
             {% if session.get('login') %}
             <li><a href="/profile/{{ session['login'][1] }}">Your Translations</a></li>
             {%endif%}
-            <li><a href="#">How To</a></li>
+            <li><a href="#">How It Works</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if session.get('login') %}
@@ -61,7 +62,7 @@
       </div>
     </nav>
 
-    <div class="container-fluid">
+    <div id="block" class="container">
         <!-- Main content of the page is inserted in block body -->
         {% block body %}
         {% endblock %}

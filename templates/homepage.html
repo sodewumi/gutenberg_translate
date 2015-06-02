@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <h1>Homepage</h1>
+
+<div id="login" class="row col-md-3.5 col-sm-12">
     {% if session.get("login") %}
         <h2>Logout</h2>
         <p>
@@ -35,6 +36,9 @@
             <input type="Submit" value="Register">
         </form>
     {% endif %}
+
+</div>
+
 
 
 {% endblock %}

@@ -7,14 +7,16 @@
 <h2>Projects</h2>
 
 
-{% for num, list in bookgroup_obj_dict.iteritems() %}
-<ul>
-    <li>{{ list[0] }}</li>
-    <li>{{ list[1].language }}</li>
 
-</ul>
+    <ul>
+        {% for group in user_groups_list %}
+        <li>{{ group.group_name }}</li>
+        {% endfor %}
+    </ul>
 
-{% endfor %}
+
+    
+
 
 
 {% endblock %}

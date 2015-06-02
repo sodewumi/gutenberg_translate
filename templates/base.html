@@ -19,78 +19,49 @@
     <title>Gutenberg Translate</title>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="/">Gutenberg Translate</a></li>
-            <li><a href="/explore">Explore Books</a></li>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Gutenberg Translate</a>
+        </div>
 
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li><a href="/explore">Explore Books</a></li>
             {% if session.get('login') %}
             <li><a href="/profile/{{ session['login'][1] }}">Your Translations</a></li>
-            <li><a href="#"> {{ session['login'][0] }} </a></li>
-            {% else %}
-            <li>login</li>
             {%endif%}
-        </ul>
-        <p>
-            {% with messages = get_flashed_messages() %}
-                {% for message in messages %}
-                    <div class="flashes">{{ message }}</div>
-                {% endfor %}
-            {% endwith %}
-        </p>
-    </nav>
-<!--     <nav>
-        <button type="button" class="btn btn-primary" data-toggle="modal"
-                data-target=".loginModal">
-            Sign In
-        </button>
+            <li><a href="#">How To</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if session.get('login') %}
+            <li class="dropdown">
 
-        <div class="modal fade loginModal" tabindex="-1" role="dialog" 
-                aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> {{ session['login'][0] }} <span class="caret"></span></a>
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" 
-                        aria-hidden="true">
-                        x
-                    </button>
-                    <h1 class="modal-title text-center">Login</h1>
-                </div>
-
-                <div class="modal-body">
-                    <form class="form col-md-12 center-block" action="/">
-                        <div class="form-group">
-                            <input type="text" class="form-control input-lg" placeholder="Email">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control input-lg" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                Sign In
-                            </button>
-                            <span class="pull-right">
-                                <a href="#">Register</a>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <div class="col-md-12">
-                        <button class="btn" data-dismiss="modal" aria-hidden="true">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-          </div>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="/profile/{{ session['login'][1] }}">Profile</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Signout</a></li>
+              </ul>
+            </li>
+            {% else %}
+            <li><a href="/">Login</a></li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
     </nav>
- -->
-     <div class="container-fluid">
+
+    <div class="container-fluid">
         <!-- Main content of the page is inserted in block body -->
         {% block body %}
         {% endblock %}

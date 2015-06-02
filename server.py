@@ -91,14 +91,15 @@ def display_profile(user_id):
     
     user_obj = User.query.filter(User.user_id == user_id).one()
 
-    group_obj_list = user_obj.groups
-    bookgroup_obj_dict = {}
+    user_groups_list = user_obj.groups
 
-    for i, group in enumerate(group_obj_list):
-        bookgroup_obj_dict[i] = [group.group_name]
-        bookgroup_obj_dict[i] = bookgroup_obj_dict[i].extend(group.bookgroups)
-    
-    return render_template("profile.html", bookgroup_obj_dict=bookgroup_obj_dict)
+    user_group_id_list = {group.group_id for group in user_groups_list}
+    # user_group_id_list = {group.group_id for group in current_user_groups_list}
+
+    intersection = book_group_id_list & user_group_id_list
+    groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
+
+    return render_template("profile.html", user_groups_list=user_groups_list)
  
 @app.route("/explore")
 def display_explore_books():
@@ -128,15 +129,11 @@ def display_book_description(gutenberg_extraction_number):
     current_book_groups_list = book_obj.groups
     current_user_groups_list = current_user.groups
 
-
     book_group_id_list = {group.group_id for group in current_book_groups_list}
     user_group_id_list = {group.group_id for group in current_user_groups_list}
 
     intersection = book_group_id_list & user_group_id_list
-
     groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
-    print groups_translating, "*********************"
-
 
     return render_template("book_description.html", display_book = book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number, groups_list = groups_translating)
@@ -523,5 +520,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    socketio.run(app)
+    # socketio.run(app)
     app.run(debug=True)

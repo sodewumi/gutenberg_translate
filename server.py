@@ -124,11 +124,17 @@ def display_book_description(gutenberg_extraction_number):
     # add to user class
     current_user = User.query.filter(User.user_id == session[u'login'][1]).one()
     
-    current_groups_list = book_obj.groups
+
+    current_book_groups_list = book_obj.groups
+    current_user_groups_list = current_user.groups
 
 
-    group_id_list = [group.group_id for group in current_groups_list]
-    groups_translating = Group.query.filter(Group.group_id.in_(group_id_list)).all()
+    book_group_id_list = {group.group_id for group in current_book_groups_list}
+    user_group_id_list = {group.group_id for group in current_user_groups_list}
+
+    intersection = book_group_id_list & user_group_id_list
+
+    groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
     print groups_translating, "*********************"
 
 
@@ -288,7 +294,7 @@ def on_leave(data):
 
     username = session["login"][0]
     bookgroup_id = data["bookgroup_id"]
-    chapter_number = data["chapter_number"]
+    chapter_number = data.get("chapter_number")
     print chapter_number, "***********8chapter number"
     room = str(bookgroup_id) + "." + str(chapter_number)
     leave_room(room)

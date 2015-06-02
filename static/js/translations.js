@@ -3,6 +3,7 @@ $(document).ready(function(){
     var groupId = $("#translated").data('groupid');
     var bookgroupId = $("#translate_textarea").data('bookgroupid');
     var paragraphId;
+    var chapterNumber;
 
 
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
@@ -15,7 +16,7 @@ $(document).ready(function(){
     socket.on('connect', function () {
         // Allows user to join a Room. Information about room name is taken from
         // bookgroupId and chapterNumber and sent to the joined socket route
-        var chapterNumber = $("select[name=chapter_selection] option:selected").val();
+        chapterNumber = $("select[name=chapter_selection] option:selected").val();
         socket.emit("joined", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
     });
 
@@ -150,10 +151,12 @@ $(document).ready(function(){
         }
     });
 
-    // $('#choosen_chap_form').on("submit", function (evt) {
-    //     socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
-    //     var chapterNumber = $("select[name=chapter_selection] option:selected").val();
-    // });
+    $('#chosen_chap_form').on("submit", function (evt) {
+        console.log(chapterNumber);
+        socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+        chapterNumber = $("select[name=chapter_selection] option:selected").val();
+        console.log(chapterNumber);
+    });
     // // leaves room
     // $("#chosen_chap_submit").on("click", function (evt) {
 

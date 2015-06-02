@@ -61,6 +61,13 @@
         </div>
       </div>
     </nav>
+    <p>
+      {% with messages = get_flashed_messages() %}
+          {% for message in messages %}
+              <div class="flashes">{{ message }}</div>
+          {% endfor %}
+      {% endwith %}
+    </p>
 
     <div id="block" class="container">
         <!-- Main content of the page is inserted in block body -->

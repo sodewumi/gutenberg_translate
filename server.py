@@ -297,7 +297,6 @@ def on_leave(data):
     leave_room(room)
 
     emit('leave_status', {'msg': username + " has left room " + str(room)}, room=room)
-    print "IM LEAVING ************************************"
 
 @socketio.on('value changed', namespace='/rendertranslations')
 def translated_text_rt(message):
@@ -319,6 +318,13 @@ def revert_text(message):
 def new_text(message):
 
     emit('render submitted text', message, broadcast=True)
+
+@socketio.on('remove button', namespace='/rendertranslations')
+def hide_buttons(message):
+    """Hides the edit buttons from all users while a user is translating"""
+    print message
+    print "heellllllllllllllllllllllo"
+    emit('hide button', message, broadcast=True)
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""
@@ -373,6 +379,9 @@ def check_translation_in_progress():
     translated_p_obj = db.session.query(Translation).filter_by(
         paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
 
+    print translated_p_obj
+    print current_trans_text
+
     if not translated_p_obj:
         return jsonify({"status": "OK", "inProgress": False})
     else:
@@ -390,7 +399,7 @@ def last_saved_translations():
     paragraph_id_input = int(request.form["p_id"])
     bookgroup_id_input = int(request.form["bg_id"])
     translated_p_obj = db.session.query(Translation).filter_by(
-        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).one()
+        paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
 
     return jsonify({"status": "OK", "last_saved_trans": translated_p_obj.translated_paragraph, "paragraph_id":paragraph_id_input})
 
@@ -479,10 +488,11 @@ def book_lookup(isbn_list, api):
 
     for isbn in isbn_list:
         res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN',
-            ResponseGroup="Images, Reviews")
+            ResponseGroup="Images, EditorialReview")
         for item in res.Items.Item:
             img_url = str(item.LargeImage.URL)
             api_dict.setdefault(isbn, img_url)
+
     return aws_api_to_db(api_dict)
 
 def aws_api_to_db(api_dict):
@@ -520,5 +530,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)

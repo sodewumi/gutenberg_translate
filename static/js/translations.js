@@ -38,7 +38,6 @@ $(document).ready(function(){
     socket.on('update text', function (msg) {
         // The currently updated text is taken from the update text socket route
         //  and rendered on the appropriate paragraph.
-
         $('#' + msg.paragraphId +" p").text(msg.change_text);
     });
 
@@ -52,22 +51,33 @@ $(document).ready(function(){
         $('#' + msg.paragraphId +" p").text(msg.changed_text);
     });
 
+    socket.on('hide button', function (msg) {
+        console.log("hey");
+        console.log(msg.paragraph_id);
+        $('div.' + msg.paragraph_id +" button").hide();
+    });
+
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
         // if the user is translating a paragraph, it stops another user from translating the 
         // same paragraph. Triggers triggers the socket.emit on the input
         // event handler for #text_form_ta
         if (inProgress === false) {
             $("#error_translation_in_progress").hide();
+            $("#confirm").hide();
+            $("#cancel_translation_btn").show();
             $("#translation_form").show();
+
             var untranslated_para_text = $("." + paragraphId + " p").text();
 
             $("#current_untans_text p").text(untranslated_para_text);
             $("#text_form_ta").val(translated_para_text);
-
+            socket.emit('remove button', {"paragraph_id": paragraphId});
             $("#text_form_ta").trigger("input");
         } else {
+            $("#cancel_translation_btn").hide();
             $("#translation_form").hide();
             $("#error_translation_in_progress").show();
+            $("#confirm").show();
         }
     }
 
@@ -171,6 +181,7 @@ $(document).ready(function(){
         // hide the edit text button
         var edit_text_bttn = $(".edit_text");
         edit_text_bttn.hide();
+        $("#confirm").hide()
     }
 
     main();

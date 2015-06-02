@@ -69,13 +69,16 @@
                 </div>
 
                 <div class="modal-body" id="error_translation_in_progress">
-                    <p>A user is already translating this paragraph.</p>
+                    <p>A user is already translating this paragrap.</p>
                 </div>
 
                 <div class="modal-footer">
                     <div>
                         <button class="btn" id="cancel_translation_btn" data-dismiss="modal" aria-hidden="true">
                             Cancel
+                        </button>
+                        <button class="btn" id="confirm" data-dismiss="modal" aria-hidden="true">
+                            Ok
                         </button>
                     </div>
                 </div>
@@ -88,7 +91,7 @@
             <div class="untranslated col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <div class="a_chapter_and_bttn {{ paragraph.paragraph_id }}">
                     <p>{{ paragraph.untranslated_paragraph }}</p>
-                    <button type="button" class="btn edit_text" data-toggle="modal"
+                    <button class="btn edit_text" data-toggle="modal"
                             data-target="#add_translation_section" data-paragraphid="{{ paragraph.paragraph_id }}">
                         Translate Paragraph
                     </button>

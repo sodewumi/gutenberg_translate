@@ -64,6 +64,10 @@ $(document).ready(function(){
         $('div.' + msg.paragraph_id +" button").css("color","green").prop('disabled', function(i, v) { return !v; });
     });
 
+    $("#temp").on('click', function () {
+        socket.emit("disconnect", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+        $(this).text("fin");
+    });
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
         // if the user is translating a paragraph, it stops another user from translating the 
         // same paragraph. Triggers triggers the socket.emit on the input

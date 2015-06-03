@@ -245,6 +245,7 @@ def display_translation_page():
     bookgroup_bookid = bookgroup_obj.book_id
 
     group_collab_users = bookgroup_obj.group.users
+    collab_user_num = len(group_collab_users)
 
     chosen_chapter = request.args.get("chapter_selection")
     if chosen_chapter:
@@ -265,12 +266,13 @@ def display_translation_page():
         paragraph_obj_list = chapter_obj_list[1].paragraphs
         translated_paragraphs_list = find_trans_paragraphs(
                 paragraph_obj_list, bookgroup_id)
+
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
-        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users)
+        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users, collab_user_num=collab_user_num)
 
 @socketio.on('connect', namespace='/rendertranslations')
 def test_connect():

@@ -34,6 +34,7 @@
                 {% endfor %}
             </ul>
             <a href="{{ url_for('leave_group', group_id_input = group_id) }}" class="btn btn-danger" role="button">Leave Group</a>
+            <a href="#" id="temp" class="btn btn-primary" role="button">Disconnect</a>
         </div>
     </div>
 
@@ -72,7 +73,7 @@
                     <form name="text_form" method="POST" action="/save_text"
                         id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}"
                         class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6">
-                        <div class="form-group">Translate :<br>
+                        <div class="form-group">Translate:<br>
                             <textarea name="translated_text" id="text_form_ta"
                             placeholder="Enter text here!" required></textarea>
                         </div><br>
@@ -82,7 +83,7 @@
                 </div>
 
                 <div class="modal-body" id="error_translation_in_progress">
-                    <p>A user is already translating this paragrap.</p>
+                    <p>A user is already translating this paragraph.</p>
                 </div>
 
                 <div class="modal-footer">

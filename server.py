@@ -116,6 +116,15 @@ def display_book_description(gutenberg_extraction_number):
     book_obj = Book.query.filter_by(gutenberg_extraction_num =
         gutenberg_extraction_number).one()
 
+    if len(book_obj.chapters) > 0:
+        book_obj_paragraphs = book_obj.chapters[1].paragraphs[0:3]
+        book_obj_text = ""
+        for p in book_obj_paragraphs:
+            book_obj_text += " " + p.untranslated_paragraph
+        book_obj_text[0:250]
+    else:
+        book_obj_text = None
+
     # add to user class
     current_user = User.query.filter(User.user_id == session[u'login'][1]).one()
     
@@ -130,7 +139,8 @@ def display_book_description(gutenberg_extraction_number):
     groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
 
     return render_template("book_description.html", display_book = book_obj,
-        gutenberg_extraction_number=gutenberg_extraction_number, groups_list = groups_translating)
+        gutenberg_extraction_number=gutenberg_extraction_number, groups_list = groups_translating,
+        display_text = book_obj_text)
 
 
 @app.route("/check_user", methods=["POST"])
@@ -334,7 +344,6 @@ def hide_buttons(data):
 @socketio.on("disconnect", namespace='/rendertranslations')
 def disconnected():
     disconnect()
-    print "******************************************disconnect"
 
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):

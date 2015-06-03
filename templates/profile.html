@@ -8,10 +8,35 @@
 
     <ul>
         {% for group in user_groups_list %}
-        <li>{{ group.group_name }}</li>
+        <li>{{ group.group_name }}
+            <ul>
+                {% for book in group.books %}
+                <li>Title: {{ book.name }}</li>
+                {% endfor %}
+            </ul>
+            <ul>
+                {% for bookgroup in group.bookgroups %}
+                <li>Language: {{ bookgroup.language }}</li>
+                {% endfor %}
+            </ul>
+            <ul>
+                <li>Collaborators</li>
+                {% for user in group.users %}
+                <li>{{ user.username }}</li>
+                {% endfor %}
+            </ul>
+        </li>
         {% endfor %}
     </ul>
 
+<!-- >>> for g in user.groups:
+...     print "Group name:%s\n" % g.group_name
+...     for u in g.users:
+...             print u.username+'\n'
+...     for b in g.books:
+...             print b.name 
+... 
+Group name:tester -->
 
     
 

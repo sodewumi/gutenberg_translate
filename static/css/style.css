@@ -28,11 +28,6 @@ div#collab_info {
     color: white;
 }
 
-div#user_controls h3,
-div#user_controls label {
-    color: white;
-}
-
 .edit_text {
     border: 1px solid yellow;
 }

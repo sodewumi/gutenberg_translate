@@ -78,6 +78,7 @@ class BookGroup(db.Model):
 
     translations = db.relationship("Translation", backref="bookgroups")
     group = db.relationship("Group", backref=db.backref("bookgroups"))
+    book = db.relationship("Book", backref=db.backref("bookgroups"))
 
     def __repr__(self):
         return "<BookGroup: bookgroup_id=%d group_id=%d, book_id=%d, language=%s>" % (

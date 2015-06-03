@@ -6,7 +6,7 @@ import jinja2
 import requests
 from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify, url_for
-from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room
+from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room, disconnect
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 from flask_debugtoolbar import DebugToolbarExtension
@@ -89,15 +89,9 @@ def logout_user():
 def display_profile(user_id):
     """Return a user's profile page."""
     
-    user_obj = User.query.filter(User.user_id == user_id).one()
+    user_obj = User.query.get(user_id)
 
     user_groups_list = user_obj.groups
-
-    group_bookgroups_list = {group.bookgroups for group in user_groups_list}
-    user_group_id_list = {group.group_id for group in current_user_groups_list}
-
-    intersection = book_group_id_list & user_group_id_list
-    groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
 
     return render_template("profile.html", user_groups_list=user_groups_list)
  
@@ -336,6 +330,12 @@ def hide_buttons(data):
     chapter_number = data.get("chapter_number")
     room = str(bookgroup_id) + "." + str(chapter_number)
     emit('hide button', data, broadcast=True, room=room)
+
+@socketio.on("disconnect", namespace='/rendertranslations')
+def disconnected():
+    disconnect()
+    print "******************************************disconnect"
+
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""

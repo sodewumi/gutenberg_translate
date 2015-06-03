@@ -8,9 +8,11 @@ $(document).ready(function(){
 
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
     
-    // $(window).on('beforeunload', function (socket){
-    //     socket.close();
-    // });
+    $(window).on('beforeunload', function (evt){
+        // debugger;
+        console.log('disconnect');
+        socket.emit("disconnect");
+    });
 
     socket.on('my response', function (msg) {
         // Server confirms page is connected to socketio

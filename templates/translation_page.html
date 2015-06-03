@@ -33,6 +33,7 @@
                 <li>{{ user.username }}</li>
                 {% endfor %}
             </ul>
+            <a href="{{ url_for('leave_group', group_id_input = group_id) }}" class="btn btn-danger" role="button">Leave Group</a>
         </div>
     </div>
     <div class="book-info">

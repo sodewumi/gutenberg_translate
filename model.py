@@ -40,7 +40,6 @@ class UserGroup(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     group_id = db.Column(db.Integer, db.ForeignKey("groups.group_id"))
 
-    
     def __repr__(self):
         return "<UserGroup: usergroup_id=%d, user_id=%d, group_id=%d>" %(
             self.usergroup_id, self.user_id, self.group_id)
@@ -78,7 +77,6 @@ class BookGroup(db.Model):
 
     translations = db.relationship("Translation", backref="bookgroups")
     group = db.relationship("Group", backref=db.backref("bookgroups"))
-    book = db.relationship("Book", backref=db.backref("bookgroups"))
 
     def __repr__(self):
         return "<BookGroup: bookgroup_id=%d group_id=%d, book_id=%d, language=%s>" % (

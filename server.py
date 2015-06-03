@@ -414,6 +414,15 @@ def last_saved_translations():
     else:
         return jsonify({"status": "OK", "last_saved_trans": None, "paragraph_id":paragraph_id_input})
 
+@app.route("/leave_group/<int:group_id_input>")
+def leave_group(group_id_input):
+    user_id = session['login'][1]
+    user_usergroup = UserGroup.query.filter_by(user_id = user_id, group_id=group_id_input).one()
+    db.session.delete(user_usergroup)
+    db.session.commit()
+    return redirect('/explore')
+    
+
 
 def open_file(file_id):
     """

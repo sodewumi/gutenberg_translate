@@ -1,8 +1,8 @@
 $(document).ready(function(){
 
-    $(window).on('beforeunload', function(){
-        socket.close();
-    });
+    // $(window).on('beforeunload', function(){
+    //     socket.close();
+    // });
 
     var groupId = $("#translated").data('groupid');
     var bookgroupId = $("#translate_textarea").data('bookgroupid');
@@ -173,21 +173,12 @@ $(document).ready(function(){
         chapterNumber = $("select[name=chapter_selection] option:selected").val();
         console.log(chapterNumber);
     });
-    // // leaves room
-    // $("#chosen_chap_submit").on("click", function (evt) {
-
-
-
-
-    //             alert("leaving");
-
-    // });
 
     function main() {
         // hide the edit text button
         var edit_text_bttn = $(".edit_text");
         edit_text_bttn.hide();
-        $("#confirm").hide()
+        $("#confirm").hide();
     }
 
     main();

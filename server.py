@@ -434,6 +434,23 @@ def leave_group(group_id_input):
     db.session.commit()
     return redirect('/explore')
 
+@app.route("/delete_group/<int:group_id_input>/<language_input>/<int:book_id_input>")
+def delete_group(group_id_input, language_input, book_id_input):
+    user_id = session['login'][1]
+    user_usergroup = UserGroup.query.filter_by(
+                    user_id = user_id, group_id=group_id_input).one()
+    bookgroup_obj = BookGroup.query.filter_by(group_id=group_id_input,
+                    language=language_input, book_id=book_id_input).one()
+    bookgroup_id = bookgroup_obj.bookgroup_id
+
+    db.session.delete(user_usergroup)
+    db.session.delete(bookgroup_obj)
+    for translation in bookgroup_obj.translations:
+        db.session.delete(translation)
+
+    db.session.commit()
+    return redirect('/explore')
+
 def open_file(file_id):
     """
         Opens a file from project gutenberg 
@@ -559,5 +576,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    socketio.run(app)
+    # socketio.run(app)
     app.run(debug=True)

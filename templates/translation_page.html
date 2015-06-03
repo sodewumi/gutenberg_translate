@@ -33,11 +33,73 @@
                 <li>{{ user.username }}</li>
                 {% endfor %}
             </ul>
-            <a href="{{ url_for('leave_group', group_id_input = group_id) }}" class="btn btn-danger" role="button">Leave Group</a>
+            {% if collab_user_num > 1 %}
+            <button class="btn btn-danger" data-toggle="modal" data-target="#confirm_leave">
+                Leave Group
+            </button>
+            {% else %}
+            <button class="btn btn-danger" data-toggle="modal" data-target="#confirm_delete">
+                Delete Book
+            </button>
+            {%  endif %}
             <a href="#" id="temp" class="btn btn-primary" role="button">Disconnect</a>
         </div>
     </div>
 
+    <div>
+        <div class="modal fade" id="confirm_leave" tabindex="-1" role="dialog" 
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title text-center">
+                        Confirm
+                    </h1>
+                </div>
+
+                <div class="modal-body" id="translation_form">
+                    <p>Are you sure you want to leave this group?</p>
+                </div>
+                    <a href="{{ url_for('leave_group', group_id_input = group_id) }}" class="btn btn-danger" role="button">I'm Sure</a>
+                <div class="modal-footer">
+                    <div>
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="confirm_delete" tabindex="-1" role="dialog" 
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title text-center">
+                        Confirm
+                    </h1>
+                </div>
+
+                <div class="modal-body" id="translation_form">
+                    <p>
+                        Are you sure you want to leave to delete this book? <br>
+                        This cannot be undone.
+                    </p>
+                </div>
+                    <a href="{{ url_for('delete_group', group_id_input = group_id, book_id_input= book_id, language_input = language ) }}" class="btn btn-danger" role="button">I'm Sure</a>
+                <div class="modal-footer">
+                    <div>
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
 
     <div class="book-info">
         <div class="row">

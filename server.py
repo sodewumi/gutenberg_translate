@@ -399,8 +399,10 @@ def last_saved_translations():
     translated_p_obj = db.session.query(Translation).filter_by(
         paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
 
-    return jsonify({"status": "OK", "last_saved_trans": translated_p_obj.translated_paragraph, "paragraph_id":paragraph_id_input})
-
+    if translated_p_obj:
+        return jsonify({"status": "OK", "last_saved_trans": translated_p_obj.translated_paragraph, "paragraph_id":paragraph_id_input})
+    else:
+        return jsonify({"status": "OK", "last_saved_trans": None, "paragraph_id":paragraph_id_input})
 
 
 def open_file(file_id):
@@ -528,5 +530,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)

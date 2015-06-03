@@ -118,6 +118,7 @@ $(document).ready(function(){
     });
 
     $("#cancel_translation_btn").on("click", function (evt) {
+        alert("hey")
         $.ajax({
             url: "/cancel_translation",
             data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,

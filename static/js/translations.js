@@ -11,7 +11,7 @@ $(document).ready(function(){
     $(window).on('beforeunload', function (evt){
         // debugger;
         console.log('disconnect');
-        socket.emit("disconnect");
+        socket.emit("disconnect", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
     });
 
     socket.on('my response', function (msg) {

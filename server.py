@@ -343,6 +343,7 @@ def hide_buttons(data):
 
 @socketio.on("disconnect", namespace='/rendertranslations')
 def disconnected():
+    print "**********disconnected*****************************"
     disconnect()
 
 
@@ -430,8 +431,6 @@ def leave_group(group_id_input):
     db.session.delete(user_usergroup)
     db.session.commit()
     return redirect('/explore')
-    
-
 
 def open_file(file_id):
     """
@@ -558,5 +557,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)

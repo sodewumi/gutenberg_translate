@@ -298,31 +298,42 @@ def on_leave(data):
     emit('leave_status', {'msg': username + " has left room " + str(room)}, room=room)
 
 @socketio.on('value changed', namespace='/rendertranslations')
-def translated_text_rt(message):
+def translated_text_rt(data):
     """
         Sent by clients while they are translating a paragraph
     """
-
-    emit('update text', message, broadcast=True)
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('update text', data, broadcast=True, room=room)
 
 @socketio.on('canceled translation', namespace='/rendertranslations')
-def revert_text(message):
+def revert_text(data):
     """ Takes the last saved translation and renders it on the page if the clients
-        cancels their translation
+        cancels their datatranslation
     """
 
-    emit('render reverted text', message, broadcast=True)
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('render reverted text', data, broadcast=True, room=room)
 
 @socketio.on('submit text', namespace='/rendertranslations')
-def new_text(message):
+def new_text(data):
 
-    emit('render submitted text', message, broadcast=True)
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('render submitted text', data, broadcast=True, room=room)
 
 @socketio.on('remove button', namespace='/rendertranslations')
-def hide_buttons(message):
+def hide_buttons(data):
     """Hides the edit buttons from all users while a user is translating"""
 
-    emit('hide button', message, broadcast=True)
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('hide button', data, broadcast=True, room=room)
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""

@@ -76,7 +76,9 @@ $(document).ready(function(){
 
             $("#current_untans_text p").text(untranslated_para_text);
             $("#text_form_ta").val(translated_para_text);
-            socket.emit('remove button', {"paragraph_id": paragraphId});
+            console.log(bookgroupId);
+            console.log(chapterNumber);
+            socket.emit('remove button', {"paragraph_id": paragraphId, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
             $("#text_form_ta").trigger("input");
         } else {
             $("#cancel_translation_btn").hide();
@@ -114,18 +116,17 @@ $(document).ready(function(){
         // Socket logs all changes made to the textarea and sends the info to
         // the value changed socket route
         socket.emit('value changed', {"paragraphId" : paragraphId,
-                "change_text": $(this).val()});
+                "change_text": $(this).val(), "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
     });
 
     $("#cancel_translation_btn").on("click", function (evt) {
-        alert("hey")
         $.ajax({
             url: "/cancel_translation",
             data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
                socket.emit("canceled translation", {"last_text" :
-                response.last_saved_trans, "paragraphIdAjax" : response.paragraph_id});
+                response.last_saved_trans, "paragraphIdAjax" : response.paragraph_id, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
             },
             error: function(error) {
                 console.log(error);
@@ -152,7 +153,7 @@ $(document).ready(function(){
             data: $('form').serialize() + "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
             type: "POST",
             success: function(response) {
-                socket.emit("submit text", {"changed_text" : response.translated_text, "paragraphId": response.paragraph_id});
+                socket.emit("submit text", {"changed_text" : response.translated_text, "paragraphId": response.paragraph_id, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
                 // placeParagraph(response.translated_text, response.paragraph_id);
             },
             error: function(error) {

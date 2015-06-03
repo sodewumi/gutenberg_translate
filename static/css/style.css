@@ -10,15 +10,22 @@
 }
 
 .navbar {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
-div#user_controls {
-    background-color: #282828;
+
+#chap_sel {
+  width: 50%;
+}
+
+div#user_controls,
+div#collab_info {
     padding-top: 40px;
 }
 
 #user_controls_row {
     margin-top: 0px;
+    background-color: #282828;
+    color: white;
 }
 
 div#user_controls h3,

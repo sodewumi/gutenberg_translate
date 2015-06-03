@@ -2,12 +2,14 @@
 
 {% block body %}
     <div class="row" id="user_controls_row">
-        <div id="user_controls">
-            <h3>{{ book_obj.name }} by {{ book_obj.author }} in {{ language }}</h3>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="user_controls">
+            <h3>{{ book_obj.name }} </h3>
+            <h4>{{ book_obj.author }} </h4>
+            <h5>{{ language }}</h5>
             <form id="chosen_chap_form" method="GET">
                 <div class="form-group">
-                    <label for="sel1">Chapter:</label>
-                    <select name="chapter_selection" class="form-control" id="sel1">
+                    <label for="chap_sel">Chapter:</label>
+                    <select name="chapter_selection" class="form-control" id="chap_sel">
                         {% for chapter_number in range(1, number_of_chapters) %}
                         {% if chapter_number == chapter_chosen %}
                         <option value="{{ chapter_number|string() }}" selected="selected">Chapter {{ chapter_number }}</option>
@@ -23,6 +25,14 @@
                 <input type="hidden" value="{{ group_id }}" name="hidden_groupid_input">
                 <button id="chosen_chap_submit" type="submit">Choose</button>
             </form>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="collab_info">
+            <h4>Collaborators</h4>
+            <ul>
+                {% for user in group_collab_users %}
+                <li>{{ user.username }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
     <div class="book-info">

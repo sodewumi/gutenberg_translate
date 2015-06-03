@@ -1,8 +1,5 @@
 $(document).ready(function(){
 
-    // $(window).on('beforeunload', function(){
-    //     socket.close();
-    // });
 
     var groupId = $("#translated").data('groupid');
     var bookgroupId = $("#translate_textarea").data('bookgroupid');
@@ -10,6 +7,10 @@ $(document).ready(function(){
     var chapterNumber;
 
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
+    
+    // $(window).on('beforeunload', function (socket){
+    //     socket.close();
+    // });
 
     socket.on('my response', function (msg) {
         // Server confirms page is connected to socketio
@@ -57,8 +58,7 @@ $(document).ready(function(){
     });
 
     socket.on('hide button', function (msg) {
-        console.log("hey");
-        console.log(msg.paragraph_id);
+
         $('div.' + msg.paragraph_id +" button").css("color","green").prop('disabled', function(i, v) { return !v; });
     });
 
@@ -76,8 +76,6 @@ $(document).ready(function(){
 
             $("#current_untans_text p").text(untranslated_para_text);
             $("#text_form_ta").val(translated_para_text);
-            console.log(bookgroupId);
-            console.log(chapterNumber);
             socket.emit('remove button', {"paragraph_id": paragraphId, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
             $("#text_form_ta").trigger("input");
         } else {
@@ -168,13 +166,20 @@ $(document).ready(function(){
             $(this).html("<p></p>");
         }
     });
-
-    $('#chosen_chap_form').on("submit", function (evt) {
-        console.log(chapterNumber);
-        socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
-        chapterNumber = $("select[name=chapter_selection] option:selected").val();
-        console.log(chapterNumber);
+    // not working with firefox
+    $(function() {
+        $('#chap_sel').change(function() {
+            socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+            chapterNumber = $("select[name=chapter_selection] option:selected").val();
+            this.form.submit();
+        });
     });
+    // $('#chosen_chap_form').on("submit", function (evt) {
+    //     console.log(chapterNumber);
+    //     socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+    //     chapterNumber = $("select[name=chapter_selection] option:selected").val();
+    //     console.log(chapterNumber);
+    // });
 
     function main() {
         // hide the edit text button

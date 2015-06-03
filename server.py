@@ -240,6 +240,8 @@ def display_translation_page():
     bookgroup_groupid = bookgroup_obj.group_id
     bookgroup_bookid = bookgroup_obj.book_id
 
+    group_collab_users = bookgroup_obj.group.users
+
     chosen_chapter = request.args.get("chapter_selection")
     if chosen_chapter:
         chosen_chapter = int(chosen_chapter)
@@ -264,7 +266,7 @@ def display_translation_page():
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
-        bookgroup_id=bookgroup_id)
+        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users)
 
 @socketio.on('connect', namespace='/rendertranslations')
 def test_connect():
@@ -387,9 +389,6 @@ def check_translation_in_progress():
     current_trans_text = request.form["current_trans_text"]
     translated_p_obj = db.session.query(Translation).filter_by(
         paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
-
-    print translated_p_obj
-    print current_trans_text
 
     if not translated_p_obj:
         return jsonify({"status": "OK", "inProgress": False})
@@ -541,5 +540,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    socketio.run(app)
+    # socketio.run(app)
     app.run(debug=True)

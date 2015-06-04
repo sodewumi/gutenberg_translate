@@ -10,12 +10,17 @@ class User(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(15), nullable=False)
     username = db.Column(db.String(15), nullable=False, unique=True)
-    # translations = db.relationship("Translation", backref="user")
     groups = db.relationship("Group", backref=db.backref("users"),
             secondary="usergroups")
 
+    @classmethod
+    def create_new_user(cls, email, password, username):
+        new_user = cls(email=email, password=password, username=username)
+        db.session.add(new_user)
+        db.session.commit()
+
     def __repr__(self):
-        return "<User: username=%s, user_id=%d" %(
+        return "<User: username=%s, user_id=%d>" %(
             self.username, self.user_id)
 
 class Group(db.Model):
@@ -60,7 +65,28 @@ class Book(db.Model):
     chapters = db.relationship("Chapter", backref="book")
     groups = db.relationship("Group", backref=db.backref("books"),
         secondary="bookgroups") 
-    # genres = db.relationship("Genre", uselist=False, backref="book")
+    
+    def excerpt_text(self):
+        text_string = ""
+        if len(self.chapters) > 0:
+            book_obj_paragraphs = self.chapters[1].paragraphs[0:3]
+            for p in book_obj_paragraphs:
+               text_string += " " + p.untranslated_paragraph
+            return text_string[0:250]
+        else:
+            return None
+
+    def user_groups_translating_book(self, book_obj, user_obj):
+        book_groups_list = book_obj.groups
+        user_groups_list = user_obj.groups
+
+        book_group_id_list = {group.group_id for group in book_groups_list}
+        user_group_id_list = {group.group_id for group in user_groups_list}
+
+        intersection = book_group_id_list & user_group_id_list
+        groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
+
+        return groups_translating
     
     def __repr__(self):
         return "<Book: book_id=%d, name=%s>" % (self.book_id, self.name)
@@ -81,16 +107,6 @@ class BookGroup(db.Model):
     def __repr__(self):
         return "<BookGroup: bookgroup_id=%d group_id=%d, book_id=%d, language=%s>" % (
            self.bookgroup_id, self.group_id, self.book_id, self.language) 
-
-# book_group.group
-
-# group.book_groups
-
-# class Genre(db.Model):
-
-#     __tablename__ = "genres"
-
-#     genre_name = db.Column(db.String(10), db.ForeignKey("books.book_id"), primary_key=True)
 
 
 class Chapter(db.Model):

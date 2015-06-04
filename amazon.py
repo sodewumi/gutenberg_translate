@@ -19,7 +19,8 @@ import pprint
 import sys
 from apiclient.discovery import build
 
-service = build('books', 'v1', developerKey='')
+
+service = build('books', 'v1', developerKey='AIzaSyA8SlCjyJQnXa62wL2dZPk2hTZmC86X5tY')
 
 request = service.volumes().list(source='public',
                                     orderBy='relevance',

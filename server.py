@@ -28,16 +28,16 @@ def display_homepage():
 @app.route("/login", methods=["POST"])
 def login_user():
     """Logs in user. Adds user_id and username to session"""
+
     username = request.form["username_input"]
-    print username, "*********"
+    username = username.strip().lower()
     password = request.form["password_input"]
-    print password, "**********"
+
     user_object = User.query.filter(User.username == username).first()
 
     if user_object:
         if user_object.password == password:
             session["login"] = [username, user_object.user_id]
-            print session["login"], "***********"
             flash("You logged in successfully")
             return redirect("/explore")
         else:
@@ -65,22 +65,17 @@ def register_user():
         return redirect("/")
     else:
         if register_email and register_password and register_username:
-            new_user = User(email=register_email, password=register_password,
-                            username=register_username)
-            db.session.add(new_user)
-            db.session.commit()
-            flash("Thanks for creating an account with Gutenberg Translate!")
-            return redirect("/explore")
+            User.create_new_user(email=register_email, password=register_password, username=register_username)
+            flash("Thanks for creating an account with Gutenberg Translate! Please sign in")
+            return redirect("/")
         else:
             flash("Please fill out all fields")
             return redirect("/")
 
-    return render_template("registration_form.html")
-    return render_template("/explore")
-
 @app.route("/logout")
 def logout_user():
     """Remove login information from session"""
+
     session.pop(u'login')
     flash("You've successfully logged out. Goodbye.")
     return redirect("/")
@@ -90,7 +85,6 @@ def display_profile(user_id):
     """Return a user's profile page."""
     
     user_obj = User.query.get(user_id)
-
     user_groups_list = user_obj.groups
 
     return render_template("profile.html", user_groups_list=user_groups_list)
@@ -100,7 +94,7 @@ def display_explore_books():
     """Return a full list of books from project gutenberg."""
 
     all_book_objs = Book.query.all()
-    # aws_api_to_db(amazon_setup(all_book_objs))
+
     return render_template("explore_books.html", all_book_objs=all_book_objs)
 
 
@@ -112,33 +106,17 @@ def display_book_description(gutenberg_extraction_number):
             particular book. This includes: group names, usernames, and
             translation language
     """
-    # 
-    book_obj = Book.query.filter_by(gutenberg_extraction_num =
+
+    current_user_obj = User.query.filter(User.user_id == session[u'login'][1]).one()
+    current_book_obj = Book.query.filter_by(gutenberg_extraction_num =
         gutenberg_extraction_number).one()
 
-    if len(book_obj.chapters) > 0:
-        book_obj_paragraphs = book_obj.chapters[1].paragraphs[0:3]
-        book_obj_text = ""
-        for p in book_obj_paragraphs:
-            book_obj_text += " " + p.untranslated_paragraph
-        book_obj_text[0:250]
-    else:
-        book_obj_text = None
+    book_obj_text = current_book_obj.excerpt_text()
 
-    # add to user class
-    current_user = User.query.filter(User.user_id == session[u'login'][1]).one()
-    
+    groups_translating = current_book_obj.user_groups_translating_book(
+                         user_obj=current_user_obj, book_obj=current_book_obj)
 
-    current_book_groups_list = book_obj.groups
-    current_user_groups_list = current_user.groups
-
-    book_group_id_list = {group.group_id for group in current_book_groups_list}
-    user_group_id_list = {group.group_id for group in current_user_groups_list}
-
-    intersection = book_group_id_list & user_group_id_list
-    groups_translating = Group.query.filter(Group.group_id.in_(intersection)).all()
-
-    return render_template("book_description.html", display_book = book_obj,
+    return render_template("book_description.html", display_book = current_book_obj,
         gutenberg_extraction_number=gutenberg_extraction_number, groups_list = groups_translating,
         display_text = book_obj_text)
 
@@ -568,6 +546,9 @@ def book_ratings():
 
         db.session.commit()
 
+def google_books():
+    response = request.get('https://www.googleapis.com/books/v1/volumes?q=+isbn:0486284735&key=AIzaSyA8SlCjyJQnXa62wL2dZPk2hTZmC86X5tY')
+
 
 if __name__ == "__main__":
     connect_to_db(app)
@@ -576,5 +557,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    socketio.run(app)
+    # socketio.run(app)
     app.run(debug=True)

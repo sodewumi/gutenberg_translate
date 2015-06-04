@@ -576,5 +576,5 @@ if __name__ == "__main__":
     # book_database()
     # book_ratings()
     # amazon_setup()
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)

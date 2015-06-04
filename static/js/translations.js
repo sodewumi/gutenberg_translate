@@ -11,7 +11,7 @@ $(document).ready(function(){
     $(window).on('beforeunload', function (evt){
         // debugger;
         console.log('disconnect');
-        socket.emit("disconnect", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+        socket.emit("disconnect");
     });
 
     socket.on('my response', function (msg) {
@@ -70,7 +70,7 @@ $(document).ready(function(){
     });
 
     $("#temp").on('click', function () {
-        socket.emit("disconnect", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+        socket.emit("disconnect");
         $(this).text("fin");
     });
     function translationInProgress (inProgress, paragraphId, translated_para_text) {

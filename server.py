@@ -5,7 +5,7 @@ import os
 import jinja2
 import requests
 from amazonproduct import API
-from flask import flash, Flask, redirect, render_template, request, session, jsonify, url_for
+from flask import flash, Flask, redirect, render_template, request, Response, session, jsonify, url_for
 from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room, disconnect
 
 from flask_debugtoolbar import DebugToolbarExtension
@@ -113,8 +113,16 @@ def display_book_description(gutenberg_extraction_number):
             particular book. This includes: group names, usernames, and
             translation language
     """
+    
+    user_session = session.get(u'login')
 
-    current_user_obj = User.query.filter(User.user_id == session[u'login'][1]).one()
+    if not user_session:
+        flash("You need to sign in to view this page")
+        return redirect("/")
+    else:
+        user_id = user_session[1]
+
+    current_user_obj = User.query.filter(User.user_id == user_id).one()
     current_book_obj = Book.query.filter_by(gutenberg_extraction_num =
         gutenberg_extraction_number).one()
 
@@ -206,6 +214,13 @@ def display_translation_page():
         Displays a chapter of the book. 
         When page first loads, chapter starts at 1.
     """
+
+    user_session = session.get(u'login')
+    
+    if not user_session:
+        flash("You need to sign in to view this page")
+        return redirect("/")
+
     # all arguments come from the book_group
     # bookgroup_obj = BookGroup.query.get(bookgroup_id)
     bookgroup_id = int(request.args["bookgroup_id_input"])
@@ -407,7 +422,7 @@ if __name__ == "__main__":
     connect_to_db(app)
     app.debug = True
     DebugToolbarExtension(app)
-    socketio.run(app)
+    # socketio.run(app)
     app.run(debug=True)
 
 

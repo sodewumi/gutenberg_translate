@@ -151,6 +151,17 @@ class Translation(db.Model):
     bookgroup_id = db.Column(db.Integer, db.ForeignKey("bookgroups.bookgroup_id"))
     # user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
+    def find_trans_paragraphs(self, paragraph_obj_list, bookgroup_id):
+        """Finds the translated paragraphs per group"""
+
+        paragraph_ids = [p.paragraph_id for p in paragraph_obj_list]
+
+        translated_paragraphs = self.query.filter(
+                                self.bookgroup_id == bookgroup_id,
+                                self.paragraph_id.in_(paragraph_ids)
+                                ).all()
+        return translated_paragraphs
+        
     def __repr__(self):
         return """"<Translation: translation_id=%d, paragraph_id=%d,
             bookgroup_id=%d translated_paragraph=%s""" %(self.translation_id, self.paragraph_id,\

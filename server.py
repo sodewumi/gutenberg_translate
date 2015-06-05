@@ -13,7 +13,7 @@ from lxml import etree
 # my modules
 from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup
 from process_gutenberg_books import processGutenBook
-
+from helper import render_untranslated_chapter, find_trans_paragraphs, find_room
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
 app.jinja_env .undefined = jinja2.StrictUndefined
@@ -200,13 +200,6 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     return redirect(url_for(".display_translation_page", bookgroup_id_input = new_bookgroup_obj.bookgroup_id))
 
-def render_untranslated_chapter(book_id, chosen_chap):
-    """Shows the translated page chosen"""
-    book_obj = Book.query.get(book_id)
-    paragraph_obj_list = book_obj.chapters[chosen_chap].paragraphs
-
-    return paragraph_obj_list
-
 @app.route("/rendertranslations", methods=["GET"])
 def display_translation_page():
     """
@@ -239,16 +232,16 @@ def display_translation_page():
     if chosen_chapter:
         paragraph_obj_list = chapter_obj_list[chosen_chapter].paragraphs
         translated_paragraphs_list = find_trans_paragraphs( 
-                paragraph_obj_list, bookgroup_id)
+                paragraph_obj_list=paragraph_obj_list, bookgroup_id=bookgroup_id)
     else:
         if number_of_chapters == 1:
             paragraph_obj_list = chapter_obj_list[0].paragraphs
-            translated_paragraphs_list = find_trans_paragraphs(
-                paragraph_obj_list, bookgroup_id)
+            translated_paragraphs_list =  find_trans_paragraphs(
+                paragraph_obj_list=paragraph_obj_list, bookgroup_id=bookgroup_id)
         else:
             paragraph_obj_list = chapter_obj_list[1].paragraphs
-            translated_paragraphs_list = find_trans_paragraphs(
-                    paragraph_obj_list, bookgroup_id)
+            translated_paragraphs_list =  find_trans_paragraphs(
+                    paragraph_obj_list=paragraph_obj_list, bookgroup_id=bookgroup_id)
 
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
@@ -256,18 +249,6 @@ def display_translation_page():
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
         bookgroup_id=bookgroup_id, group_collab_users=group_collab_users, collab_user_num=collab_user_num)
-
-def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
-    """Finds the translated paragraphs per group"""
-
-    paragraph_ids = [p.paragraph_id for p in paragraph_obj_list]
-
-    translated_paragraphs = Translation.query.filter(
-        Translation.bookgroup_id == bookgroup_id,
-        Translation.paragraph_id.in_(paragraph_ids)
-        ).all()
-
-    return translated_paragraphs
 
 @app.route("/save_text", methods=["POST"])
 def save_translation_text():
@@ -359,13 +340,6 @@ def delete_group(group_id_input, language_input, book_id_input):
     db.session.commit()
     return redirect('/explore')
 
-def google_books():
-    response = request.get('https://www.googleapis.com/books/v1/volumes?q=+isbn:0486284735&key=AIzaSyA8SlCjyJQnXa62wL2dZPk2hTZmC86X5tY')
-
-def find_room(bookgroup_id, chapter_number):
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    return room
-
 
 @socketio.on('connect', namespace='/rendertranslations')
 def test_connect():
@@ -413,7 +387,7 @@ def revert_text(data):
 
 @socketio.on('submit text', namespace='/rendertranslations')
 def new_text(data):
-    
+
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('render submitted text', data, broadcast=True, room=room)
 

@@ -1,0 +1,47 @@
+1342|Pride and Prejudice | Jane Austen |1503290565
+11|Alice's Adventures in Wonderland | Lewis Carroll |0553213458
+76|Adventures of Huckleberry Finn | Mark Twain |0486280616
+74|The Adventures of Tom Sawyer | Mark Twain |0486400778
+1952|The Yellow Wallpaper | Charlotte Perkins Gilman |091406116X
+174|The Picture of Dorian Gray | Oscar Wilde |0486278077
+844|The Importance of Being Earnest: A Trivial Comedy for Serious People | Oscar Wilde |0486264785
+5200|Metamorphosis | Franz Kafka |0486290301
+1661|The Adventures of Sherlock Holmes | Arthur Conan Doyle |1853260339
+98|A Tale of Two Cities | Charles Dickens |0486406512
+1232|The Prince | Niccolò Machiavelli |0486272745
+4300|Ulysses | James Joyce |1494405490
+1322|Leaves of Grass | Walt Whitman |0486456765
+135|Les Misérables | Victor Hugo |0143107569
+1080|A Modest Proposal | Jonathan Swift |1453691693
+1400|Great Expectations | Charles Dickens |0486415864
+2814|Dubliners | James Joyce |0486268705
+84|Frankenstein| Mary Wollstonecraft Shelley | 0486282112
+158|Emma | Jane Austen |0486406482
+345|Dracula | Bram Stoker |1503376257
+23|Narrative of the Life of Frederick Douglass, an American Slave | Frederick Douglass |0486284999
+308|Three Men in a Boat | Jerome K.  Jerome |1512099899
+1184|The Count of Monte Cristo | Alexandre Dumas |0140449264
+161|Sense and Sensibility | Jane Austen |0007350791
+1260|Jane Eyre: An Autobiography | Charlotte Brontë |1503278190
+16|Peter Pan | J. M.  Barrie |150329028X
+768|Wuthering Heights | Emily Brontë |1508588872
+829|Gulliver's Travels into Several Remote Nations of the World | Jonathan Swift |0559504624
+42|The Strange Case of Dr. Jekyll and Mr. Hyde | Robert Louis Stevenson |1505234514
+120|Treasure Island | Robert Louis Stevenson |1505297400
+236|The Jungle Book | Rudyard Kipling |1503332543
+730|Oliver Twist | Charles Dickens |0486424537
+219|Heart of Darkness | Joseph Conrad |1491026669
+2397|The Story of My Life | Helen Keller |0486292495
+20203|Autobiography of Benjamin Franklin | Benjamin Franklin |0486290735
+41|The Legend of Sleepy Hollow | Washington Irving |1497483735
+28054|The Brothers Karamazov | Fyodor Dostoyevsky |0374528373
+12|Through the Looking-Glass | Lewis Carroll |1494308398
+103|Around the World in Eighty Days | Jules Verne |1503215156
+863|The Mysterious Affair at Styles | Agatha Christie |1434404374
+105|Persuasion | Jane Austen |150329031X
+46|A Christmas Carol in Prose; Being a Ghost Story of Christmas | Charles Dickens |1503212831
+45|Anne of Green Gables | L. M.  Montgomery |1503214133
+55|The Wonderful Wizard of Oz | L. Frank  Baum |1505280958
+4217|A Portrait of the Artist as a Young Man | James Joyce |0486280500
+1837|The Prince and the Pauper | Mark Twain |0486411109
+1155|The Secret Adversary | Agatha Christie |9780062074355

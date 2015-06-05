@@ -20,7 +20,7 @@ import sys
 from apiclient.discovery import build
 
 
-service = build('books', 'v1', developerKey='AIzaSyA8SlCjyJQnXa62wL2dZPk2hTZmC86X5tY')
+service = build('books', 'v1', developerKey='')
 
 request = service.volumes().list(source='public',
                                     orderBy='relevance',
@@ -39,7 +39,7 @@ averageRatings = book_dict.get('volumeInfo', {}).get('averageRating')
 
 
 # def book_ratings():
-#     payload={"q":"+isbn:0486284735&key=AIzaSyA8SlCjyJQnXa62wL2dZPk2hTZmC86X5tY"}
+#     payload={"q":"+isbn:0486284735&key="}
 
 #     book_ratings_response =requests.get("https://www.googleapis.com/books/v1/volumes", params=payload)
 #     print book_ratings_response

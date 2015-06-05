@@ -24,8 +24,9 @@ def display_homepage():
     """Returns homepage."""
     return render_template("homepage.html")
 
-###############################################################################
-# LOGIN
+################################################################################
+    #Logins, Logouts, Register
+################################################################################
 
 @app.route("/login", methods=["POST"])
 def login_user():
@@ -81,6 +82,10 @@ def logout_user():
     session.pop(u'login')
     flash("You've successfully logged out. Goodbye.")
     return redirect("/")
+
+################################################################################
+    #
+################################################################################
     
 @app.route("/profile/<int:user_id>")
 def display_profile(user_id):
@@ -163,11 +168,10 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     chapter_obj_list = db.session.query(Chapter).filter(
         Chapter.book_id == book_id).all()
-    print "*******************in translate route"
+
     # if the book text hasn't been put inside the database yet, run the process_book
     # function to get split, and push book into the database.
     if not chapter_obj_list:
-        print "************************to process"
         processed_book = processGutenBook(gutenberg_extraction_number)
         processed_book = processed_book.process_book_chapters()
         chapter_obj_list = db.session.query(Chapter).filter(
@@ -358,6 +362,11 @@ def delete_group(group_id_input, language_input, book_id_input):
 def google_books():
     response = request.get('https://www.googleapis.com/books/v1/volumes?q=+isbn:0486284735&key=AIzaSyA8SlCjyJQnXa62wL2dZPk2hTZmC86X5tY')
 
+def find_room(bookgroup_id, chapter_number):
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    return room
+
+
 @socketio.on('connect', namespace='/rendertranslations')
 def test_connect():
     emit('my response', {'connection_status': 'Connected'})
@@ -368,9 +377,7 @@ def on_join(data):
         Sent by clients when they enter a room.
     """
     username = session["login"][0]
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data["chapter_number"]
-    room = str(bookgroup_id) + "." + str(chapter_number)
+    room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     join_room(room)
 
     emit('joined_status', {'msg': username + " has entered room " + str(room)}, room=room)
@@ -382,9 +389,7 @@ def on_leave(data):
     """
 
     username = session["login"][0]
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
+    room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     leave_room(room)
 
     emit('leave_status', {'msg': username + " has left room " + str(room)}, room=room)
@@ -394,9 +399,7 @@ def translated_text_rt(data):
     """
         Sent by clients while they are translating a paragraph
     """
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
+    room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('update text', data, broadcast=True, room=room)
 
 @socketio.on('canceled translation', namespace='/rendertranslations')
@@ -405,26 +408,20 @@ def revert_text(data):
         cancels their datatranslation
     """
 
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
+    room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('render reverted text', data, broadcast=True, room=room)
 
 @socketio.on('submit text', namespace='/rendertranslations')
 def new_text(data):
-
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
+    
+    room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('render submitted text', data, broadcast=True, room=room)
 
 @socketio.on('remove button', namespace='/rendertranslations')
 def hide_buttons(data):
     """Hides the edit buttons from all users while a user is translating"""
 
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
+    room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('hide button', data, broadcast=True, room=room)
 
 @socketio.on("disconnect", namespace='/rendertranslations')
@@ -436,7 +433,7 @@ if __name__ == "__main__":
     connect_to_db(app)
     app.debug = True
     DebugToolbarExtension(app)
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)
 
 

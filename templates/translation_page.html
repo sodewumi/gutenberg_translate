@@ -6,6 +6,7 @@
             <h3>{{ book_obj.name }} </h3>
             <h4>{{ book_obj.author }} </h4>
             <h5>{{ language }}</h5>
+            {% if number_of_chapters != 1 %}
             <form id="chosen_chap_form" method="GET">
                 <div class="form-group">
                     <label for="chap_sel">Chapter:</label>
@@ -25,6 +26,7 @@
                 <input type="hidden" value="{{ group_id }}" name="hidden_groupid_input">
                 <button id="chosen_chap_submit" type="submit">Choose</button>
             </form>
+            {% endif %}
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="collab_info">
             <h4>Collaborators</h4>

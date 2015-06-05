@@ -1,15 +1,13 @@
+# standard library modules
 import requests
 from server import app
 from flask import Flask
 import os
-from model import Book, connect_to_db, db
-# standard library modules
 # third-party modules
 from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify, url_for
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
-from flask_debugtoolbar import DebugToolbarExtension
 from lxml import etree
 # my modules
 from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup

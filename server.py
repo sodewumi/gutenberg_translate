@@ -7,13 +7,12 @@ import requests
 from amazonproduct import API
 from flask import flash, Flask, redirect, render_template, request, session, jsonify, url_for
 from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room, disconnect
-from gutenberg.acquire import load_etext
-from gutenberg.cleanup import strip_headers
+
 from flask_debugtoolbar import DebugToolbarExtension
 from lxml import etree
 # my modules
 from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup
-
+from process_gutenberg_books import processGutenBook
 
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
@@ -24,6 +23,9 @@ socketio = SocketIO(app)
 def display_homepage():
     """Returns homepage."""
     return render_template("homepage.html")
+
+###############################################################################
+# LOGIN
 
 @app.route("/login", methods=["POST"])
 def login_user():
@@ -136,13 +138,6 @@ def check_user_exists():
     else:
         return jsonify({"collab_username": None})
 
-
-def good_reads():
-    uri = "https://www.goodreads.com/book/isbn?format=json&isbn=0486284735"
-    response =requests.get(uri)
-    return response.json()
-
-
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])
 def submit_add_translation_form(gutenberg_extraction_number):
     """ 
@@ -168,11 +163,13 @@ def submit_add_translation_form(gutenberg_extraction_number):
 
     chapter_obj_list = db.session.query(Chapter).filter(
         Chapter.book_id == book_id).all()
-    
+    print "*******************in translate route"
     # if the book text hasn't been put inside the database yet, run the process_book
     # function to get split, and push book into the database.
     if not chapter_obj_list:
-        process_book_chapters(gutenberg_extraction_number)
+        print "************************to process"
+        processed_book = processGutenBook(gutenberg_extraction_number)
+        processed_book = processed_book.process_book_chapters()
         chapter_obj_list = db.session.query(Chapter).filter(
             Chapter.book_id == book_id_tuple[0]).all()
 
@@ -198,7 +195,6 @@ def submit_add_translation_form(gutenberg_extraction_number):
     db.session.commit()
 
     return redirect(url_for(".display_translation_page", bookgroup_id_input = new_bookgroup_obj.bookgroup_id))
-
 
 def render_untranslated_chapter(book_id, chosen_chap):
     """Shows the translated page chosen"""
@@ -241,9 +237,14 @@ def display_translation_page():
         translated_paragraphs_list = find_trans_paragraphs( 
                 paragraph_obj_list, bookgroup_id)
     else:
-        paragraph_obj_list = chapter_obj_list[1].paragraphs
-        translated_paragraphs_list = find_trans_paragraphs(
+        if number_of_chapters == 1:
+            paragraph_obj_list = chapter_obj_list[0].paragraphs
+            translated_paragraphs_list = find_trans_paragraphs(
                 paragraph_obj_list, bookgroup_id)
+        else:
+            paragraph_obj_list = chapter_obj_list[1].paragraphs
+            translated_paragraphs_list = find_trans_paragraphs(
+                    paragraph_obj_list, bookgroup_id)
 
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
@@ -251,81 +252,6 @@ def display_translation_page():
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
         bookgroup_id=bookgroup_id, group_collab_users=group_collab_users, collab_user_num=collab_user_num)
-
-@socketio.on('connect', namespace='/rendertranslations')
-def test_connect():
-    emit('my response', {'connection_status': 'Connected'})
-
-@socketio.on('joined', namespace='/rendertranslations')
-def on_join(data):
-    """
-        Sent by clients when they enter a room.
-    """
-    username = session["login"][0]
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data["chapter_number"]
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    join_room(room)
-
-    emit('joined_status', {'msg': username + " has entered room " + str(room)}, room=room)
-
-@socketio.on('leave', namespace='/rendertranslations')
-def on_leave(data):
-    """
-        Sent by clients when the leave a room
-    """
-
-    username = session["login"][0]
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    leave_room(room)
-
-    emit('leave_status', {'msg': username + " has left room " + str(room)}, room=room)
-
-@socketio.on('value changed', namespace='/rendertranslations')
-def translated_text_rt(data):
-    """
-        Sent by clients while they are translating a paragraph
-    """
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    emit('update text', data, broadcast=True, room=room)
-
-@socketio.on('canceled translation', namespace='/rendertranslations')
-def revert_text(data):
-    """ Takes the last saved translation and renders it on the page if the clients
-        cancels their datatranslation
-    """
-
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    emit('render reverted text', data, broadcast=True, room=room)
-
-@socketio.on('submit text', namespace='/rendertranslations')
-def new_text(data):
-
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    emit('render submitted text', data, broadcast=True, room=room)
-
-@socketio.on('remove button', namespace='/rendertranslations')
-def hide_buttons(data):
-    """Hides the edit buttons from all users while a user is translating"""
-
-    bookgroup_id = data["bookgroup_id"]
-    chapter_number = data.get("chapter_number")
-    room = str(bookgroup_id) + "." + str(chapter_number)
-    emit('hide button', data, broadcast=True, room=room)
-
-@socketio.on("disconnect", namespace='/rendertranslations')
-def disconnected():
-    print "**********disconnected*****************************"
-    disconnect()
-
 
 def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
     """Finds the translated paragraphs per group"""
@@ -429,133 +355,104 @@ def delete_group(group_id_input, language_input, book_id_input):
     db.session.commit()
     return redirect('/explore')
 
-def open_file(file_id):
-    """
-        Opens a file from project gutenberg 
-    """
-    print "opened"
-    return load_etext(file_id)
-
-def split_chapters(full_text):
-    """
-        Removes header and footer from project gutenberg book. 
-        Makes a list of chapters, where each chapter is a sublist of paragraphs
-    """
-    book = strip_headers(full_text)
-
-    chapter_list = re.split(ur'\n\bchapter\b \w+\.?', book, flags=re.IGNORECASE)
-    paragraphs_in_chapter_list = []
-
-    for i in range(len(chapter_list)):
-        paragraphs_in_chapter_list.append(chapter_list[i].split('\n\n'))
-
-    return paragraphs_in_chapter_list
-
-def book_database(parsed_book, book_obj):
-    """ Pushs newly created books into a database"""
-
-    book_id = book_obj.book_id
-
-    # start at 1 to account the sqlite3 starts counting at 1
-    for c, chapters in enumerate(parsed_book, 1):
-        db.session.add(Chapter(chapter_number=c, book_id=book_id))
-        db.session.commit()
-        new_chapter_obj = Chapter.query.filter_by(chapter_number=c, 
-            book_id=book_id).one()
-        new_chapter_id = new_chapter_obj.chapter_id
-
-        for paragraphs in chapters:
-            db.session.add(Paragraph(untranslated_paragraph=paragraphs,
-                chapter_id=new_chapter_id))
-
-    db.session.commit()
-
-def process_book_chapters(guten_extraction_number):
-    """
-        Loads a book from project gutenberg, splits the chapters, and pushes it to
-        a database.
-    """
-    book_obj = Book.query.filter_by(gutenberg_extraction_num=guten_extraction_number).one()
-
-    # gets book from project gutenberg
-    book_text = open_file(guten_extraction_number)
-
-    # splits the book to a list of chapters
-    chapter_list = split_chapters(book_text)
-
-    # push chapter_list into a database
-    book_database(chapter_list, book_obj)
-
-def amazon_setup():
-    """
-        Connects to amazon web services API
-    """
-
-    config = {
-        'access_key': os.environ['ACCESS_KEY'],
-        'secret_key': os.environ['SECRET_KEY'],
-        'associate_tag': os.environ['ASSOCIATE_TAG'],
-        'locale': 'us'
-    }
-
-    api = API(cfg=config)
-
-    book_obj_list = Book.query.all()
-    isbn_list = []
-    for book_obj in book_obj_list:
-        isbn_list.append(book_obj.isbn)
-
-    return book_lookup(isbn_list, api)
-
-def book_lookup(isbn_list, api):
-    api_dict = {}
-
-    for isbn in isbn_list:
-        res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN',
-            ResponseGroup="Images, EditorialReview")
-        for item in res.Items.Item:
-            img_url = str(item.LargeImage.URL)
-            api_dict.setdefault(isbn, img_url)
-
-    return aws_api_to_db(api_dict)
-
-def aws_api_to_db(api_dict):
-
-    for isbn in api_dict:
-        book_obj = Book.query.filter_by(isbn=isbn).one()
-        print book_obj, "a book obj *********************"
-        book_obj.cover = api_dict[isbn]
-    db.session.commit()
-
-def book_ratings():
-    book_isbn_tuple = db.session.query(Book.isbn, Book.book_id).all()
-    book_isbn_dict = dict(book_isbn_tuple)
-    isbn_str = ""
-    for book_isbn in book_isbn_dict:
-        isbn_str = isbn_str +","+ book_isbn
-    isbn_str = isbn_str[1:]
-
-    book_ratings_response =requests.get("https://www.goodreads.com/book/review_counts.json?format=json&isbns="+isbn_str+"&key="+ os.environ['GR_KEY'])
-    book_ratings_response = book_ratings_response.json()
-    book_ratings_list = book_ratings_response['books']
-
-    for rating_dict in book_ratings_list:
-        book_id = book_isbn_dict[rating_dict["isbn"]]
-        book_obj = Book.query.get(book_id)
-        book_obj.rating = rating_dict['average_rating']
-
-        db.session.commit()
-
 def google_books():
     response = request.get('https://www.googleapis.com/books/v1/volumes?q=+isbn:0486284735&key=AIzaSyA8SlCjyJQnXa62wL2dZPk2hTZmC86X5tY')
 
+@socketio.on('connect', namespace='/rendertranslations')
+def test_connect():
+    emit('my response', {'connection_status': 'Connected'})
+
+@socketio.on('joined', namespace='/rendertranslations')
+def on_join(data):
+    """
+        Sent by clients when they enter a room.
+    """
+    username = session["login"][0]
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data["chapter_number"]
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    join_room(room)
+
+    emit('joined_status', {'msg': username + " has entered room " + str(room)}, room=room)
+
+@socketio.on('leave', namespace='/rendertranslations')
+def on_leave(data):
+    """
+        Sent by clients when the leave a room
+    """
+
+    username = session["login"][0]
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    leave_room(room)
+
+    emit('leave_status', {'msg': username + " has left room " + str(room)}, room=room)
+
+@socketio.on('value changed', namespace='/rendertranslations')
+def translated_text_rt(data):
+    """
+        Sent by clients while they are translating a paragraph
+    """
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('update text', data, broadcast=True, room=room)
+
+@socketio.on('canceled translation', namespace='/rendertranslations')
+def revert_text(data):
+    """ Takes the last saved translation and renders it on the page if the clients
+        cancels their datatranslation
+    """
+
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('render reverted text', data, broadcast=True, room=room)
+
+@socketio.on('submit text', namespace='/rendertranslations')
+def new_text(data):
+
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('render submitted text', data, broadcast=True, room=room)
+
+@socketio.on('remove button', namespace='/rendertranslations')
+def hide_buttons(data):
+    """Hides the edit buttons from all users while a user is translating"""
+
+    bookgroup_id = data["bookgroup_id"]
+    chapter_number = data.get("chapter_number")
+    room = str(bookgroup_id) + "." + str(chapter_number)
+    emit('hide button', data, broadcast=True, room=room)
+
+@socketio.on("disconnect", namespace='/rendertranslations')
+def disconnected():
+    
+    disconnect()
 
 if __name__ == "__main__":
     connect_to_db(app)
     app.debug = True
     DebugToolbarExtension(app)
-    # book_database()
-    # book_ratings()
-    # amazon_setup()
     # socketio.run(app)
     app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

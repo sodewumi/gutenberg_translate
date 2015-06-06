@@ -20,15 +20,15 @@ import sys
 from apiclient.discovery import build
 
 
-service = build('books', 'v1', developerKey='')
-
+service = build('books', 'v1', developerKey=os.environ['GB_KEY'])
+print "hello"
 request = service.volumes().list(source='public',
                                     orderBy='relevance',
                                     printType='books',
                                     langRestrict='en',
-                                    isbn='0486284735',
+                                    q="pride and prejudice",
                                     startIndex=0,
-                                    maxResults=10,
+                                    maxResults=1,
                                     fields="items(volumeInfo(description,pageCount,categories,publishedDate,imageLinks/thumbnail,title,previewLink,industryIdentifiers,subtitle,authors,ratingsCount,mainCategory,averageRating))")
 
 response = request.execute()
@@ -36,6 +36,9 @@ response = request.execute()
 
 ratingsCount = book_dict.get('volumeInfo', {}).get('ratingsCount')
 averageRatings = book_dict.get('volumeInfo', {}).get('averageRating')
+
+print ratingsCount
+print averageRating
 
 
 # def book_ratings():

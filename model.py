@@ -56,10 +56,9 @@ class Book(db.Model):
     book_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
     author = db.Column(db.String(45))
-    reviews = db.Column(db.String())
+    summary = db.Column(db.String())
     rating = db.Column(db.Integer)
     cover = db.Column(db.String())
-    genre_name = db.Column(db.String(10))
     gutenberg_extraction_num = db.Column(db.String(10))
     isbn = db.Column(db.String(10))
     chapters = db.relationship("Chapter", backref="book")
@@ -147,9 +146,8 @@ class Translation(db.Model):
 
     translation_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     translated_paragraph = db.Column(db.String()) 
-    paragraph_id = db.Column(db.Integer, db.ForeignKey("paragraphs.paragraph_id")) #fk
+    paragraph_id = db.Column(db.Integer, db.ForeignKey("paragraphs.paragraph_id"))
     bookgroup_id = db.Column(db.Integer, db.ForeignKey("bookgroups.bookgroup_id"))
-    # user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
     def find_trans_paragraphs(self, paragraph_obj_list, bookgroup_id):
         """Finds the translated paragraphs per group"""

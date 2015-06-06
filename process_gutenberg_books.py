@@ -25,11 +25,16 @@ class processGutenBook(object):
         book = strip_headers(full_text)
 
         chapter_list = re.split(ur'\n\bchapter\b \w+\.?', book, flags=re.IGNORECASE)
+
+        if len(chapter_list) < 2:
+            print "hey"
+            chapters_deliminator = re.split(ur'\n[IVXCLM]+\.?', book, re.IGNORECASE)
         paragraphs_in_chapter_list = []
 
         for i in range(len(chapter_list)):
             paragraphs_in_chapter_list.append(chapter_list[i].split('\n\n'))
 
+        # return len(paragraphs_in_chapter_list)
         return paragraphs_in_chapter_list
 
     def book_database(self, parsed_book, book_obj):

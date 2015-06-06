@@ -46,7 +46,8 @@ def set_book_cover():
 
 def book_ratings():
     book_isbn_tuple = db.session.query(Book.isbn, Book.book_id).all()
-    book_isbn_dict = dict(book_isbn_tuple)
+    book_isbn_dict = {key.strip(): value for (key, value) in book_isbn_tuple}
+
     isbn_str = ""
     for book_isbn in book_isbn_dict:
         book_isbn = book_isbn.strip()
@@ -59,11 +60,14 @@ def book_ratings():
     book_ratings_list = book_ratings_response['books']
 
     for rating_dict in book_ratings_list:
-        book_id = book_isbn_dict[rating_dict[u'isbn']]
-        book_obj = Book.query.get(book_id)
-        book_obj.rating = rating_dict['average_rating']
+        try:
+            book_id = book_isbn_dict[str(rating_dict['isbn'])]
+            book_obj = Book.query.get(book_id)
+            book_obj.rating = rating_dict['average_rating']
 
-        db.session.commit()
+            db.session.commit()
+        except:
+            print None
 
 
 if __name__ == "__main__":

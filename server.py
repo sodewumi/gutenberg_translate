@@ -94,7 +94,16 @@ def display_profile(user_id):
     user_obj = User.query.get(user_id)
     user_groups_list = user_obj.groups
 
-    return render_template("profile.html", user_groups_list=user_groups_list)
+    user_usergroups_list = user_obj.usergroups
+
+    all_collaborators = set()
+
+    for usergroup in user_usergroups_list:
+        all_collaborators.add(usergroup.user.username)
+
+
+    return render_template("profile.html", user_groups_list=user_groups_list,
+        all_collaborators=all_collaborators)
  
 @app.route("/explore")
 def display_explore_books():

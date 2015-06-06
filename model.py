@@ -44,6 +44,7 @@ class UserGroup(db.Model):
     usergroup_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     group_id = db.Column(db.Integer, db.ForeignKey("groups.group_id"))
+    # user = db.relationship("UserGroup", backref=("users"))
 
     def __repr__(self):
         return "<UserGroup: usergroup_id=%d, user_id=%d, group_id=%d>" %(

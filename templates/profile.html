@@ -29,6 +29,14 @@
         {% endfor %}
     </ul>
 
+    <h2>Collaborators</h2>
+    <ul>
+        {% for user in all_collaborators %}
+        <li>{{ user }}</li>
+        {% endfor %}
+
+    </ul>
+
 <!-- >>> for g in user.groups:
 ...     print "Group name:%s\n" % g.group_name
 ...     for u in g.users:

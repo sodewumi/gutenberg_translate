@@ -86,7 +86,17 @@ def logout_user():
 ################################################################################
     #
 ################################################################################
-    
+
+@app.route("/explore")
+@app.route("/explore/<int:page>")
+def display_explore_books(page=1):
+    """Return a full list of books from project gutenberg."""
+
+    all_book_objs = Book.query.paginate(page, 20, False)
+
+    return render_template("explore_books.html", all_book_objs=all_book_objs)
+
+
 @app.route("/profile/<int:user_id>")
 def display_profile(user_id):
     """Return a user's profile page."""
@@ -98,19 +108,13 @@ def display_profile(user_id):
 
     usergroups_list = UserGroup.query.filter(UserGroup.group_id.in_(group_ids_list))
     user_ids_list = [usergroup.user_id for usergroup in usergroups_list]
-    all_collaborators = User.query.filter(User.user_id.in_(user_ids_list), User.user_id != user_obj.user_id)
-
+    all_collaborators = User.query.filter(User.user_id.in_(user_ids_list),
+                            User.user_id != user_obj.user_id)
 
     return render_template("profile.html", username=user_obj.username,
             user_groups_list=user_groups_list, all_collaborators=all_collaborators)
  
-@app.route("/explore")
-def display_explore_books():
-    """Return a full list of books from project gutenberg."""
 
-    all_book_objs = Book.query.all()
-
-    return render_template("explore_books.html", all_book_objs=all_book_objs)
 
 
 @app.route("/description/<int:gutenberg_extraction_number>", methods=["GET"])

@@ -4,7 +4,7 @@
     <h1>Explore Books</h1>
 
     <ul id="book_list">
-        {% for book in all_book_objs %}
+        {% for book in all_book_objs.items %}
         <li id="{{ book.gutenberg_extraction_num }}">
             <a href="/description/{{ book.gutenberg_extraction_num }}">
                 <img src="{{ book.cover }}">
@@ -16,5 +16,19 @@
         {% endfor %}
     </ul>
 
+    <nav>
+      <ul class="pager">
+        {% if all_book_objs.has_prev %}
+        <li><a href="{{ url_for('display_explore_books', page=all_book_objs.prev_num) }}">Previous</a></li>
+        {% else %}
+        <li class="disabled"><a href="#">Previous</a></li>
+        {% endif %}
 
+        {% if all_book_objs.has_next %}
+        <li><a href="{{ url_for('display_explore_books', page=all_book_objs.next_num) }}">Next</a></li>
+        {% else %}
+        <li class="disabled"><a href="#">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
 {% endblock %}

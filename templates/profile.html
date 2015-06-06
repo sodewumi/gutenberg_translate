@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<h1>{{ session["login"][0] }}'s Profile</h1>
+<h1>{{ username }}'s Profile</h1>
 
 <hr>
 <h2>Projects</h2>
@@ -31,23 +31,14 @@
 
     <h2>Collaborators</h2>
     <ul>
-        {% for user in all_collaborators %}
-        <li>{{ user }}</li>
+        {% if all_collaborators %}
+        {% for collaborator in all_collaborators %}
+        <li> 
+            <a href="/profile/{{ collaborator.user_id }}">{{ collaborator.username }}</a>
+        </li>
         {% endfor %}
-
+        {% else %}
+        <p>You have no collaborators yet. Go explore!</p>
+        {% endif %}
     </ul>
-
-<!-- >>> for g in user.groups:
-...     print "Group name:%s\n" % g.group_name
-...     for u in g.users:
-...             print u.username+'\n'
-...     for b in g.books:
-...             print b.name 
-... 
-Group name:tester -->
-
-    
-
-
-
 {% endblock %}

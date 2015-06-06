@@ -27,8 +27,8 @@ class processGutenBook(object):
         chapter_list = re.split(ur'\n\bchapter\b \w+\.?', book, flags=re.IGNORECASE)
 
         if len(chapter_list) < 2:
-            print "hey"
             chapter_list = re.split(ur'\n[IVXCLM]+\n', book)
+            
         paragraphs_in_chapter_list = []
 
         for i in range(len(chapter_list)):

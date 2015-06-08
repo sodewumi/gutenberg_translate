@@ -1,4 +1,27 @@
 $(document).ready(function(){
+
+    function starRating() {
+        var bookRating = $("#book_rating").data("bookrating");
+
+        if (bookRating != undefined) {
+            var rating_int = Math.floor(bookRating);
+            var rating_dec = bookRating % 1;
+            var renderStar = Array(rating_int + 1).join('<i class="fa fa-star"></i>');
+
+            if (rating_dec > 0.6666) {
+                renderStar += ('<i class="fa fa-star"></i>');
+            } else if (rating_dec > 0.3333) {
+                renderStar += ('<i class="fa fa-star-half-o"></i>');
+            }
+
+            return renderStar;
+        }
+
+        return undefined;
+    }
+
+    $("#book_rating").append(starRating());
+
     // add logic about what happens if edit button is already clicked
     function hiddenInputs(newUsername) {
         var hiddenInput = $("<input type='hidden' name='usernames'>").val(newUsername);

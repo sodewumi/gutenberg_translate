@@ -4,7 +4,6 @@
 74|The Adventures of Tom Sawyer|Mark Twain|0486400778
 1952|The Yellow Wallpaper|Charlotte Perkins Gilman|091406116X
 174|The Picture of Dorian Gray|Oscar Wilde|0486278077
-844|The Importance of Being Earnest: A Trivial Comedy for Serious People|Oscar Wilde|0486264785
 5200|Metamorphosis|Franz Kafka|0486290301
 1661|The Adventures of Sherlock Holmes|Arthur Conan Doyle|1853260339
 98|A Tale of Two Cities|Charles Dickens|0486406512
@@ -15,10 +14,10 @@
 1080|A Modest Proposal|Jonathan Swift|1453691693
 1400|Great Expectations|Charles Dickens|0486415864
 2814|Dubliners|James Joyce|0486268705
-84|Frankenstein| Mary Wollstonecraft Shelley|0486282112
+84|Frankenstein| Mary Shelley|0486282112
 158|Emma|Jane Austen|0486406482
 345|Dracula|Bram Stoker|1503376257
-23|Narrative of the Life of Frederick Douglass, an American Slave|Frederick Douglass|0486284999
+23|Narrative of the Life of Frederick Douglass|Frederick Douglass|0486284999
 308|Three Men in a Boat|Jerome K. Jerome|1512099899
 1184|The Count of Monte Cristo|Alexandre Dumas|0140449264
 161|Sense and Sensibility|Jane Austen|0007350791

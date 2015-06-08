@@ -77,7 +77,7 @@ class Book(db.Model):
                 book_obj_paragraphs = self.chapters[1].paragraphs[0:3]
                 for p in book_obj_paragraphs:
                    text_string += " " + p.untranslated_paragraph
-            return text_string[0:250]
+            return text_string[0:500]
         else:
             return None
 

@@ -18,7 +18,9 @@ config = {
 
 api = API(cfg=config)
 
-
+################################################################################
+        #Seed Book
+################################################################################
 def seed_books():
     book_txt = open("books.txt")
     for line in book_txt:
@@ -28,6 +30,9 @@ def seed_books():
         db.session.add(Book(gutenberg_extraction_num=line[0], name=line[1], author=line[2], isbn=line[3]))
     db.session.commit()
 
+################################################################################
+        #Amazon
+################################################################################
 def book_lookup(isbn):
     isbn = isbn.strip()
     res = api.item_lookup(isbn, SearchIndex='Books', IdType='ISBN',
@@ -37,13 +42,14 @@ def book_lookup(isbn):
 
 def set_book_cover():
     book_obj_list = Book.query.all()
-    # print book_obj_list
-    # book_obj_list[1].cover = book_lookup("0553213458")
     for book_obj in book_obj_list:
         book_obj.cover = book_lookup(book_obj.isbn)
 
     db.session.commit()
 
+################################################################################
+        #Good Reads
+################################################################################
 def book_ratings():
     book_isbn_tuple = db.session.query(Book.isbn, Book.book_id).all()
     book_isbn_dict = {key.strip(): value for (key, value) in book_isbn_tuple}
@@ -69,9 +75,8 @@ def book_ratings():
         except:
             print None
 
-
 if __name__ == "__main__":
     connect_to_db(app)
     # seed_books()
     # set_book_cover()
-    book_ratings()
+    # book_ratings()

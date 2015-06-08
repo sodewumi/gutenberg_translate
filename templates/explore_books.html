@@ -1,20 +1,25 @@
 {% extends 'base.html' %}
 
 {% block body %}
+
     <h1>Explore Books</h1>
 
-    <ul id="book_list">
-        {% for book in all_book_objs.items %}
-        <li id="{{ book.gutenberg_extraction_num }}">
-            <a href="/description/{{ book.gutenberg_extraction_num }}">
-                <img src="{{ book.cover }}">
-            </a>
-            <h2>{{ book.name }}</h2>
-            <h3>{{ book.author }}</h3>
-        </li>
-        <hr>
-        {% endfor %}
-    </ul>
+<div class="row">
+  {% for book in all_book_objs.items %}
+  <div class="col-xs-3">
+    <div class="thumbnail">
+        <a href="/description/{{ book.gutenberg_extraction_num }}" title="{{ book.name }}">
+            <img src="{{ book.cover }}" class="book-imgs" alt="{{book.name}}'s Cover Image">
+        </a>
+      <div class="caption">
+        <h3>{{ book.name }}</h3>
+        <h4>{{ book.author }}</h4>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
 
     <nav>
       <ul class="pager">

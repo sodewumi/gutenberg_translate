@@ -1,3 +1,6 @@
+body {
+  background-color: #eff0f0;
+}
 #translate_textarea {
     /*need so text form takes precedence over modal*/
     z-index: 9999;
@@ -9,8 +12,10 @@
   transform: translateY(-50%);
 }
 
+
 .navbar {
-  margin-bottom: 0px;
+  height: 60px;
+  background-color: white;
 }
 
 #chap_sel {
@@ -39,3 +44,64 @@ div#collab_info {
 #homepage_display {
     background-color: rgba(255, 255, 255, 0.9);
 }
+
+img.book-imgs {
+   max-width: 100%;
+   height: 360px;
+}
+
+/*-----------Book Description Page----------------*/
+.full-container {
+  background-color: white;
+  margin-top: 20px;
+}
+
+h2 {
+  padding: 0;
+  margin: 0px;
+  font-size: 35px;
+}
+
+#book_rating h3 {
+  font-size: 30px;
+  color: #999
+}
+
+.book-info {
+  margin-top: 15px;
+}
+
+.title-rating {
+  margin-top: 30px;
+}
+
+.translate-book-btn {
+  -webkit-border-radius: 0 !important;
+     -moz-border-radius: 0 !important;
+          border-radius: 0 !important;
+  color: white;
+  background-color: #31c8cb;
+  width: 70%;
+  height: 50px;
+}
+
+.description-header {
+  margin: 40px 0;
+  text-align: center;
+}
+
+.bob {
+  /*background-color: red;*/
+}
+.book-user-group {
+  height: 300px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #eff0f0;
+  text-align: center;
+}
+
+.book-user-group h4{
+
+}
+

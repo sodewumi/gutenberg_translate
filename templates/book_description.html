@@ -1,156 +1,173 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
-<div id="book_info">
-    <p id="book_cover">
-        <img src="{{ display_book.cover }}" alt="kitten">
-    </p>
-    <div id="basic_book_info">
-        <h2>{{ display_book.name }}</h2>
-        <h3>{{ display_book.author }}</h3>
-        <hr>
-        <div id="book_rating">
-            <h3>Rating</h3>
-            <p>
-                <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+<div class="container full-container">
+    <div class="row book-info">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-md-offset-1">
+            <p id="book_cover">
+                <img src="{{ display_book.cover }}" alt="kitten">
             </p>
         </div>
-        <!-- if the user has any other groups translating the book -->
-        {% if groups_list %}
-            <ul>
-                {% for group in groups_list %}
-                <li>{{ group.group_name }}</li>
-
-                <!-- checks which language a group translated a book into -->
-                <li>
-                    {{ group.bookgroups[0].language }}
-                </li>
-                    <ul>
-                        <!-- displays all people in the group -->
-                        {% for user in group.users %}
-                        <li>{{ user.username }}</li>
-                        {% endfor %}
-                        <li>
-                            <form class="edit_book_form" action="/rendertranslations"
-                                    method="GET" data-bookId ="{{ display_book.book_id }}"
-                                    data-language="{{  group.bookgroups[0].language }}"
-                                    data-groupid="{{ group.group_id }}">
-                                <input type="hidden" name="hidden_lang_input" 
-                                        value="{{  group.bookgroups[0].language }}">
-                                <input type="hidden" name="hidden_groupid_input"
-                                        value="{{ group.group_id }}">
-                                <input type="hidden" name="bookgroup_id_input" value="{{ group.bookgroups[0].bookgroup_id }}">
-                                <input type="submit" value='Go to existing translations'>
-                            </form>
-                        </li>
-                    </ul>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        <button type="button" class="btn btn-primary" data-toggle="modal"
-                data-target="#add_book_form">
-            Translate Book
-        </button>
-
-        <div class="modal fade" id="add_book_form" tabindex="-1" role="dialog" 
-                aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title text-center">
-                        Translate {{ display_book.name }}
-                    </h1>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-md-offset-1 title-rating">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2>{{ display_book.name }}</h2>
+                    <h3>{{ display_book.author }}</h3>
+                    <hr>
+                    <h3>Rating</h3>
+                    <p id="book_rating" data-bookrating="{{ display_book.rating}}">
+                    </p>
                 </div>
 
-                <div class="modal-body">
-                    <form id="create_group_form" name="render_translations" action="/translate/{{ gutenberg_extraction_number }}">
-                        <div class="form-group">
-                            <p>
-                                Group Name:
-                            </p>
-
-                            <input id = "new_group_names" type="text" 
-                                name="group_name_input" class="form-control input-lg"
-                                placeholder="Add Group Name" autocomplete="off"
-                                maxlength="30">
-
-                        </div>
-                        <div class="form-group">
-                            <p>
-                                Add Collaborators' Usernames:
-                            </p>
-                            <input id ="group_name_input" type="text" 
-                                name="translation_collaborators_input" 
-                                class="form-control input-lg" placeholder="Usernames"
-                                autocomplete="off">
-                            <p id="error_message"></p>
-                            <ul id="collab_list">
-                                <li class="collab_usernames">
-                                    {{ session["login"][0] }}
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="form-group">
-                            <p>
-                                Choose your translation language:
-                            </p>
-                            <select name="translation_language_input">
-                                <option value="arabic" selected="selected">Arabic</option>
-                                <option value="chinese_s">
-                                    Chinese (simplified)
-                                </option>
-                                <option value="chinese_t">
-                                    Chinese (traditional)
-                                </option>
-                                <option value="french">French</option>
-                                <option value="german">German</option>
-                                <option value="portuguese">Portuguese</option>
-                                <option value="russian">Russian</option>
-                                <option value="spanish">Spanish</option>
-                            </select>
-                        </div>
-
-                        <button id="create_group_btn" type="submit" class="btn btn-primary btn-lg btn-block">
-                                Translate Books
-                        </button>
-                    </form>
+                <div class="col-xs-12">
+                <button type="button" class="btn translate-book-btn" data-toggle="modal"
+                        data-target="#add_book_form">
+                    Translate Book
+                </button>
                 </div>
 
-                <div class="modal-footer">
-                    <div class="col-md-12">
-                        <button class="btn" id="close_btn" data-dismiss="modal" aria-hidden="true">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
             </div>
-          </div>
+
         </div>
     </div>
+    <div class="modal fade" id="add_book_form" tabindex="-1" role="dialog" 
+            aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title text-center">
+                    Translate {{ display_book.name }}
+                </h1>
+            </div>
+
+            <div class="modal-body">
+                <form id="create_group_form" name="render_translations" action="/translate/{{ gutenberg_extraction_number }}">
+                    <div class="form-group">
+                        <p>
+                            Group Name:
+                        </p>
+
+                        <input id = "new_group_names" type="text" 
+                            name="group_name_input" class="form-control input-lg"
+                            placeholder="Add Group Name" autocomplete="off"
+                            maxlength="30">
+
+                    </div>
+                    <div class="form-group">
+                        <p>
+                            Add Collaborators' Usernames:
+                        </p>
+                        <input id ="group_name_input" type="text" 
+                            name="translation_collaborators_input" 
+                            class="form-control input-lg" placeholder="Usernames"
+                            autocomplete="off">
+                        <p id="error_message"></p>
+                        <ul id="collab_list">
+                            <li class="collab_usernames">
+                                {{ session["login"][0] }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <p>
+                            Choose your translation language:
+                        </p>
+                        <select name="translation_language_input">
+                            <option value="arabic" selected="selected">Arabic</option>
+                            <option value="chinese_s">
+                                Chinese (simplified)
+                            </option>
+                            <option value="chinese_t">
+                                Chinese (traditional)
+                            </option>
+                            <option value="french">French</option>
+                            <option value="german">German</option>
+                            <option value="portuguese">Portuguese</option>
+                            <option value="russian">Russian</option>
+                            <option value="spanish">Spanish</option>
+                        </select>
+                    </div>
+
+                    <button id="create_group_btn" type="submit" class="btn btn-primary btn-lg btn-block">
+                            Translate Books
+                    </button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-md-12">
+                    <button class="btn" id="close_btn" data-dismiss="modal" aria-hidden="true">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- </div> -->
+
+    <!-- if the user has any other groups translating the book -->
+    {% if display_text %}
+    <hr>
+    <div class="row" id="book_excerpt">
+        <div class="col-xs-12">
+            <h3 class="description-header">Excerpt</h3>
+        </div>
+
+        <div class="col-xs-10 col-xs-offset-1">
+            <i class="fa fa-quote-left"></i>
+            <p>
+                {{ display_text }}...
+            </p>
+            <i class="fa fa-quote-right"></i>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% if groups_list %}
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 class="description-header">Your Current Groups</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 bob">
+            <div class="row">
+        {% for group in groups_list %}
+
+            <div class="col-xs-3 col-xs-offset-1 book-user-group">
+            <h4>{{ group.group_name }}</h4>
+
+            <!-- checks which language a group translated a book into -->
+            <h4>
+                {{ group.bookgroups[0].language }}
+            </h4>
+                <!-- displays all people in the group -->
+            {% for user in group.users %}
+            <h4>{{ user.username }}</h4>
+            {% endfor %}
+            <form class="edit_book_form" action="/rendertranslations"
+                    method="GET" data-bookId ="{{ display_book.book_id }}"
+                    data-language="{{  group.bookgroups[0].language }}"
+                    data-groupid="{{ group.group_id }}">
+                <input type="hidden" name="hidden_lang_input" 
+                        value="{{  group.bookgroups[0].language }}">
+                <input type="hidden" name="hidden_groupid_input"
+                        value="{{ group.group_id }}">
+                <input type="hidden" name="bookgroup_id_input" value="{{ group.bookgroups[0].bookgroup_id }}">
+                <input type="submit" class="btn" value='Go To Project'>
+            </form>
+        </div>
+        {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
 </div>
 
-{% if display_text %}
-<hr>
-<div id="book_excerpt">
-    <h1>Excerpt</h1>
-    <p>
-        {{ display_text }}
-    </p>
-</div>
-{% endif %}
-
-<hr>
-<div id="book_reviews">
-    <h1>Reviews</h1>
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-</div>
 {% endblock %}

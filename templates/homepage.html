@@ -2,91 +2,93 @@
 
 {% block head %}
 
-    <style>
-        body {
-              background: url(static/img/cover4.jpg) no-repeat center center fixed; 
-              -webkit-background-size: cover;
-              -moz-background-size: cover;
-              -o-background-size: cover;
-              background-size: cover;
-        }
-    </style>
+  <style>
+      body {
+            background: url(static/img/cover4.jpg) no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+      }
+  </style>
 
 
 {% endblock %}
 
+
 {% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div id="homepage_display" class="col-md-6 col-md-offset-3">
+        <div class="row">
+            <div id="login" class="col-md-6">
+                {% if session.get("login") %}
+                    <h2>Logout</h2>
+                    <p>
+                        <a href="/logout">Logout</a>
+                    </p>
+                {% else %}
 
-<div class="row">
-<div id="homepage_display" class="col-md-6 col-md-offset-3">
-    <div class="row">
-        <div id="login" class="col-md-6">
-            {% if session.get("login") %}
-                <h2>Logout</h2>
-                <p>
-                    <a href="/logout">Logout</a>
-                </p>
-            {% else %}
+                <div role="tabpanel">
+                  <!-- Nav tabs -->
+                  <ul id="logintabs" class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="signin_tab active">
+                      <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Sign In</a>
+                    </li>
+                    <li role="presentation">
+                      <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Sign Up</a>
+                    </li>
+                  </ul>
+                  <!-- Tab panes -->
+                  <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="home">
+                        <form id="login_form" action="/login" method="POST">
+                            <div class="form-group">
+                                <p>Username</p>
+                                 <input type="text" name="username_input">
+                            </div>
+                            <div class="form-group">
+                                <p>Password</p>
+                                 <input type="password" name="password_input">
+                            </div>
+                            <button class="btn btn-primary btn-sm" type="submit">Login</button>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="profile">
+                        <form id="register_form" action="/register" method="POST">
+                            <div class="form-group">
+                                <p>Username:</p>
+                                 <input type="text" name="username_input">
+                            </div>
+                            <div class="form-group">
+                                <p>Email:</p>
+                                <input type="text" name="email_input">
+                            </div>
+                            <div class="form-group">
+                                <p>Password</p>
+                                 <input type="password" name="password_input">
+                            </div>
+                            <button class="btn btn-primary btn-sm" type="submit">Register</button>
+                        </form>
+                    </div>
+                  </div>
+                {% endif %}
+                </div>
+            </div>
 
-            <div role="tabpanel">
-              <!-- Nav tabs -->
-              <ul id="logintabs" class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="signin_tab active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Sign In</a></li>
-                <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Sign Up</a></li>
-              </ul>
-              <!-- Tab panes -->
-              <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="home">
-                    <form id="login_form" action="/login" method="POST">
-                        <div class="form-group">
-                            <p>Username</p>
-                             <input type="text" name="username_input">
-                        </div>
-                        <div class="form-group">
-                            <p>Password</p>
-                             <input type="password" name="password_input">
-                        </div>
-                        <button class="btn btn-primary btn-sm" type="submit">Login</button>
-                    </form>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="profile">
-                    <form id="register_form" action="/register" method="POST">
-                        <div class="form-group">
-                            <p>Username:</p>
-                             <input type="text" name="username_input">
-                        </div>
-                        <div class="form-group">
-                            <p>Email:</p>
-                            <input type="text" name="email_input">
-                        </div>
-                        <div class="form-group">
-                            <p>Password</p>
-                             <input type="password" name="password_input">
-                        </div>
-                        <button class="btn btn-primary btn-sm" type="submit">Register</button>
-                    </form>
-                </div>
-              </div>
-            {% endif %}
+            <div id="homepage_description" class="col-md-6">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
             </div>
         </div>
 
-        <div id="homepage_description" class="col-md-6">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-        </div>
     </div>
-
-
+  </div>
 </div>
-</div>
-
-
-
-
 {% endblock %}

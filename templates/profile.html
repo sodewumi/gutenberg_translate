@@ -1,9 +1,19 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<h1>{{ username }}'s Profile</h1>
+<div class="container">
+<div class="row profile-image">
+    <div class="col-xs-9 user-intro">
+        <h1>{{ username }}'s Profile</h1>
+    </div>
+    <div class="col-xs-3 col-offset-9 user-info">
+        <i class="fa"></i>
+        <h3>{{ username }}</h3>
+        <p>{{ username }} has contributed to {{ project_num }} projects</p>
+    </div>
+</div>
 
-<hr>
+<div class="row">
 <h2>Projects</h2>
 
     <ul>
@@ -41,4 +51,7 @@
         <p>You have no collaborators yet. Go explore!</p>
         {% endif %}
     </ul>
+</div>
+
+</div>
 {% endblock %}

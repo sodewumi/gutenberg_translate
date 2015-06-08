@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="row" id="user_controls_row">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="user_controls">
+        <div class="col-xs-5 col-xs-offset-1" id="user_controls">
             <h3>{{ book_obj.name }} </h3>
             <h4>{{ book_obj.author }} </h4>
             <h5>{{ language }}</h5>
@@ -24,11 +24,10 @@
                 <input type="hidden" value="{{ book_id }}" name="hidden_bookid_input">
                 <input type="hidden" value="{{ language }}" name="hidden_lang_input">
                 <input type="hidden" value="{{ group_id }}" name="hidden_groupid_input">
-                <button id="chosen_chap_submit" type="submit">Choose</button>
             </form>
             {% endif %}
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="collab_info">
+        <div class="col-xs-5 col-xs-offset-1" id="collab_info">
             <h4>Collaborators</h4>
             <ul>
                 {% for user in group_collab_users %}
@@ -36,7 +35,7 @@
                 {% endfor %}
             </ul>
             {% if collab_user_num > 1 %}
-            <button class="btn btn-danger" data-toggle="modal" data-target="#confirm_leave">
+            <button class="btn leave-group-modal-btn" data-toggle="modal" data-target="#confirm_leave">
                 Leave Group
             </button>
             {% else %}
@@ -44,7 +43,7 @@
                 Delete Book
             </button>
             {%  endif %}
-            <a href="#" id="temp" class="btn btn-primary" role="button">Disconnect</a>
+            <!-- <a href="#" id="temp" class="btn btn-primary" role="button">Disconnect</a> -->
         </div>
     </div>
 
@@ -102,7 +101,7 @@
           </div>
         </div>
     </div>
-
+<!-- in description -->
     <div class="book-info">
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">

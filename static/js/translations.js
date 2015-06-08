@@ -3,8 +3,11 @@ $(document).ready(function(){
 
     var groupId = $("#translated").data('groupid');
     var bookgroupId = $("#translate_textarea").data('bookgroupid');
+    var username = $("#user_controls_row").data("username");
     var paragraphId;
     var chapterNumber;
+    var colors = ["49, 200, 203", "55,229,55", "221,129,118", "165,30,45"];
+    var counter = 0;
 
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
     
@@ -44,7 +47,8 @@ $(document).ready(function(){
     socket.on('update text', function (msg) {
         // The currently updated text is taken from the update text socket route
         //  and rendered on the appropriate paragraph.
-        $('.' + msg.paragraphId +" p").css("background-color", "rgba(255,0,0,0.3)");
+        var sessionUserColor = $('.current_user_session').css('color').replace(')', ', 0.5)').replace('rgb', 'rgba');
+        $('.' + msg.paragraphId +" p").css("background-color", sessionUserColor);
         $('#' + msg.paragraphId +" p").text(msg.change_text);
     });
 
@@ -56,24 +60,32 @@ $(document).ready(function(){
             $('#' + msg.paragraphIdAjax +" p").empty();
         }
         $('.' + msg.paragraphIdAjax +" p").css("background-color", "rgb(255,255,255)");
-        // $('.' + msg.paragraphId +" p").prop('disabled', function(i, v) { return !v; });
+        $('.' + msg.paragraphIdAjax +" p").attr('data-toggle', "modal")
     });
 
     socket.on('render submitted text', function (msg) {
         // renders saved text when user hits submit
         $('.' + msg.paragraphId +" p").css("background-color", "rgb(255,255,255)");
         $('#' + msg.paragraphId +" p").text(msg.changed_text);
-        // $('.' + msg.paragraphId +" p").prop('disabled', function(i, v) { return !v; });
+        $('.' + msg.paragraphId +" p").attr('data-toggle', "modal");
     });
 
     socket.on('hide button', function (msg) {
-        // $('.' + msg.paragraphId +" p").prop('disabled', function(i, v) { return !v; });
+        $('.' + msg.paragraph_id +" p").attr('data-toggle', null);
     });
 
-    // $("#temp").on('click', function () {
-    //     socket.emit("disconnect");
-    //     $(this).text("fin");
-    // });
+
+    $(".a-collab").each(function () {
+        if (counter <= colors.length) {
+            $(this).first("li").css("color", "rgb("+colors[counter]+")");
+            counter += 1;
+        } else {
+            counter = 0;
+        }
+    });
+
+    console.log($(".current_user_session").css("color"));
+
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
         // if the user is translating a paragraph, it stops another user from translating the 
         // same paragraph. Triggers triggers the socket.emit on the input
@@ -102,16 +114,16 @@ $(document).ready(function(){
         return !$.trim(el.html());
     }
 
-
-    $(".untranslated p").click(function (editevt) {
+    function translationProgressCheck () {
         // Sends an AJAX response to check if the current translation
         // matches the one in the database
+        console.log("hey")
         paragraphId = $(this).data('paragraphid');
         var translated_para_text =  $("#" + paragraphId + " p").text();
 
         $.ajax({
             url: "/in_translation",
-            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&current_trans_text=" + translated_para_text,
+            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&un=" + username+ "&current_trans_text=" + translated_para_text,
             type: "POST",
             success: function(response) {
               translationInProgress(response.inProgress, paragraphId, translated_para_text);
@@ -120,7 +132,10 @@ $(document).ready(function(){
                 console.log(error);
             }
         });
-    });
+    }
+
+
+    $(".untranslated p").on("click", translationProgressCheck);
 
     $("#text_form_ta").on("input", function (evt) {
         // Socket logs all changes made to the textarea and sends the info to
@@ -132,7 +147,7 @@ $(document).ready(function(){
     $("#cancel_translation_btn").on("click", function (evt) {
         $.ajax({
             url: "/cancel_translation",
-            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
+            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&un=" + username,
             type: "POST",
             success: function(response) {
                socket.emit("canceled translation", {
@@ -162,7 +177,7 @@ $(document).ready(function(){
 
         $.ajax({
             url: "/save_text",
-            data: $('form').serialize() + "&p_id=" + paragraphId + "&bg_id=" + bookgroupId,
+            data: $('form').serialize() + "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&un=" + username,
             type: "POST",
             success: function(response) {
                 socket.emit("submit text", {"changed_text" : response.translated_text, "paragraphId": response.paragraph_id, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});

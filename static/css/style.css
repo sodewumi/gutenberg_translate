@@ -1,6 +1,15 @@
+/*-----------Page Styles----------------*/
 body {
   background-color: #eff0f0;
 }
+
+button,
+.modal-content {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
 #translate_textarea {
     /*need so text form takes precedence over modal*/
     z-index: 9999;
@@ -16,8 +25,6 @@ body {
   height: 60px;
   background-color: white;
 }
-
-
 
 .edit_text {
     border: 1px solid yellow;
@@ -40,17 +47,11 @@ body {
   border: none;
 }
 /*-----------Book Description Page----------------*/
-.modal-content {
-  -webkit-border-radius: 0 !important;
-     -moz-border-radius: 0 !important;
-          border-radius: 0 !important;
-}
-
 .explore-header {
   position: relative;
-  margin-left: 15px;
-  margin-right: 45px;
-  background: url(../img/cover11.jpg) no-repeat center center fixed; 
+  /*margin-left: 15px;*/
+  /*margin-right: 45px;*/
+  background: url(../img/cover13.jpg) no-repeat; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -59,7 +60,10 @@ body {
 }
 
 .header-text {
-  position: absolute;
+  color: white;
+  margin-top: 100px;
+  text-align: center;
+  bottom: 50px;
   z-index: 1000;
 }
 .full-container {
@@ -87,9 +91,6 @@ h2 {
 }
 
 .translate-book-btn {
-  -webkit-border-radius: 0 !important;
-     -moz-border-radius: 0 !important;
-          border-radius: 0 !important;
   color: white;
   background-color: #31c8cb;
   width: 70%;
@@ -103,8 +104,11 @@ h2 {
 
 .book-user-group {
   height: 300px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  float: left;
+  margin-left: 6%;
+  margin-top: 6%;
+/*  margin-top: 10px;
+  margin-bottom: 10px;*/
   background-color: #eff0f0;
   text-align: center;
 }
@@ -145,9 +149,6 @@ h2 {
 }
 
 .leave-group-modal-btn {
-  -webkit-border-radius: 0 !important;
-     -moz-border-radius: 0 !important;
-          border-radius: 0 !important;
   color: white;
   background-color: #31c8cb;
   width: 70%;
@@ -155,13 +156,14 @@ h2 {
 }
 
 #chap_sel {
-  -webkit-border-radius: 0 !important;
-     -moz-border-radius: 0 !important;
-          border-radius: 0 !important;
   width: 70%;
 }
 
 div#user_controls,
 div#collab_info {
     padding-top: 40px;
+}
+
+.current-collaborators {
+  list-style-type: square;
 }

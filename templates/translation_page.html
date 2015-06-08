@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <div class="row" id="user_controls_row">
+    <div class="row" id="user_controls_row" data-username = "{{ session['login'][0]}}">
         <div class="col-xs-5 col-xs-offset-1" id="user_controls">
             <h3>{{ book_obj.name }} </h3>
             <h4>{{ book_obj.author }} </h4>
@@ -28,9 +28,13 @@
         </div>
         <div class="col-xs-5 col-xs-offset-1" id="collab_info">
             <h4>Collaborators</h4>
-            <ul>
+            <ul class="current-collaborators">
                 {% for user in group_collab_users %}
-                <li>{{ user.username }}</li>
+                {% if user.user_id == session['login'][1] %}
+                <li class="current_user_session a-collab"><span>{{ user.username }}<span></li>
+                {% else %}
+                <li class="a-collab"><span>{{ user.username }}<span></li>
+                {% endif %}
                 {% endfor %}
             </ul>
             {% if collab_user_num > 1 %}
@@ -129,12 +133,13 @@
                 </div>
 
                 <div class="modal-body" id="translation_form">
-                    <div id="current_untans_text" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div class="row">
+                    <div id="current_untans_text" class="col-xs-6">
                         <p></p>
                     </div>
                     <form name="text_form" method="POST" action="/save_text"
                         id="translate_textarea" data-bookgroupid = "{{ bookgroup_id }}"
-                        class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6">
+                        class="col-xs-6">
                         <div class="form-group">Translate:<br>
                             <textarea name="translated_text" id="text_form_ta"
                             placeholder="Enter text here!" required></textarea>
@@ -142,6 +147,7 @@
                         <input type="hidden" name="hidden_book_id_input" value="{{ book_id }}">
                         <input type="button" value="submit" id="submit_bttn" data-dismiss="modal" class="btn btn-primary btn-sm btn-block">
                     </form>
+                    </div>
                 </div>
 
                 <div class="modal-body" id="error_translation_in_progress">
@@ -149,7 +155,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <div>
+                    <div class="col-xs-12">
                         <button class="btn" id="cancel_translation_btn" data-dismiss="modal" aria-hidden="true">
                             Cancel
                         </button>
@@ -166,10 +172,6 @@
         <div class="book_rendering row">
             <div class="untranslated col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <div class="a_chapter_and_bttn {{ paragraph.paragraph_id }}">
-                    <button class="btn edit_text" data-toggle="modal"
-                            data-target="#add_translation_section">
-                        <i class="fa fa-pencil-square-o"></i>
-                    </button>
                     <p data-paragraphid="{{ paragraph.paragraph_id }}" data-toggle="modal"
                             data-target="#add_translation_section">
                         {{ paragraph.untranslated_paragraph }}

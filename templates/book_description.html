@@ -131,11 +131,8 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-10 col-xs-offset-1 bob">
-            <div class="row">
         {% for group in groups_list %}
-
-            <div class="col-xs-3 col-xs-offset-1 book-user-group">
+        <div class="col-xs-3 col-xs-offset-1 book-user-group">
             <h4>{{ group.group_name }}</h4>
 
             <!-- checks which language a group translated a book into -->
@@ -157,14 +154,11 @@
                 <input type="hidden" name="bookgroup_id_input" value="{{ group.bookgroups[0].bookgroup_id }}">
                 <input type="submit" class="btn" value='Go To Project'>
             </form>
+
         </div>
         {% endfor %}
-            </div>
-        </div>
     </div>
-
     {% endif %}
-
 </div>
 
 {% endblock %}

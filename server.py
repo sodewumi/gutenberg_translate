@@ -436,7 +436,7 @@ if __name__ == "__main__":
     connect_to_db(app)
     app.debug = True
     DebugToolbarExtension(app)
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)
 
 

@@ -44,6 +44,7 @@ $(document).ready(function(){
     socket.on('update text', function (msg) {
         // The currently updated text is taken from the update text socket route
         //  and rendered on the appropriate paragraph.
+        $('.' + msg.paragraphId +" p").css("background-color", "rgba(255,0,0,0.3)");
         $('#' + msg.paragraphId +" p").text(msg.change_text);
     });
 
@@ -54,25 +55,25 @@ $(document).ready(function(){
         } else {
             $('#' + msg.paragraphIdAjax +" p").empty();
         }
-
-        $('div.' + msg.paragraphIdAjax +" button").css("color", "red").prop('disabled', function(i, v) { return !v; });
+        $('.' + msg.paragraphIdAjax +" p").css("background-color", "rgb(255,255,255)");
+        // $('.' + msg.paragraphId +" p").prop('disabled', function(i, v) { return !v; });
     });
 
     socket.on('render submitted text', function (msg) {
         // renders saved text when user hits submit
+        $('.' + msg.paragraphId +" p").css("background-color", "rgb(255,255,255)");
         $('#' + msg.paragraphId +" p").text(msg.changed_text);
-        $('div.' + msg.paragraphId +" button").css("color", "red").prop('disabled', function(i, v) { return !v; });
+        // $('.' + msg.paragraphId +" p").prop('disabled', function(i, v) { return !v; });
     });
 
     socket.on('hide button', function (msg) {
-
-        $('div.' + msg.paragraph_id +" button").css("color","green").prop('disabled', function(i, v) { return !v; });
+        // $('.' + msg.paragraphId +" p").prop('disabled', function(i, v) { return !v; });
     });
 
-    $("#temp").on('click', function () {
-        socket.emit("disconnect");
-        $(this).text("fin");
-    });
+    // $("#temp").on('click', function () {
+    //     socket.emit("disconnect");
+    //     $(this).text("fin");
+    // });
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
         // if the user is translating a paragraph, it stops another user from translating the 
         // same paragraph. Triggers triggers the socket.emit on the input
@@ -102,7 +103,7 @@ $(document).ready(function(){
     }
 
 
-    $(".edit_text").click(function (editevt) {
+    $(".untranslated p").click(function (editevt) {
         // Sends an AJAX response to check if the current translation
         // matches the one in the database
         paragraphId = $(this).data('paragraphid');
@@ -189,8 +190,8 @@ $(document).ready(function(){
 
     function main() {
         // hide the edit text button
-        var edit_text_bttn = $(".edit_text");
-        edit_text_bttn.hide();
+        // var edit_text_bttn = $(".edit_text");
+        // edit_text_bttn.hide();
         $("#confirm").hide();
     }
 

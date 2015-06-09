@@ -8,9 +8,9 @@
 - [Translation Page](#translation-page)
 - [Profile](#profile)
 - [Socketio for Real Time Communication](#socketio-for-real-time-communication)
-- [Data Model](#project-structure)
+- [Data Model](#data-model)
 
-## <a name="introduction">Introduction</a>
+## Introduction
 
 Gutenhub is an app that allows for collaborative translation of literary works. When a user logs into Gutenhub, they are able to choose a book from some of the most popular novels on Project Gutenberg-- the oldest digital library that focuses on digitizing and archiving books. Along with the API data from GoodReads and Amazon Web Services, a description of the books is displayed to the user. Through the description page, can choose to work on a translation project independently or form groups with other members on Gutenhub, and together they can translate a work of literature into the language of their choice. form groups with other members on the website. 
 When a user or group chooses a novel, Gutenhub uploads the raw text from [Project Gutenberg](https://www.gutenberg.org/), and the text is analyzed and split into manageable sections for easy translating. All translations are tracked to its respective part of the source text and rendered in real time to all members of a group so that users know who is translating what.

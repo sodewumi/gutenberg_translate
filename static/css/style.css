@@ -227,6 +227,11 @@ hr {
 .author-emphasis {
   color: #31c8cb;
 }
+
+.profile-collab-btns {
+  width: 200px;
+
+}
 /*-----------Translation Page----------------*/
 .book_rendering {
   background-color: white;
@@ -234,12 +239,12 @@ hr {
 
 #user_controls_row {
     margin-top: 0px;
-    background-color: #eff0f0;
+    background-color: #525252;
+    color: white;
 }
 
 .book-info h2 {
   text-align: center;
-  background-color: white;
 }
 
 .leave-group-modal-btn {
@@ -262,6 +267,19 @@ div#collab_info {
   list-style-type: square;
 }
 
+#user_controls h4,
+#user_controls h4,
+#collab_info li {
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
+.untranslated {
+  border-right: 5px solid #eff0f0;
+}
+
+.translated {
+  border-left: 5px solid #eff0f0;
+}
 
 
 /* columns of same height styles */
@@ -309,46 +327,24 @@ div#collab_info {
   vertical-align: middle;
 }
 
-/* General button style (reset) */
-.btns {
-  border: none;
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background: none;
-  cursor: pointer;
-  padding: 25px 80px;
-  display: inline-block;
-  margin: 15px 30px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
-  outline: none;
-  position: relative;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
+.ghost-button {
+/*display: inline-block;*/
+float: left;
+margin-left: 10px;
+width: 200px;
+padding: 8px;
+color: #fff;
+border: 1px solid #fff;
+text-align: center;
+outline: none;
+text-decoration: none;
+margin-top: 30px;
+background-color: transparent;
 }
 
-.btns:after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
-}
-
-/* Button 1 */
-.btns-1 {
-  width: 60%;
-  border: 3px solid #fff;
+.ghost-button:hover,
+.ghost-button:active {
+  background-color: #333;
   color: #fff;
-  margin: 15px auto;
-}
-/* Button 1a */
-.btns-1a:hover,
-.btns-1a:active {
-  color: #0e83cd;
-  background: #fff;
+  text-decoration: none;
 }

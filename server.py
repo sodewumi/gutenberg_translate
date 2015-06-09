@@ -247,6 +247,9 @@ def display_translation_page():
     bookgroup_groupid = bookgroup_obj.group_id
     bookgroup_bookid = bookgroup_obj.book_id
 
+    group_name = Group.query.filter_by(group_id = bookgroup_groupid).one()
+    group_name = group_name.group_name
+
     group_collab_users = bookgroup_obj.group.users
     collab_user_num = len(group_collab_users)
 
@@ -280,7 +283,8 @@ def display_translation_page():
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
-        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users, collab_user_num=collab_user_num)
+        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users,
+        collab_user_num=collab_user_num, group_name=group_name)
 
 @app.route("/save_text", methods=["POST"])
 def save_translation_text():

@@ -62,7 +62,7 @@
         {% if all_collaborators %}
         {% for collaborator in all_collaborators %}
         <div>
-            <button class="btns btns-1 btns-1a"><a href="/profile/{{ collaborator.user_id }}">{{ collaborator.username }}</a></button>
+            <button class="btns btns-1 btns-1a ghost-button"><a href="/profile/{{ collaborator.user_id }}">{{ collaborator.username }}</a></button>
         </div>
         {% endfor %}
         {% else %}

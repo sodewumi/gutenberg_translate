@@ -1,32 +1,29 @@
-# standard library modules
-import re
-import os
 # third-party modules
 import jinja2
-import requests
-from amazonproduct import API
-from flask import flash, Flask, redirect, render_template, request, Response, session, jsonify, url_for
-from flask.ext.socketio import SocketIO, send, emit, join_room, leave_room, disconnect
-
+from flask import flash, Flask, jsonify,  redirect, render_template, request, session, url_for
+from flask.ext.socketio import SocketIO, emit, join_room, leave_room, disconnect
 from flask_debugtoolbar import DebugToolbarExtension
-from lxml import etree
+
 # my modules
-from model import Book, Chapter, connect_to_db, db, Group, Paragraph, Translation, User, BookGroup, UserGroup
+from model import Book, Chapter, connect_to_db, db, Group, Translation, User, BookGroup, UserGroup
 from process_gutenberg_books import processGutenBook
 from helper import render_untranslated_chapter, find_trans_paragraphs, find_room
+
+
+
 app = Flask(__name__)
 app.secret_key = 'will hook to .gitignore soon'
 app.jinja_env .undefined = jinja2.StrictUndefined
 socketio = SocketIO(app)
 
+################################################################################
+    #Logins, Logouts, Register
+################################################################################
+
 @app.route("/", methods=["GET"])
 def display_homepage():
     """Returns homepage."""
     return render_template("homepage.html")
-
-################################################################################
-    #Logins, Logouts, Register
-################################################################################
 
 @app.route("/login", methods=["POST"])
 def login_user():
@@ -68,7 +65,9 @@ def register_user():
         return redirect("/")
     else:
         if register_email and register_password and register_username:
-            User.create_new_user(email=register_email, password=register_password, username=register_username)
+            User.create_new_user(email=register_email, 
+                                password=register_password,
+                                username=register_username)
             flash("Thanks for creating an account with Gutenberg Translate! Please sign in")
             return redirect("/")
         else:
@@ -79,44 +78,24 @@ def register_user():
 def logout_user():
     """Remove login information from session"""
 
-    session.pop(u'login')
+    session.pop('login')
     flash("You've successfully logged out. Goodbye.")
     return redirect("/")
 
 ################################################################################
-    #
+    #Explore Books Page, Book Description Page, & Profile
 ################################################################################
 
 @app.route("/explore")
 @app.route("/explore/<int:page>")
 def display_explore_books(page=1):
-    """Return a full list of books from project gutenberg."""
+    """
+        *Return a full list of books from project gutenberg.
+    """
 
     all_book_objs = Book.query.paginate(page, 20, False)
 
     return render_template("explore_books.html", all_book_objs=all_book_objs)
-
-
-@app.route("/profile/<int:user_id>")
-def display_profile(user_id):
-    """Return a user's profile page."""
-    
-    user_obj = User.query.get(user_id)
-    user_groups_list = user_obj.groups
-
-    group_ids_list = [group.group_id for group in user_groups_list]
-
-    usergroups_list = UserGroup.query.filter(UserGroup.group_id.in_(group_ids_list))
-    user_ids_list = [usergroup.user_id for usergroup in usergroups_list]
-    all_collaborators = User.query.filter(User.user_id.in_(user_ids_list),
-                            User.user_id != user_obj.user_id)
-
-    project_num = len(usergroups_list.all())
-    return render_template("profile.html", username=user_obj.username,
-            user_groups_list=user_groups_list, all_collaborators=all_collaborators,
-            project_num = project_num)
- 
-
 
 
 @app.route("/description/<int:gutenberg_extraction_number>", methods=["GET"])
@@ -146,8 +125,9 @@ def display_book_description(gutenberg_extraction_number):
                          user_obj=current_user_obj, book_obj=current_book_obj)
 
     return render_template("book_description.html", display_book = current_book_obj,
-        gutenberg_extraction_number=gutenberg_extraction_number, groups_list = groups_translating,
-        display_text = book_obj_text)
+                        gutenberg_extraction_number=gutenberg_extraction_number,
+                        groups_list = groups_translating,
+                        display_text = book_obj_text)
 
 
 @app.route("/check_user", methods=["POST"])
@@ -164,6 +144,29 @@ def check_user_exists():
         return jsonify({"collab_username": username_input})
     else:
         return jsonify({"collab_username": None})
+
+@app.route("/profile/<int:user_id>")
+def display_profile(user_id):
+    """Return a user's profile page."""
+    
+    user_obj = User.query.get(user_id)
+    user_groups_list = user_obj.groups
+
+    group_ids_list = [group.group_id for group in user_groups_list]
+
+    usergroups_list = UserGroup.query.filter(UserGroup.group_id.in_(group_ids_list))
+    user_ids_list = [usergroup.user_id for usergroup in usergroups_list]
+    all_collaborators = User.query.filter(User.user_id.in_(user_ids_list),
+                            User.user_id != user_obj.user_id)
+
+    project_num = len(usergroups_list.all())
+    return render_template("profile.html", username=user_obj.username,
+            user_groups_list=user_groups_list, all_collaborators=all_collaborators,
+            project_num = project_num)
+
+################################################################################
+    #Translation Page
+################################################################################
 
 @app.route("/translate/<int:gutenberg_extraction_number>", methods=["GET"])
 def submit_add_translation_form(gutenberg_extraction_number):
@@ -346,6 +349,9 @@ def last_saved_translations():
 
 @app.route("/leave_group/<int:group_id_input>")
 def leave_group(group_id_input):
+    """
+        Deletes a user from UserGroup after they decide to leave group
+    """
     user_id = session['login'][1]
     user_usergroup = UserGroup.query.filter_by(user_id = user_id, group_id=group_id_input).one()
     db.session.delete(user_usergroup)
@@ -354,6 +360,10 @@ def leave_group(group_id_input):
 
 @app.route("/delete_group/<int:group_id_input>/<language_input>/<int:book_id_input>")
 def delete_group(group_id_input, language_input, book_id_input):
+    """
+        Deletes the BookGroup, UserGroup, and Translations associated with the 
+        last remaining translator of a project.
+    """
     user_id = session['login'][1]
     user_usergroup = UserGroup.query.filter_by(
                     user_id = user_id, group_id=group_id_input).one()
@@ -369,10 +379,23 @@ def delete_group(group_id_input, language_input, book_id_input):
     db.session.commit()
     return redirect('/explore')
 
+################################################################################
+    #Socket-Routes: Connecting/Disconnecting & Joining/Leaving Rooms
+################################################################################
 
 @socketio.on('connect', namespace='/rendertranslations')
 def test_connect():
+    """
+        Establishes a connection to Socket.IO
+    """
     emit('my response', {'connection_status': 'Connected'})
+
+@socketio.on("disconnect", namespace='/rendertranslations')
+def disconnected():
+    """
+        Disconnects from Socket.IO
+    """
+    disconnect()
 
 @socketio.on('joined', namespace='/rendertranslations')
 def on_join(data):
@@ -397,6 +420,10 @@ def on_leave(data):
 
     emit('leave_status', {'msg': username + " has left room " + str(room)}, room=room)
 
+################################################################################
+    #Socket-Routes: Handles real-time translations 
+################################################################################
+
 @socketio.on('value changed', namespace='/rendertranslations')
 def translated_text_rt(data):
     """
@@ -407,7 +434,8 @@ def translated_text_rt(data):
 
 @socketio.on('canceled translation', namespace='/rendertranslations')
 def revert_text(data):
-    """ Takes the last saved translation and renders it on the page if the clients
+    """ 
+        Takes the last saved translation and renders it on the page if the clients
         cancels their datatranslation
     """
 
@@ -416,21 +444,25 @@ def revert_text(data):
 
 @socketio.on('submit text', namespace='/rendertranslations')
 def new_text(data):
+    """ 
+        Sends an update to all clients after a user submits a translation into
+        the database.
+    """
 
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('render submitted text', data, broadcast=True, room=room)
 
 @socketio.on('remove button', namespace='/rendertranslations')
 def hide_buttons(data):
-    """Hides the edit buttons from all users while a user is translating"""
+    """
+        Stops users from accessing the same paragraph if another client is 
+        translating the same one.
+    """
 
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('hide button', data, broadcast=True, room=room)
 
-@socketio.on("disconnect", namespace='/rendertranslations')
-def disconnected():
-    
-    disconnect()
+
 
 if __name__ == "__main__":
     connect_to_db(app)

@@ -2,20 +2,21 @@ $(document).ready(function(){
     // TODO- Chinese
     // TODO- Colors
     // TODO-FONTS
-
+    var paragraphId;
+    var chapterNumber;
     var groupId = $("#translated").data('groupid');
     var bookgroupId = $("#translate_textarea").data('bookgroupid');
     var username = $("#user_controls_row").data("username");
-    var paragraphId;
-    var chapterNumber;
     var colors = ["49, 200, 203", "55,229,55", "221,129,118", "165,30,45"];
     var counter = 0;
+
+/*------------------------------------------------------------------------------
+        SocketIO Functions
+-------------------------------------------------------------------------------*/
 
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rendertranslations');
     
     $(window).on('beforeunload', function (evt){
-        // debugger;
-        console.log('disconnect');
         socket.emit("disconnect");
     });
 
@@ -43,12 +44,10 @@ $(document).ready(function(){
         console.log(data.msg);
     });
 
-    // TODO: Figure out if sockets can be combined together
     socket.on('update text', function (msg) {
         // The currently updated text is taken from the update text socket route
         //  and rendered on the appropriate paragraph.
         var UserColor = userTranslatingColor(msg.username);
-        // var sessionUserColor = $('.current_user_session').css('color').replace(')', ', 0.5)').replace('rgb', 'rgba');
         $('.' + msg.paragraphId +" p").css("background-color", UserColor);
         $('#' + msg.paragraphId +" p").text(msg.change_text);
     });
@@ -76,16 +75,9 @@ $(document).ready(function(){
     });
 
 
-    $(".a-collab").each(function () {
-        if (counter <= colors.length) {
-            $(this).first("li").css("color", "rgb("+colors[counter]+")");
-            $(this).first("li").data("color") ===  ("rgb("+colors[counter]+")");
-            counter += 1;
-        } else {
-            counter = 0;
-        }
-    });
-
+/*------------------------------------------------------------------------------
+        Helper Functions
+-------------------------------------------------------------------------------*/
 
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
         // if the user is translating a paragraph, it stops another user from translating the 
@@ -115,9 +107,9 @@ $(document).ready(function(){
         return !$.trim(el.html());
     }
 
+    /*--Sends an AJAX response to check if the current translation
+    matches the one in the database--*/
     function translationProgressCheck () {
-        // Sends an AJAX response to check if the current translation
-        // matches the one in the database
         paragraphId = $(this).data('paragraphid');
         var translated_para_text =  $("#" + paragraphId + " p").text();
 
@@ -133,7 +125,30 @@ $(document).ready(function(){
             }
         });
     }
+    
+    function userTranslatingColor (usernameFromServer) {
+        var userColor;
+        $(".a-collab").each(function () {
+            if ($(this).text() === usernameFromServer) {
+                console.log(usernameFromServer);
+                userColor = $(this).css('color').replace(')', ', 0.5)').replace('rgb', 'rgba');
+            }
+        });
+        return userColor;
+    }
+/*------------------------------------------------------------------------------
+        Event Handlers
+-------------------------------------------------------------------------------*/
 
+    $(".a-collab").each(function () {
+        if (counter <= colors.length) {
+            $(this).first("li").css("color", "rgb("+colors[counter]+")");
+            // $(this).first("li").data("color") ===  ("rgb("+colors[counter]+");");
+            counter += 1;
+        } else {
+            counter = 0;
+        }
+    });
 
     $(".untranslated p").on("click", translationProgressCheck);
 
@@ -181,11 +196,7 @@ $(document).ready(function(){
         $(".trans_para").show();
     });
 
-    $(".trans_para").each(function () {
-        if (isEmpty($(this))) {
-            $(this).html("<p></p>");
-        }
-    });
+
 
     $(function() {
         $('#chap_sel').change(function() {
@@ -193,6 +204,12 @@ $(document).ready(function(){
             chapterNumber = $("select[name=chapter_selection] option:selected").val();
             this.form.submit();
         });
+    });
+
+    $(".trans_para").each(function () {
+        if (isEmpty($(this))) {
+            $(this).html("<p></p>");
+        }
     });
 
     function main() {
@@ -203,13 +220,3 @@ $(document).ready(function(){
 });
 
 
-function userTranslatingColor (usernameFromServer) {
-    var userColor;
-    $(".a-collab").each(function () {
-        if ($(this).text() === usernameFromServer) {
-            console.log(usernameFromServer);
-            userColor = $(this).css('color').replace(')', ', 0.5)').replace('rgb', 'rgba');
-        }
-    });
-    return userColor;
-}

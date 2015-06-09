@@ -2,10 +2,10 @@
 
 {% block body %}
 <div class="container full-container">
-    <div class="row book-info">
+    <div class="row book-description">
         <div class="col-xs-12 col-sm-6 col-md-4 col-md-offset-1">
             <p id="book_cover">
-                <img src="{{ display_book.cover }}" alt="kitten">
+                <img src="{{ display_book.cover }}" alt="{{ display_book.name }} cover">
             </p>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 col-md-offset-1 title-rating">
@@ -14,9 +14,10 @@
                     <h2>{{ display_book.name }}</h2>
                     <h3>{{ display_book.author }}</h3>
                     <hr>
-                    <h3>Rating</h3>
+                    <h3>GoodReads Rating</h3>
                     <p id="book_rating" data-bookrating="{{ display_book.rating}}">
                     </p>
+                    <hr>
                 </div>
 
                 <div class="col-xs-12">

@@ -32,14 +32,12 @@ $(document).ready(function(){
     socket.on('joined_status', function (data) {
         // Transmits a message from the server that the user succesfully joined
         // a room. Sent from joined socket route
-        alert(data.msg);
         console.log(data.msg);
     });
 
     socket.on('leave_status', function (data) {
         // Transmits a message from the server that the user succesfully joined
         // a room. Sent from joined socket route
-        alert(data.msg);
         console.log(data.msg);
     });
 
@@ -47,8 +45,9 @@ $(document).ready(function(){
     socket.on('update text', function (msg) {
         // The currently updated text is taken from the update text socket route
         //  and rendered on the appropriate paragraph.
-        var sessionUserColor = $('.current_user_session').css('color').replace(')', ', 0.5)').replace('rgb', 'rgba');
-        $('.' + msg.paragraphId +" p").css("background-color", sessionUserColor);
+        var UserColor = userTranslatingColor(msg.username);
+        // var sessionUserColor = $('.current_user_session').css('color').replace(')', ', 0.5)').replace('rgb', 'rgba');
+        $('.' + msg.paragraphId +" p").css("background-color", UserColor);
         $('#' + msg.paragraphId +" p").text(msg.change_text);
     });
 
@@ -60,7 +59,7 @@ $(document).ready(function(){
             $('#' + msg.paragraphIdAjax +" p").empty();
         }
         $('.' + msg.paragraphIdAjax +" p").css("background-color", "rgb(255,255,255)");
-        $('.' + msg.paragraphIdAjax +" p").attr('data-toggle', "modal")
+        $('.' + msg.paragraphIdAjax +" p").attr('data-toggle', "modal");
     });
 
     socket.on('render submitted text', function (msg) {
@@ -84,7 +83,6 @@ $(document).ready(function(){
         }
     });
 
-    console.log($(".current_user_session").css("color"));
 
     function translationInProgress (inProgress, paragraphId, translated_para_text) {
         // if the user is translating a paragraph, it stops another user from translating the 
@@ -117,13 +115,12 @@ $(document).ready(function(){
     function translationProgressCheck () {
         // Sends an AJAX response to check if the current translation
         // matches the one in the database
-        console.log("hey")
         paragraphId = $(this).data('paragraphid');
         var translated_para_text =  $("#" + paragraphId + " p").text();
 
         $.ajax({
             url: "/in_translation",
-            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&un=" + username+ "&current_trans_text=" + translated_para_text,
+            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&current_trans_text=" + translated_para_text,
             type: "POST",
             success: function(response) {
               translationInProgress(response.inProgress, paragraphId, translated_para_text);
@@ -141,10 +138,11 @@ $(document).ready(function(){
         // Socket logs all changes made to the textarea and sends the info to
         // the value changed socket route
         socket.emit('value changed', {"paragraphId" : paragraphId,
-                "change_text": $(this).val(), "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+                "change_text": $(this).val(), "bookgroup_id": bookgroupId,
+                "chapter_number": chapterNumber, "username": username});
     });
 
-    $("#cancel_translation_btn").on("click", function (evt) {
+    $("#add_translation_section").on("hidden.bs.modal", function (evt) {
         $.ajax({
             url: "/cancel_translation",
             data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&un=" + username,
@@ -159,15 +157,6 @@ $(document).ready(function(){
                 console.log(error);
             }
         });
-    });
-
-    // hides and shows edit button
-    $(".a_chapter_and_bttn").on("mouseenter", function () {
-        $(this).find("button").show();
-    });
-
-    $(".a_chapter_and_bttn").on("mouseleave", function () {
-        $(this).find("button").hide();
     });
 
     $("#submit_bttn").on("click", function (evt) {
@@ -204,11 +193,20 @@ $(document).ready(function(){
     });
 
     function main() {
-        // hide the edit text button
-        // var edit_text_bttn = $(".edit_text");
-        // edit_text_bttn.hide();
         $("#confirm").hide();
     }
 
     main();
 });
+
+
+function userTranslatingColor (usernameFromServer) {
+    var userColor;
+    $(".a-collab").each(function () {
+        if ($(this).text() === usernameFromServer) {
+            console.log(usernameFromServer);
+            userColor = $(this).css('color').replace(')', ', 0.5)').replace('rgb', 'rgba');
+        }
+    });
+    return userColor;
+}

@@ -159,7 +159,7 @@ def display_profile(user_id):
     all_collaborators = User.query.filter(User.user_id.in_(user_ids_list),
                             User.user_id != user_obj.user_id)
 
-    project_num = len(usergroups_list.all())
+    project_num = len(group_ids_list)
     return render_template("profile.html", username=user_obj.username,
             user_groups_list=user_groups_list, all_collaborators=all_collaborators,
             project_num = project_num)

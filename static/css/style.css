@@ -1,6 +1,8 @@
 /*-----------Page Styles----------------*/
 body {
+  font-family: 'Merriweather', serif;
   background-color: #eff0f0;
+  color: #525252;
   background: url(../img/concrete_seamless.png); 
 }
 
@@ -24,6 +26,7 @@ button,
 
 .navbar {
   height: 60px;
+  margin-bottom: 0;
   background-color: white;
 }
 
@@ -43,23 +46,12 @@ button,
 
 .float-book-imgs {
   width: auto;
-   height: 360px !important;
+  height: 360px !important;
 }
 
 .thumbnail {
   border: none;
 }
-/*-----------Book Description Page----------------*/
-/*.explore-header {
-  position: relative;
-  background: url(../img/cover13.jpg) no-repeat; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  height: 300px;
-}*/
-
 .explore-header {
   position: relative;
   background-color: #31c8cb;
@@ -75,28 +67,65 @@ button,
   z-index: 1000;
   /*text-shadow: 3px 5px 4px rgba(0,0,0,0.3);*/
 }
+/*-----------Book Description Page----------------*/
+/*.explore-header {
+  position: relative;
+  background: url(../img/cover13.jpg) no-repeat; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 300px;
+}*/
+
+
 .full-container {
   background-color: white;
   margin-top: 20px;
 }
 
-h2 {
+.title-rating h2 {
   padding: 0;
   margin: 0px;
   font-size: 35px;
 }
 
-#book_rating h3 {
-  font-size: 30px;
-  color: #999
+.title-rating h3,
+.title-rating h4 {
+  font-family: 'Merriweather Sans', sans-serif;
 }
 
+hr {
+  margin: 30px 0;
+}
+
+#book_rating h3 {
+  font-size: 30px;
+  color: #222
+}
+
+#book_excerpt p {
+  font-family: 'Merriweather', serif;
+  font-size: 20px;
+  font-style: italic;
+}
+
+.quotation img {
+  width: 18px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.quotation {
+  float: left;
+}
 .book-description {
   margin-top: 15px;
 }
 
 .title-rating {
   margin-top: 30px;
+
 }
 
 .translate-book-btn {
@@ -116,8 +145,6 @@ h2 {
   float: left;
   margin-left: 6%;
   margin-top: 6%;
-/*  margin-top: 10px;
-  margin-bottom: 10px;*/
   background-color: #eff0f0;
   text-align: center;
 }
@@ -127,29 +154,79 @@ h2 {
   padding-top: 50px;
 }
 
-.thumbnail {
-  border-color: #eff0f0;
-}
 /*-----------Profile Page----------------*/
 
-.profile-image {
+.user-intro {
   height: 300px;
-  background: url(../img/cover9.jpg) no-repeat center center fixed; 
+  background: url(../img/cover4.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-
-}
-
-.user-info {
-  height: 300px;
-  text-align: center;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.7);
   color: white;
+
 }
 
+.user-intro h3 {
+    font-size: 60px;
+    margin-top: 20px;
+    color: #31c8cb;
+  text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
+}
+.user-intro p {
+  font-size: 40px;
+  text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
+}
+
+.greeting-info {
+  background-color: white;
+  height: 90px;
+}
+  .greeting-info h2 {
+    margin-top: 30px;
+    font-size: 20px;
+  }
+
+.profile-header {
+  background-color: #eff0f0;
+}
+  .profile-header h1 {
+    color: white;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /*height: 50px;*/
+    background-color: #31c8cb;
+  }
+.profile-collaborators {
+  background-color: #262626;
+}
+  .profile-collaborators h2 {
+    color: white;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+.profile-groups-section {
+  background-color: #efefef;
+}
+
+.profile-groups {
+  height: 200px;
+  background-color: white;
+  margin-top: 20px;
+  border-radius: 2%
+}
+
+.profile-btn {
+  background-color: #31c8cb;
+  float: right;
+}
+.author-emphasis {
+  color: #31c8cb;
+}
 /*-----------Translation Page----------------*/
 .book_rendering {
   background-color: white;
@@ -183,4 +260,95 @@ div#collab_info {
 
 .current-collaborators {
   list-style-type: square;
+}
+
+
+
+/* columns of same height styles */
+
+.row-full-height {
+  height: 100%;
+}
+.col-full-height {
+  height: 100%;
+  vertical-align: middle;
+}
+.row-same-height {
+  display: table;
+  width: 100%;
+  /* fix overflow */
+  table-layout: fixed;
+}
+.col-xs-height {
+  display: table-cell;
+  float: none !important;
+}
+
+@media (min-width: 768px) {
+  .col-sm-height {
+    display: table-cell;
+    float: none !important;
+  }
+}
+@media (min-width: 992px) {
+  .col-md-height {
+    display: table-cell;
+    float: none !important;
+  }
+}
+@media (min-width: 1200px) {
+  .col-lg-height {
+    display: table-cell;
+    float: none !important;
+  }
+}
+.col-top {
+  vertical-align: top;
+}
+.col-middle {
+  vertical-align: middle;
+}
+
+/* General button style (reset) */
+.btns {
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  padding: 25px 80px;
+  display: inline-block;
+  margin: 15px 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.btns:after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+/* Button 1 */
+.btns-1 {
+  width: 60%;
+  border: 3px solid #fff;
+  color: #fff;
+  margin: 15px auto;
+}
+/* Button 1a */
+.btns-1a:hover,
+.btns-1a:active {
+  color: #0e83cd;
+  background: #fff;
 }

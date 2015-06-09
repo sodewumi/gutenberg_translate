@@ -1,56 +1,75 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<div class="container">
-<div class="row profile-image">
-    <div class="col-xs-9 user-intro">
-        <h1>{{ username }}'s Profile</h1>
+<div class="container-fluid">
+
+    <div class="row profile-header">
+        <div class="col-xs-4 col-xs-offset-4">
+            <h1 class="text-center">Dashboard</h1>
+        </div>
     </div>
-    <div class="col-xs-3 col-offset-9 user-info">
-        <i class="fa"></i>
-        <h3>{{ username }}</h3>
-        <p>{{ username }} has contributed to {{ project_num }} projects</p>
+    <div class="greeting-info row">
+        <div class="col-xs-8 col-xs-offset-1 textContainer">
+            <h2>Welcome to Gutenhub, <b>{{ username }}</b>.</h2>
+        </div>
+        <div class="textContainer"> 
+            <h2>You have contributed to <b>{{ project_num }}</b> projects</h2>
+        </div>
     </div>
+<div class="row user-intro">
+
+</div>
+<div class="row greeting-info">
+    <h2 class="col-xs-offset-1"><b>Lastest Projects</b></h2>
 </div>
 
 <div class="row">
-<h2>Projects</h2>
+  <div class="row-same-height">
+    <div class="col-xs-9 col-xs-height col-full-height">
+        <div class="row profile-groups-section">
+            {% for group in user_groups_list %}
+            <div class="col-xs-4 col-xs-offset-1 profile-groups">
+                <h3>{{ group.group_name }}</h3>
 
-    <ul>
-        {% for group in user_groups_list %}
-        <li>{{ group.group_name }}
-            <ul>
                 {% for book in group.books %}
-                <li>Title: {{ book.name }}</li>
+                <h4>{{ book.name }} by <span class="author-emphasis">{{ book.author }}</span></h4>
                 {% endfor %}
-            </ul>
-            <ul>
-                {% for bookgroup in group.bookgroups %}
-                <li>Language: {{ bookgroup.language }}</li>
-                {% endfor %}
-            </ul>
-            <ul>
-                <li>Collaborators</li>
-                {% for user in group.users %}
-                <li>{{ user.username }}</li>
-                {% endfor %}
-            </ul>
-        </li>
-        {% endfor %}
-    </ul>
 
+                {% for bookgroup in group.bookgroups %}
+                <h4>Language: {{ bookgroup.language }}</h4>
+                {% endfor %}
+
+                <p>Members:
+                    {% for user in group.users %}
+                    {{ user.username }}
+                    {% endfor %}
+                </p>
+                <form class="edit_book_form" action="/rendertranslations"
+                        method="GET">
+                    <input type="hidden" name="hidden_lang_input" 
+                            value="{{  group.bookgroups[0].language }}">
+                    <input type="hidden" name="hidden_groupid_input"
+                            value="{{ group.group_id }}">
+                    <input type="hidden" name="bookgroup_id_input" value="{{ group.bookgroups[0].bookgroup_id }}">
+                    <input type="submit" class="btn profile-btn" value='Go To Project'>
+                </form>
+            </div>
+                {% endfor %}
+        </div>
+    </div>
+    <div class="col-xs-3 col-xs-height col-full-height col-top profile-collaborators">
     <h2>Collaborators</h2>
-    <ul>
         {% if all_collaborators %}
         {% for collaborator in all_collaborators %}
-        <li> 
-            <a href="/profile/{{ collaborator.user_id }}">{{ collaborator.username }}</a>
-        </li>
+        <div>
+            <button class="btns btns-1 btns-1a"><a href="/profile/{{ collaborator.user_id }}">{{ collaborator.username }}</a></button>
+        </div>
         {% endfor %}
         {% else %}
         <p>You have no collaborators yet. Go explore!</p>
         {% endif %}
-    </ul>
+    </div>
+</div>
 </div>
 
 </div>

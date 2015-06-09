@@ -4,8 +4,8 @@
 <div class="container-fluid">
     <div class="row" id="user_controls_row" data-username = "{{ session['login'][0]}}">
         <div class="col-xs-5 col-xs-offset-1" id="user_controls">
-            <h3>{{ book_obj.name }} </h3>
-            <h4>{{ book_obj.author }} </h4>
+            <h3>{{ book_obj.name }}</h3>
+            <h4>{{ book_obj.author }}</h4>
             <h5>{{ language }}</h5>
             {% if number_of_chapters != 1 %}
             <form id="chosen_chap_form" method="GET">
@@ -29,6 +29,22 @@
         </div>
         <div class="col-xs-5 col-xs-offset-1" id="collab_info">
             <h3>{{ group_name }}</h3>
+            <div class="leave-dropdown dropdown">
+              <button class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                    {% if collab_user_num > 1 %}
+                    <li><a href="#" data-toggle="modal" data-target="#confirm_leave">
+                        Leave Group
+                    </a></li>
+                    {% else %}
+                    <li><a href="#" data-toggle="modal" data-target="#confirm_delete">
+                        Delete Book
+                    </a></li>
+                    {%  endif %}
+              </ul>
+            </div>
             <h4>Collaborators</h4>
             <ul class="current-collaborators">
                 {% for user in group_collab_users %}
@@ -39,15 +55,6 @@
                 {% endif %}
                 {% endfor %}
             </ul>
-            {% if collab_user_num > 1 %}
-            <button class="btn leave-group-modal-btn" data-toggle="modal" data-target="#confirm_leave">
-                Leave Group
-            </button>
-            {% else %}
-            <button class="btn btn-danger" data-toggle="modal" data-target="#confirm_delete">
-                Delete Book
-            </button>
-            {%  endif %}
         </div>
     </div>
 

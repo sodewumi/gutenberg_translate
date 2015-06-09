@@ -253,7 +253,12 @@ hr {
   width: 70%;
   height: 50px;
 }
-
+.collab_info h3 {
+  display: inline-block;
+}
+.leave-dropdown {
+  display: inline-block;
+}
 #chap_sel {
   width: 70%;
 }

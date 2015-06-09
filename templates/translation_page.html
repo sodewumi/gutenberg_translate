@@ -31,9 +31,9 @@
             <ul class="current-collaborators">
                 {% for user in group_collab_users %}
                 {% if user.user_id == session['login'][1] %}
-                <li class="current_user_session a-collab"><span>{{ user.username }}<span></li>
+                <li class="current_user_session a-collab"><span>{{ user.username }}</span></li>
                 {% else %}
-                <li class="a-collab"><span>{{ user.username }}<span></li>
+                <li class="a-collab"><span>{{ user.username }}</span></li>
                 {% endif %}
                 {% endfor %}
             </ul>
@@ -46,7 +46,6 @@
                 Delete Book
             </button>
             {%  endif %}
-            <!-- <a href="#" id="temp" class="btn btn-primary" role="button">Disconnect</a> -->
         </div>
     </div>
 

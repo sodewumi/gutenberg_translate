@@ -1,5 +1,7 @@
 $(document).ready(function(){
-
+    // TODO- Chinese
+    // TODO- Colors
+    // TODO-FONTS
 
     var groupId = $("#translated").data('groupid');
     var bookgroupId = $("#translate_textarea").data('bookgroupid');
@@ -77,6 +79,7 @@ $(document).ready(function(){
     $(".a-collab").each(function () {
         if (counter <= colors.length) {
             $(this).first("li").css("color", "rgb("+colors[counter]+")");
+            $(this).first("li").data("color") ===  ("rgb("+colors[counter]+")");
             counter += 1;
         } else {
             counter = 0;

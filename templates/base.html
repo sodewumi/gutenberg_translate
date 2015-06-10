@@ -18,45 +18,43 @@
     {% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
+<nav class="navbar navbar-default" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+    </div>
+      <a class="navbar-brand" href="/">Gutenberg Translate</a>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+     
+      <ul class="nav navbar-nav navbar-left">
+        <li><a href="/explore">Explore Books</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if session.get('login') %}
+        =<li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> {{ session['login'][0] }} <span class="caret"></span></a>
 
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-left">
-            <li><a href="/explore">Explore Books</a></li>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/profile/{{ session['login'][1] }}">Profile</a></li>
+            <li class="divider"></li>
+            <li><a href="/logout">Signout</a></li>
           </ul>
-            <div class="nav navbar-header navbar-center">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="/">Gutenberg Translate</a>
-            </div>
-          <ul class="nav navbar-nav navbar-right">
-            {% if session.get('login') %}
-            <li class="dropdown">
-
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> {{ session['login'][0] }} <span class="caret"></span></a>
-
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="/profile/{{ session['login'][1] }}">Profile</a></li>
-                <li class="divider"></li>
-                <li><a href="/logout">Signout</a></li>
-              </ul>
-            </li>
-            {% else %}
-            <li><a href="/">Login</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
-
+        </li>
+        {% else %}
+        <li><a href="/">Login</a></li>
+        {% endif %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+    </div>
+</nav>
 
         <!-- Main content of the page is inserted in block body -->
         {% block body %}

@@ -6,6 +6,8 @@
 - [Explore Books](#explore-books-page)
 - [Create New Groups](#create-new-groups)
 - [Translation Page](#translation-page)
+	- [Sourcing Text](#source-text)
+	- [Chapter Parsing Algorithm](#chapter-parsing-algorithm)
 - [Profile](#profile)
 - [Socket.IO for Real Time Communication](#socketio-for-real-time-communication)
 - [Data Model](#data-model)
@@ -40,19 +42,14 @@ Gutenhub’s explore page allows a user to choose from a selection of the most p
 
 
 ## Creating a New Translation
-After a user looks --modal
-
-### Sourcing Text
----Source text and create a translation group.
-The create new group page allows users to create a new group. Along with information about the book pulled from Goodreads and Amazon Web Services, this page also profiles previous groups that the user has joined-- which includes links for the user to go to the project. In addition, if the user wants to create a new group they can choose to do so. When a user adds new members to a group, a server call is made to check if that user exists.
+This page allows users to create a new group. Along with information about the book pulled from Goodreads and Amazon Web Services, the app also profiles previous groups that the user has joined-- which includes links for the user to go to the project. If a user clicks on the create new group button, a modal pops up to allow them to enter who they want to add to their group. When a user adds new members to a group, a server call is made to check if that user exists.
 
 ### Data Normalization
 
 When a user decides to create a new project, if the original text is not currently in the database, Gutenhub makes a call to the Project Gutenberg website to receive the raw text of a novel. All users, no matter which group they join, will work on the same downloaded text.
-When this happens, Gutenhub makes a call to the Project Gutenberg website, and receives a raw text file.
 
 ### Chapter Parsing Algorithm
-The most challenging functionality of this page is the chapter splitting algorithm. There are a plethora of ways chapters are denoted in a novel. Chapters can be represented as Chapter 1, Chapter One, Chapter I, I, Chapter I. A Short Header here, etc. The chapter algorithm takes into account the most common markers of what represents a chapter. It looks for both headers, numbers, and roman numerals.
+The most challenging functionality of this page is the chapter splitting algorithm. There are a plethora of ways chapters are denoted in a novel. Chapters can be represented as Chapter 1, Chapter One, Chapter I, I, Chapter I, A Short Header, etc. The chapter algorithm takes into account the most common markers of what represents a chapter. It looks for both headers, numbers, and roman numerals.
 
 ## Translation Page
 

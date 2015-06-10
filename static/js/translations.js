@@ -1,7 +1,5 @@
 $(document).ready(function(){
-    // TODO- Chinese
-    // TODO- Colors
-    // TODO-FONTS
+
     var paragraphId;
     var chapterNumber;
     var groupId = $("#translated").data('groupid');
@@ -74,9 +72,6 @@ $(document).ready(function(){
 
     socket.on('hide button', function (msg) {
         $('.' + msg.paragraph_id +" p").attr('data-toggle', null);
-        // remove color change event
-
-
     });
 
 
@@ -115,22 +110,22 @@ $(document).ready(function(){
     /*--Sends an AJAX response to check if the current translation
     matches the one in the database--*/
     function translationProgressCheck () {
-        debugger;
         paragraphId = $(this).data('paragraphid');
         if ($('.' + paragraphId +" p").data().toggle != null) {
-        var translated_para_text =  $("#" + paragraphId + " p").text();
+            var translated_para_text =  $("#" + paragraphId + " p").text();
 
-        $.ajax({
-            url: "/in_translation",
-            data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&current_trans_text=" + translated_para_text,
-            type: "POST",
-            success: function(response) {
-              translationInProgress(response.inProgress, paragraphId, translated_para_text);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });}
+            $.ajax({
+                url: "/in_translation",
+                data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&current_trans_text=" + translated_para_text,
+                type: "POST",
+                success: function(response) {
+                  translationInProgress(response.inProgress, paragraphId, translated_para_text);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }   
     }
     
     function userTranslatingColor (usernameFromServer) {

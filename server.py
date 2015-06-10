@@ -1,3 +1,4 @@
+import os
 # third-party modules
 import jinja2
 from flask import flash, Flask, jsonify,  redirect, render_template, request, session, url_for
@@ -470,8 +471,8 @@ def hide_buttons(data):
 
 if __name__ == "__main__":
     connect_to_db(app)
-    app.debug = True
-    DebugToolbarExtension(app)
+    app.debug = False
+    # DebugToolbarExtension(app)
     socketio.run(app)
     app.run(debug=True)
 

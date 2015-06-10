@@ -247,17 +247,23 @@ hr {
   text-align: center;
 }
 
-.leave-group-modal-btn {
-  color: white;
-  background-color: #31c8cb;
-  width: 70%;
-  height: 50px;
-}
 .collab_info h3 {
   display: inline-block;
 }
+
 .leave-dropdown {
+  color: white;
   display: inline-block;
+}
+
+.leave-dropdown button {
+  font-size: 7px;
+  background-color: #31c8cb;
+}
+.leave-dropdown .caret {
+  border-top: 6px dashed;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
 }
 #chap_sel {
   width: 70%;

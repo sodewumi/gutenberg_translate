@@ -61,6 +61,7 @@ $(document).ready(function(){
         }
         $('.' + msg.paragraphIdAjax +" p").css("background-color", "rgb(255,255,255)");
         $('.' + msg.paragraphIdAjax +" p").attr('data-toggle', "modal");
+        //reattach click color event
     });
 
     socket.on('render submitted text', function (msg) {
@@ -68,10 +69,14 @@ $(document).ready(function(){
         $('.' + msg.paragraphId +" p").css("background-color", "rgb(255,255,255)");
         $('#' + msg.paragraphId +" p").text(msg.changed_text);
         $('.' + msg.paragraphId +" p").attr('data-toggle', "modal");
+        //reattach click color even
     });
 
     socket.on('hide button', function (msg) {
         $('.' + msg.paragraph_id +" p").attr('data-toggle', null);
+        // remove color change event
+
+
     });
 
 
@@ -110,7 +115,9 @@ $(document).ready(function(){
     /*--Sends an AJAX response to check if the current translation
     matches the one in the database--*/
     function translationProgressCheck () {
+        debugger;
         paragraphId = $(this).data('paragraphid');
+        if ($('.' + paragraphId +" p").data().toggle != null) {
         var translated_para_text =  $("#" + paragraphId + " p").text();
 
         $.ajax({
@@ -123,7 +130,7 @@ $(document).ready(function(){
             error: function(error) {
                 console.log(error);
             }
-        });
+        });}
     }
     
     function userTranslatingColor (usernameFromServer) {
@@ -143,7 +150,6 @@ $(document).ready(function(){
     $(".a-collab").each(function () {
         if (counter <= colors.length) {
             $(this).first("li").css("color", "rgb("+colors[counter]+")");
-            // $(this).first("li").data("color") ===  ("rgb("+colors[counter]+");");
             counter += 1;
         } else {
             counter = 0;
@@ -157,7 +163,8 @@ $(document).ready(function(){
         // the value changed socket route
         socket.emit('value changed', {"paragraphId" : paragraphId,
                 "change_text": $(this).val(), "bookgroup_id": bookgroupId,
-                "chapter_number": chapterNumber, "username": username});
+                "chapter_number": chapterNumber, "username": username});     
+
     });
 
     $("#add_translation_section").on("hidden.bs.modal", function (evt) {

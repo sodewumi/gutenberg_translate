@@ -131,16 +131,17 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="last-row row">
         {% for group in groups_list %}
         <div class="col-xs-3 book-user-group">
-            <h4>{{ group.group_name }}</h4>
+            <h3>{{ group.group_name }}</h3>
 
             <!-- checks which language a group translated a book into -->
             <h4>
                 {{ group.bookgroups[0].language }}
             </h4>
                 <!-- displays all people in the group -->
+            <h3>Members</h3>
             {% for user in group.users %}
             <h4>{{ user.username }}</h4>
             {% endfor %}
@@ -153,7 +154,7 @@
                 <input type="hidden" name="hidden_groupid_input"
                         value="{{ group.group_id }}">
                 <input type="hidden" name="bookgroup_id_input" value="{{ group.bookgroups[0].bookgroup_id }}">
-                <input type="submit" class="btn" value='Go To Project'>
+                <input type="submit" class="user-group-projects-btn btn" value='Go To Project'>
             </form>
 
         </div>

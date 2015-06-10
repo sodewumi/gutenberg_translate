@@ -13,6 +13,11 @@ button,
   border-radius: 0 !important;
 }
 
+.web-name {
+  font-size: 1.5em;
+  color: #31c8cb;
+}
+
 #translate_textarea {
     /*need so text form takes precedence over modal*/
     z-index: 9999;
@@ -42,6 +47,14 @@ button,
     background-color: rgba(255, 255, 255, 0.9);
 }
 
+#login {
+  font-family: 'Merriweather Sans', sans-serif;
+}
+
+.profile-box {
+  margin-top:15px;
+  margin-bottom: 30px;
+}
 /*----------------explore page -------------------*/
 
 .float-book-imgs {
@@ -68,17 +81,6 @@ button,
   /*text-shadow: 3px 5px 4px rgba(0,0,0,0.3);*/
 }
 /*-----------Book Description Page----------------*/
-/*.explore-header {
-  position: relative;
-  background: url(../img/cover13.jpg) no-repeat; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  height: 300px;
-}*/
-
-
 .full-container {
   background-color: white;
   margin-top: 20px;
@@ -141,17 +143,37 @@ hr {
 }
 
 .book-user-group {
-  height: 300px;
+  /*height: 300px;*/
   float: left;
   margin-left: 6%;
   margin-top: 6%;
   background-color: #eff0f0;
   text-align: center;
+  height: 300px;
 }
 
+.book-user-group h4 {
+  font-family: 'Merriweather Sans', sans-serif;
+}
+
+.user-group-projects-btn {
+  background-color: #31c8cb;
+  color: white;
+  font-family: 'Merriweather Sans', sans-serif;
+
+}
 .book-img-list {
   background-color: white;
   padding-top: 50px;
+}
+
+#create_group_btn {
+  background-color: #31c8cb;
+  font-size: 20px;
+}
+
+.last-row {
+  margin-bottom: 40px;
 }
 
 /*-----------Profile Page----------------*/
@@ -171,11 +193,9 @@ hr {
     font-size: 60px;
     margin-top: 20px;
     color: #31c8cb;
-  text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
 }
 .user-intro p {
   font-size: 40px;
-  text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
 }
 
 .greeting-info {
@@ -220,10 +240,18 @@ hr {
   border-radius: 2%
 }
 
+.profile-groups h4,
+.profile-groups p {
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
 .profile-btn {
+  color: white;
+  font-weight: bold;
   background-color: #31c8cb;
   float: right;
 }
+
 .author-emphasis {
   color: #31c8cb;
 }
@@ -233,6 +261,10 @@ hr {
 
 }
 /*-----------Translation Page----------------*/
+.untranslated,
+.translated {
+  font-size: 16px;
+}
 .book_rendering {
   background-color: white;
 }
@@ -241,6 +273,7 @@ hr {
     margin-top: 0px;
     background-color: #525252;
     color: white;
+    padding-bottom: 20px;
 }
 
 .book-info h2 {
@@ -292,8 +325,17 @@ div#collab_info {
   border-left: 5px solid #eff0f0;
 }
 
+#text_form_ta {
+  width: 80%;
+  height: 100px;
+}
 
-/* columns of same height styles */
+#submit_bttn {
+  background-color: #31c8cb;
+}
+
+
+/*-------- columns of same height styles --------*/
 
 .row-full-height {
   height: 100%;
@@ -344,8 +386,8 @@ float: left;
 margin-left: 10px;
 width: 200px;
 padding: 8px;
-color: #fff;
-border: 1px solid #fff;
+color: #31c8cb;
+border: 1px solid #31c8cb;
 text-align: center;
 outline: none;
 text-decoration: none;
@@ -353,12 +395,21 @@ margin-top: 30px;
 background-color: transparent;
 }
 
+.ghost-button a {
+  color: #31c8cb;
+}
+
 .ghost-button:hover,
 .ghost-button:active {
-  background-color: #333;
+  background-color: #31c8cb;
   color: #fff;
   text-decoration: none;
 }
+
+.ghost-button a {
+  color: white;
+}
+
 
 .navbar-brand
 {
@@ -369,3 +420,18 @@ background-color: transparent;
     text-align: center;
     margin: auto;
 }
+
+.nav-tabs > li, .nav-pills > li {
+    float:none;
+    display:inline-block;
+    *display:inline; /* ie7 fix */
+     zoom:1; /* hasLayout ie7 trigger */
+}
+
+#login_form .form-group {
+  float: none;
+}
+.nav-tabs, .nav-pills {
+  text-align:center;
+}
+

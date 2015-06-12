@@ -42,6 +42,7 @@ Gutenhub’s explore page allows a user to choose from a selection of the most p
 
 ![Explore Page](/static/img/explore.png)
 
+---
 
 ## Creating a New Translation
 This page allows users to create a new group. Along with information about the book pulled from Goodreads and Amazon Web Services, the app also profiles previous groups that the user has joined-- which includes links for the user to go to the project. If a user clicks on the create new group button, a modal pops up to allow them to enter who they want to add to their group. When a user adds new members to a group, a server call is made to check if that user exists.
@@ -55,13 +56,17 @@ The most challenging functionality of this page is the chapter splitting algorit
 
 ![Book Description](/static/img/description.png)
 
+---
+
 ## Translation Page
 
 The translation page renders only one chapter at a time, to make a book navigation easy for the user. User permission is structured by how many people are in the app. Users can choose to leave a project, and the last person remaining can choose to delete the project- which then deletes the group and all translations tied to the particular group.
 
 This page is broken into two sections-- the untranslated text on the right and the translated text on the left. Each untranslated paragraph is connected to a potential translated paragraph. A user can choose to edit a discrete paragraph of text. Users can add to existing translations as well as edit other people’s translations. However, while a user is translating, other collaborators cannot edit the same text. This allows the user to take their time to practice the language. The text is rendered in real time using WebSocket protocol provided by Socket.IO in the front-end and Flask-SocketIo on the server side (see below for more information on sockets).
 
-![Translation Page gif](/static/img/translation.gif)
+![Translation Page gif](/static/img/translations.gif)
+
+---
 
 ## Profile
 
@@ -69,6 +74,7 @@ A user can see all their existing groups by going to their profile. They can cli
 
 ![Profile](/static/img/profile.png)
 
+---
 
 ## Socket.IO for Real Time Communication
 
@@ -78,7 +84,9 @@ Socket.IO is utilized in conjunction with AJAX whenever a user adds or cancels a
 
 ## Data Model
 
-![Data Model](/static/img/data-model.png)
+![Data Model](/static/img/data-model.jpg)
+
+---
 
 ##Next Steps
 

@@ -40,7 +40,7 @@ I decided to make paragraphs the smallest unit of translation, because across mo
 
 Gutenhub’s explore page allows a user to choose from a selection of the most popular books from the Project Gutenberg corpus. Book images and ratings are taken from Amazon Web Services and the Goodreads API.
 
-![Explore Page](/static/img/explore.jpg)
+![Explore Page](/static/img/explore.png)
 
 
 ## Creating a New Translation
@@ -53,7 +53,7 @@ When a user decides to create a new project, if the original text is not current
 ### Chapter Parsing Algorithm
 The most challenging functionality of this page is the chapter splitting algorithm. There are a plethora of ways chapters are denoted in a novel. Chapters can be represented as Chapter 1, Chapter One, Chapter I, I, Chapter I, A Short Header, etc. The chapter algorithm takes into account the most common markers of what represents a chapter. It looks for both headers, numbers, and roman numerals.
 
-![Book Description](/static/img/description.jpg)
+![Book Description](/static/img/description.png)
 
 ## Translation Page
 
@@ -67,6 +67,9 @@ This page is broken into two sections-- the untranslated text on the right and t
 
 A user can see all their existing groups by going to their profile. They can click on those links to be taken to a translation project they are currently working on. In addition, a list of everybody they have collaborated with is on the right. A user can click on a collaborator’s name to be taken to explore their friends profile pages and learn about what their friends are translating.
 
+![Profile](/static/img/profile.png)
+
+
 ## Socket.IO for Real Time Communication
 
 I wanted all users to have the most true representation of the data possible, as quickly as possible.Traditional WebSockets that work natively in browsers are still in the process of being standardized by the W3C. As such, they work on only a few of the most up-to-date browsers. Socket.IO provides a level of encapsulation from WebSocket protocol, and focuses on providing a streamlined solution for bidirectional communication between the server and client across all platforms.
@@ -75,7 +78,7 @@ Socket.IO is utilized in conjunction with AJAX whenever a user adds or cancels a
 
 ## Data Model
 
-![Data Model](/static/img/data-model.jpg)
+![Data Model](/static/img/data-model.png)
 
 ##Next Steps
 

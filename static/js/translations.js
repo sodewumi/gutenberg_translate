@@ -18,7 +18,7 @@ $(document).ready(function(){
         socket.emit("disconnect");
     });
 
-    socket.on('my response', function (msg) {
+    socket.on('established connection', function (msg) {
         // Server confirms page is connected to socketio
         console.log(msg.connection_status);
     });

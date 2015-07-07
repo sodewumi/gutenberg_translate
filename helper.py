@@ -21,10 +21,26 @@ def find_trans_paragraphs(paragraph_obj_list, bookgroup_id):
 
     return translated_paragraphs
 
+def render_chosen_paragraphs(chosen_chapter, number_of_chapters, chapter_obj_list):
+    """
+        Renders all paragraphs associated with chosen chapter.
+        If chapter has not been chosen, renders a the paragraphs associated
+        with the chapter depending on if book has more than one chapter.
+    """
+    if chosen_chapter:
+        paragraph_obj_list = chapter_obj_list[chosen_chapter].paragraphs
+    else:
+        if number_of_chapters == 1:
+            paragraph_obj_list = chapter_obj_list[0].paragraphs
+        else:
+            paragraph_obj_list = chapter_obj_list[1].paragraphs
+
+    return paragraph_obj_list
+
 def retrieveText(book_id, gutenberg_extraction_number):
     """
         If the text doesn't already exist for the book, the paragraphs
-        and chapters asscoiated with said book are created.
+        and chapters associated with said book are created.
     """
 
     chapter_obj_list = Chapter.query.filter_by(book_id = book_id).all()

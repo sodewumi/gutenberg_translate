@@ -8,7 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 # my modules
 from model import Book, Chapter, connect_to_db, db, Group, Translation, User, BookGroup, UserGroup
 from process_gutenberg_books import processGutenBook
-from helper import createNewGroup, render_untranslated_chapter, retrieveText, find_trans_paragraphs, find_room
+from helper import createNewGroup, render_chosen_paragraphs, render_untranslated_chapter, retrieveText, find_trans_paragraphs, find_room
 
 
 
@@ -198,7 +198,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
 def display_translation_page():
     """
         Displays a chapter of the book. 
-        When page first loads, chapter starts at 1.
+        Chapter starts at 1 unless the user specifies otherwise.
     """
 
     user_session = session.get('login')
@@ -212,44 +212,37 @@ def display_translation_page():
     bookgroup_language = bookgroup_obj.language
     bookgroup_groupid = bookgroup_obj.group_id
     bookgroup_bookid = bookgroup_obj.book_id
-
-    group_obj = Group.query.filter_by(group_id = bookgroup_groupid).one()
-    group_name = group_name.group_name
-
-    group_collab_users = bookgroup_obj.group.users
-    collab_user_num = len(group_collab_users)
-
     chosen_chapter = request.args.get("chapter_selection")
+    
+    # convert to number so selected attribute on drop down can be applied
+    # on translation_page.html
     if chosen_chapter:
         chosen_chapter = int(chosen_chapter)
+
+    group_obj = Group.query.filter_by(group_id = bookgroup_groupid).one()
+    group_name = group_obj.group_name
+
+    group_collab_users = bookgroup_obj.group.users
+
+    collab_user_num = len(group_collab_users)
 
     # get the chapters associated with the book
     book_obj = Book.query.get(bookgroup_bookid)
     chapter_obj_list = book_obj.chapters
     number_of_chapters = len(chapter_obj_list)
 
-    # checks if the selection form has been submitted
-    # connect to chapter_number
-    if chosen_chapter:
-        paragraph_obj_list = chapter_obj_list[chosen_chapter].paragraphs
-        translated_paragraphs_list = find_trans_paragraphs( 
+    paragraph_obj_list = render_chosen_paragraphs(chosen_chapter,
+        number_of_chapters, chapter_obj_list)
+
+    translated_paragraphs_list = find_trans_paragraphs( 
                 paragraph_obj_list=paragraph_obj_list, bookgroup_id=bookgroup_id)
-    else:
-        if number_of_chapters == 1:
-            paragraph_obj_list = chapter_obj_list[0].paragraphs
-            translated_paragraphs_list =  find_trans_paragraphs(
-                paragraph_obj_list=paragraph_obj_list, bookgroup_id=bookgroup_id)
-        else:
-            paragraph_obj_list = chapter_obj_list[1].paragraphs
-            translated_paragraphs_list =  find_trans_paragraphs(
-                    paragraph_obj_list=paragraph_obj_list, bookgroup_id=bookgroup_id)
 
     return render_template("translation_page.html",
         number_of_chapters = number_of_chapters, 
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
-        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users, bookgroup_obj = bookgroup_obj,
+        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users,
         collab_user_num=collab_user_num, group_name=group_name)
 
 @app.route("/save_text", methods=["POST"])
@@ -278,7 +271,7 @@ def save_translation_text():
         db.session.add(new_translation_for_db)
         db.session.commit()
 
-    return jsonify({"status": "OK", "translated_text": translated_text, "paragraph_id": paragraph_id_input})
+    return jsonify({"translated_text": translated_text, "paragraph_id": paragraph_id_input})
 
 @app.route("/in_translation", methods=["POST"])
 def check_translation_in_progress():
@@ -359,7 +352,7 @@ def test_connect():
     """
         Establishes a connection to Socket.IO
     """
-    emit('my response', {'connection_status': 'Connected'})
+    emit('established connection', {'connection_status': 'Connected'})
 
 @socketio.on("disconnect", namespace='/rendertranslations')
 def disconnected():
@@ -384,7 +377,6 @@ def on_leave(data):
     """
         Sent by clients when the leave a room
     """
-
     username = session["login"][0]
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     leave_room(room)
@@ -438,7 +430,7 @@ if __name__ == "__main__":
     connect_to_db(app)
     app.debug = True
     DebugToolbarExtension(app)
-    # socketio.run(app)
+    socketio.run(app)
     app.run(debug=True)
 
 

@@ -415,7 +415,7 @@ def new_text(data):
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('render submitted text', data, broadcast=True, room=room)
 
-@socketio.on('remove button', namespace='/rendertranslations')
+@socketio.on('stop click', namespace='/rendertranslations')
 def hide_buttons(data):
     """
         Stops users from accessing the same paragraph if another client is 
@@ -423,7 +423,7 @@ def hide_buttons(data):
     """
 
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
-    emit('hide button', data, broadcast=True, room=room)
+    emit('cannot translate', data, broadcast=True, room=room)
 
 
 if __name__ == "__main__":

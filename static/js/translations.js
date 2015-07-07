@@ -70,7 +70,7 @@ $(document).ready(function(){
         //reattach click color even
     });
 
-    socket.on('hide button', function (msg) {
+    socket.on('cannot translate', function (msg) {
         $('.' + msg.paragraph_id +" p").attr('data-toggle', null);
     });
 
@@ -87,17 +87,18 @@ $(document).ready(function(){
             $("#error_translation_in_progress").hide();
             $("#confirm").hide();
             $("#cancel_translation_btn").show();
-            $("#translation_form").show();
+            $("#translate_textarea").show();
 
             var untranslated_para_text = $("." + paragraphId + " p").text();
 
             $("#current_untans_text p").text(untranslated_para_text);
             $("#text_form_ta").val(translated_para_text);
-            socket.emit('remove button', {"paragraph_id": paragraphId, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+            socket.emit('stop click', {"paragraph_id": paragraphId, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
             $("#text_form_ta").trigger("input");
         } else {
             $("#cancel_translation_btn").hide();
-            $("#translation_form").hide();
+            $("#translate_textarea").hide();
+
             $("#error_translation_in_progress").show();
             $("#confirm").show();
         }

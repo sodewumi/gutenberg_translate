@@ -8,16 +8,14 @@ from flask_debugtoolbar import DebugToolbarExtension
 # my modules
 from model import Book, Chapter, connect_to_db, db, Group, Translation, User, BookGroup, UserGroup
 from process_gutenberg_books import processGutenBook
-from helper import render_untranslated_chapter, find_trans_paragraphs, find_room
+from helper import createNewGroup, render_untranslated_chapter, retrieveText, find_trans_paragraphs, find_room
 
 
 
 app = Flask(__name__)
-app.secret_key = 'will hook to .gitignore soon'
+app.secret_key = 'public key'
 app.jinja_env .undefined = jinja2.StrictUndefined
 socketio = SocketIO(app)
-
-print "************************"
 
 ################################################################################
     #Logins, Logouts, Register
@@ -186,52 +184,15 @@ def submit_add_translation_form(gutenberg_extraction_number):
         User.username.in_(collaborator_list)
         ).all()
 
-    # change to book obj
     book_id_tuple = db.session.query(Book.book_id).filter(
         Book.gutenberg_extraction_num == gutenberg_extraction_number).first()
     book_id = book_id_tuple[0]
 
-    chapter_obj_list = db.session.query(Chapter).filter(
-        Chapter.book_id == book_id).all()
-
-    # if the book text hasn't been put inside the database yet, run the process_book
-    # function to get split, and push book into the database.
-    if not chapter_obj_list:
-        processed_book = processGutenBook(gutenberg_extraction_number)
-        processed_book = processed_book.process_book_chapters()
-        chapter_obj_list = db.session.query(Chapter).filter(
-            Chapter.book_id == book_id_tuple[0]).all()
-
+    # Creates text for book if the text hasn't been created yet
+    retrieveText(book_id, gutenberg_extraction_number)
     new_bookgroup_obj = createNewGroup(group_name, collaborators_user_objs, book_id, translation_language)
 
     return redirect(url_for(".display_translation_page", bookgroup_id_input = new_bookgroup_obj.bookgroup_id))
-
-def createNewGroup(new_group_name, new_collaborators_user_objs, book_id, translation_language):
-    """
-        Creates new UserGroups and BookGroup for database.
-    """
-
-    new_group_obj = Group(group_name = new_group_name)
-
-    db.session.add(new_group_obj)
-    # create usergroup
-    db.session.commit()
-    new_usergroup_obj = UserGroup(user_id=session["login"][1],
-                        group_id=new_group_obj.group_id)
-    db.session.add(new_usergroup_obj)
-
-    for a_collaborator in new_collaborators_user_objs:
-        new_usergroup_obj = UserGroup(user_id=a_collaborator.user_id,
-                            group_id=new_group_obj.group_id)
-        db.session.add(new_usergroup_obj)
-    db.session.commit()
-    # create bookgroup
-    new_bookgroup_obj = BookGroup(group_id=new_group_obj.group_id,
-                        book_id=book_id, language=translation_language)
-    db.session.add(new_bookgroup_obj)
-    db.session.commit()
-
-    return new_bookgroup_obj
 
 @app.route("/rendertranslations", methods=["GET"])
 def display_translation_page():
@@ -240,22 +201,19 @@ def display_translation_page():
         When page first loads, chapter starts at 1.
     """
 
-    user_session = session.get(u'login')
+    user_session = session.get('login')
     
     if not user_session:
         flash("You need to sign in to view this page")
         return redirect("/")
 
-    # all arguments come from the book_group
-    # bookgroup_obj = BookGroup.query.get(bookgroup_id)
     bookgroup_id = int(request.args["bookgroup_id_input"])
     bookgroup_obj = BookGroup.query.get(bookgroup_id)
-    bookgroup_id = bookgroup_obj.bookgroup_id
     bookgroup_language = bookgroup_obj.language
     bookgroup_groupid = bookgroup_obj.group_id
     bookgroup_bookid = bookgroup_obj.book_id
 
-    group_name = Group.query.filter_by(group_id = bookgroup_groupid).one()
+    group_obj = Group.query.filter_by(group_id = bookgroup_groupid).one()
     group_name = group_name.group_name
 
     group_collab_users = bookgroup_obj.group.users
@@ -291,7 +249,7 @@ def display_translation_page():
         display_chapter = paragraph_obj_list, chapter_chosen=chosen_chapter, 
         display_translations=translated_paragraphs_list, book_id=bookgroup_bookid,
         language=bookgroup_language, book_obj=book_obj, group_id=bookgroup_groupid,
-        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users,
+        bookgroup_id=bookgroup_id, group_collab_users=group_collab_users, bookgroup_obj = bookgroup_obj,
         collab_user_num=collab_user_num, group_name=group_name)
 
 @app.route("/save_text", methods=["POST"])
@@ -332,6 +290,7 @@ def check_translation_in_progress():
     paragraph_id_input = int(request.form["p_id"])
     bookgroup_id_input = int(request.form["bg_id"])
     current_trans_text = request.form["current_trans_text"]
+
     translated_p_obj = db.session.query(Translation).filter_by(
         paragraph_id=paragraph_id_input, bookgroup_id=bookgroup_id_input).first()
 

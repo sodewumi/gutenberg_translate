@@ -32,7 +32,7 @@ class processGutenBook(object):
         paragraphs_in_chapter_list = []
 
         for i in range(len(chapter_list)):
-            paragraphs_in_chapter_list.append(chapter_list[i].split('\n\n'))
+            paragraphs_in_chapter_list.append(chapter_list[i].split('\n\r'))
 
         # return len(paragraphs_in_chapter_list)
         return paragraphs_in_chapter_list
@@ -53,7 +53,6 @@ class processGutenBook(object):
             for paragraphs in chapters:
                 db.session.add(Paragraph(untranslated_paragraph=paragraphs,
                     chapter_id=new_chapter_id))
-
         db.session.commit()
 
     def process_book_chapters(self):

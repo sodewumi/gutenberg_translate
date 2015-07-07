@@ -17,6 +17,8 @@ app.secret_key = 'will hook to .gitignore soon'
 app.jinja_env .undefined = jinja2.StrictUndefined
 socketio = SocketIO(app)
 
+print "************************"
+
 ################################################################################
     #Logins, Logouts, Register
 ################################################################################
@@ -176,11 +178,8 @@ def submit_add_translation_form(gutenberg_extraction_number):
         a book has not yet to the book database.
         Book taken from book_explore.html
     """
-    # add to usergroup
-    # logic for collaborators to be added later after MVP
     group_name = request.args.get("group_name_input")
     translation_language = request.args.get("translation_language_input")
-
     collaborator_list = request.args.getlist("usernames")
 
     collaborators_user_objs = User.query.filter(
@@ -203,8 +202,16 @@ def submit_add_translation_form(gutenberg_extraction_number):
         chapter_obj_list = db.session.query(Chapter).filter(
             Chapter.book_id == book_id_tuple[0]).all()
 
-    # create group
-    new_group_obj = Group(group_name = group_name)
+    new_bookgroup_obj = createNewGroup(group_name, collaborators_user_objs, book_id, translation_language)
+
+    return redirect(url_for(".display_translation_page", bookgroup_id_input = new_bookgroup_obj.bookgroup_id))
+
+def createNewGroup(new_group_name, new_collaborators_user_objs, book_id, translation_language):
+    """
+        Creates new UserGroups and BookGroup for database.
+    """
+
+    new_group_obj = Group(group_name = new_group_name)
 
     db.session.add(new_group_obj)
     # create usergroup
@@ -213,7 +220,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
                         group_id=new_group_obj.group_id)
     db.session.add(new_usergroup_obj)
 
-    for a_collaborator in collaborators_user_objs:
+    for a_collaborator in new_collaborators_user_objs:
         new_usergroup_obj = UserGroup(user_id=a_collaborator.user_id,
                             group_id=new_group_obj.group_id)
         db.session.add(new_usergroup_obj)
@@ -224,7 +231,7 @@ def submit_add_translation_form(gutenberg_extraction_number):
     db.session.add(new_bookgroup_obj)
     db.session.commit()
 
-    return redirect(url_for(".display_translation_page", bookgroup_id_input = new_bookgroup_obj.bookgroup_id))
+    return new_bookgroup_obj
 
 @app.route("/rendertranslations", methods=["GET"])
 def display_translation_page():
@@ -468,12 +475,11 @@ def hide_buttons(data):
     emit('hide button', data, broadcast=True, room=room)
 
 
-
 if __name__ == "__main__":
     connect_to_db(app)
-    app.debug = False
-    # DebugToolbarExtension(app)
-    socketio.run(app)
+    app.debug = True
+    DebugToolbarExtension(app)
+    # socketio.run(app)
     app.run(debug=True)
 
 

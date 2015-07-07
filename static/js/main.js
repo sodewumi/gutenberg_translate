@@ -22,15 +22,22 @@ $(document).ready(function(){
 
     $("#book_rating").append(starRating());
 
-    // add logic about what happens if edit button is already clicked
-    function hiddenInputs(newUsername) {
-        var hiddenInput = $("<input type='hidden' name='usernames'>").val(newUsername);
-        $("#add_book_form .form-group").last().after(hiddenInput);
+    // Creates a hidden input with added user's name. Renders Username on Modal
+    function hiddenUsernameInputs(newUsername, usernameFound) {
+        if (usernameFound === false) {
+            var hiddenInput = $("<input type='hidden' name='usernames'>").val(newUsername);
+            $("#add_book_form .form-group").last().after(hiddenInput);
+            $("#collab_list").append("<li class='collab_usernames'>"+newUsername+"</li>");
+        }
     }
 
+    /*----------
+        Adds User to the list if the User is in database. If the user isn't in the 
+        database or the user is already added, prevents name from being added.
+    -----------*/ 
     function userExists (exists) {
-        // Shows different messages depending on what the user enters into the 
-        var already_found = false;
+
+        var usernameFound = false;
 
         if (exists !== null) {
             $(".collab_usernames").each(function () {
@@ -40,20 +47,18 @@ $(document).ready(function(){
 
                 if (this_username === exists) {
                     $("#error_message").html("You've already added this username");
-                    already_found = true;
-                    return already_found;
+                    usernameFound = true;
+                    return usernameFound;
                 }
             });
 
-            if (already_found === false) {
-                hiddenInputs(exists);
-                $("#collab_list").append("<li class='collab_usernames'>"+exists+"</li>");
-            }
+            hiddenUsernameInputs(exists, usernameFound)
+
         } else {
             $("#error_message").html("This username doesn't exist");
         }
     }
-    
+
     //on keypress send an ajax rquest that checks if user exists
     $("#group_name_input").on("keypress", function (evt) {
         $("#error_message").empty();

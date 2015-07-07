@@ -352,7 +352,7 @@ def test_connect():
     """
         Establishes a connection to Socket.IO
     """
-    emit('established connection', {'connection_status': 'Connected'})
+    emit('my response', {'connection_status': 'Connected'})
 
 @socketio.on("disconnect", namespace='/rendertranslations')
 def disconnected():
@@ -415,7 +415,7 @@ def new_text(data):
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
     emit('render submitted text', data, broadcast=True, room=room)
 
-@socketio.on('stop click', namespace='/rendertranslations')
+@socketio.on('remove button', namespace='/rendertranslations')
 def hide_buttons(data):
     """
         Stops users from accessing the same paragraph if another client is 
@@ -423,7 +423,7 @@ def hide_buttons(data):
     """
 
     room = find_room(data["bookgroup_id"], data.get("chapter_number"))
-    emit('cannot translate', data, broadcast=True, room=room)
+    emit('hide button', data, broadcast=True, room=room)
 
 
 if __name__ == "__main__":
@@ -432,7 +432,6 @@ if __name__ == "__main__":
     DebugToolbarExtension(app)
     socketio.run(app)
     app.run(debug=True)
-
 
 
 

@@ -18,7 +18,7 @@ $(document).ready(function(){
         socket.emit("disconnect");
     });
 
-    socket.on('established connection', function (msg) {
+    socket.on('my response', function (msg) {
         // Server confirms page is connected to socketio
         console.log(msg.connection_status);
     });
@@ -70,7 +70,8 @@ $(document).ready(function(){
         //reattach click color even
     });
 
-    socket.on('cannot translate', function (msg) {
+    socket.on('hide button', function (msg) {
+        console.log("hide")
         $('.' + msg.paragraph_id +" p").attr('data-toggle', null);
     });
 
@@ -87,18 +88,17 @@ $(document).ready(function(){
             $("#error_translation_in_progress").hide();
             $("#confirm").hide();
             $("#cancel_translation_btn").show();
-            $("#translate_textarea").show();
+            $("#translation_form").show();
 
             var untranslated_para_text = $("." + paragraphId + " p").text();
 
             $("#current_untans_text p").text(untranslated_para_text);
             $("#text_form_ta").val(translated_para_text);
-            socket.emit('stop click', {"paragraph_id": paragraphId, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
+            socket.emit('remove button', {"paragraph_id": paragraphId, "bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
             $("#text_form_ta").trigger("input");
         } else {
             $("#cancel_translation_btn").hide();
-            $("#translate_textarea").hide();
-
+            $("#translation_form").hide();
             $("#error_translation_in_progress").show();
             $("#confirm").show();
         }
@@ -221,5 +221,4 @@ $(document).ready(function(){
 
     main();
 });
-
 

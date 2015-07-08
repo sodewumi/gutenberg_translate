@@ -67,7 +67,6 @@ $(document).ready(function(){
         $('.' + msg.paragraphId +" p").css("background-color", "rgb(255,255,255)");
         $('#' + msg.paragraphId +" p").text(msg.changed_text);
         $('.' + msg.paragraphId +" p").attr('data-toggle', "modal");
-        //reattach click color even
     });
 
     socket.on('hide button', function (msg) {
@@ -109,7 +108,8 @@ $(document).ready(function(){
     }
 
     /*--Sends an AJAX response to check if the current translation
-    matches the one in the database--*/
+    matches the one in the database. response.inProgress is a Boolean value that is True if the paragraph
+    is being translated and false otherwise--*/
     function translationProgressCheck () {
         paragraphId = $(this).data('paragraphid');
         if ($('.' + paragraphId +" p").data().toggle != null) {

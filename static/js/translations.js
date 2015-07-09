@@ -70,7 +70,8 @@ $(document).ready(function(){
     });
 
     socket.on('hide button', function (msg) {
-        console.log("hide")
+        // turns the paragraphs data-toggle's attribute to null instead of
+        // bootstrap's modal
         $('.' + msg.paragraph_id +" p").attr('data-toggle', null);
     });
 
@@ -107,10 +108,11 @@ $(document).ready(function(){
         return !$.trim(el.html());
     }
 
-    /*--Sends an AJAX response to check if the current translation
-    matches the one in the database. response.inProgress is a Boolean value that is True if the paragraph
-    is being translated and false otherwise--*/
     function translationProgressCheck () {
+        // Sends an AJAX response to check if the current translation
+        // matches the one in the database. response.inProgress is a Boolean value that is True if the paragraph
+        // is being translated and false otherwise
+
         paragraphId = $(this).data('paragraphid');
         if ($('.' + paragraphId +" p").data().toggle != null) {
             var translated_para_text =  $("#" + paragraphId + " p").text();
@@ -130,6 +132,8 @@ $(document).ready(function(){
     }
     
     function userTranslatingColor (usernameFromServer) {
+        // finds the editing user's color from a list of other users 
+
         var userColor;
         $(".a-collab").each(function () {
             if ($(this).text() === usernameFromServer) {
@@ -144,6 +148,7 @@ $(document).ready(function(){
 -------------------------------------------------------------------------------*/
 
     $(".a-collab").each(function () {
+        // when page first loads, assign each user a color
         if (counter <= colors.length) {
             $(this).first("li").css("color", "rgb("+colors[counter]+")");
             counter += 1;
@@ -164,6 +169,7 @@ $(document).ready(function(){
     });
 
     $("#add_translation_section").on("hidden.bs.modal", function (evt) {
+        // if the user cancels, reverts back to the last saved text in the database
         $.ajax({
             url: "/cancel_translation",
             data: "&p_id=" + paragraphId + "&bg_id=" + bookgroupId + "&un=" + username,
@@ -202,6 +208,7 @@ $(document).ready(function(){
 
 
     $(function() {
+        // A user leaves the room before the chapter changes
         $('#chap_sel').change(function() {
             socket.emit("leave", {"bookgroup_id": bookgroupId, "chapter_number": chapterNumber});
             chapterNumber = $("select[name=chapter_selection] option:selected").val();
@@ -210,6 +217,8 @@ $(document).ready(function(){
     });
 
     $(".trans_para").each(function () {
+        // If a translated paragraph is empty, give it a paragraph tag. For easy text
+        // insertion later
         if (isEmpty($(this))) {
             $(this).html("<p></p>");
         }
@@ -221,4 +230,3 @@ $(document).ready(function(){
 
     main();
 });
-

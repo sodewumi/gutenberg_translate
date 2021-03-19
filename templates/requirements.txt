@@ -2,7 +2,7 @@ Flask==0.10.1
 Flask-DebugToolbar==0.10.0
 Flask-SQLAlchemy==2.0
 Gutenberg==0.4.0
-Jinja2==2.7.3
+Jinja2==2.11.3
 MarkupSafe==0.23
 SPARQLWrapper==1.6.4
 SQLAlchemy==1.0.4
